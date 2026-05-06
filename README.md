@@ -1,2 +1,1 @@
-# dmrai-lab.github.io
-The dmrai-lab organization website
+Content and branding © dmrai-lab, all rights reserved
