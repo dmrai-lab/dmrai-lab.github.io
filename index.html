@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dmrai-lab — Diffusion MRI · AI · Research</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,400;0,9..144,700;1,9..144,200;1,9..144,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #07090f;
+      --bg2:       #0d1120;
+      --surface:   #111827;
+      --border:    rgba(255,255,255,0.07);
+      --accent:    #4af0c4;
+      --accent2:   #7b9cff;
+      --text:      #e8edf5;
+      --muted:     #7a8499;
+      --mono:      'DM Mono', monospace;
+      --serif:     'Fraunces', Georgia, serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .glow-bg {
+      position: fixed;
+      top: -30vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120vw;
+      height: 80vh;
+      background: radial-gradient(ellipse at 50% 0%, rgba(74,240,196,0.07) 0%, rgba(123,156,255,0.05) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem 4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo { display: flex; align-items: baseline; gap: 0.5rem; }
+
+    .logo-name {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+    }
+
+    .logo-tag { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; }
+
+    nav { display: flex; gap: 2.5rem; }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      z-index: 10;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 7rem 4rem 5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.1s forwards;
+    }
+
+    .hero-eyebrow span {
+      display: inline-block;
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+      vertical-align: middle;
+      margin-right: 0.75rem;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 200;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.25s forwards;
+    }
+
+    h1 em { font-style: italic; color: var(--accent); font-weight: 200; }
+    h1 .dim { color: var(--muted); }
+
+    .hero-sub {
+      font-size: 0.92rem;
+      color: var(--muted);
+      max-width: 580px;
+      line-height: 1.9;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.4s forwards;
+    }
+
+    .hero-cta {
+      margin-top: 3.5rem;
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.55s forwards;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary { background: var(--accent); color: #07090f; font-weight: 500; }
+    .btn-primary:hover { background: #6ff5d0; transform: translateY(-1px); }
+    .btn-ghost { border: 1px solid var(--border); color: var(--muted); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      position: relative;
+      z-index: 10;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 4rem;
+    }
+
+    .divider hr { border: none; border-top: 1px solid var(--border); }
+
+    /* ── SECTIONS ── */
+    .section {
+      position: relative;
+      z-index: 10;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 6rem 4rem;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3.5rem;
+    }
+
+    /* ── PACKAGES ── */
+    .packages {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .pkg {
+      background: var(--bg);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    .pkg:hover { background: var(--bg2); }
+
+    .pkg::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--accent);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.3s;
+    }
+
+    .pkg:nth-child(2)::before { background: var(--accent2); }
+    .pkg:nth-child(3)::before { background: var(--accent2); }
+    .pkg:nth-child(4)::before { background: var(--accent); }
+    .pkg:hover::before { transform: scaleY(1); }
+
+    .pkg-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .pkg-badge.active {
+      border-color: rgba(74,240,196,0.3);
+      color: var(--accent);
+      background: rgba(74,240,196,0.05);
+    }
+
+    .pkg-badge.wip {
+      border-color: rgba(123,156,255,0.3);
+      color: var(--accent2);
+      background: rgba(123,156,255,0.05);
+    }
+
+    .pkg-name { font-family: var(--mono); font-size: 1.15rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem; }
+    .pkg-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.75; margin-bottom: 1.5rem; }
+    .pkg-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+    .tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      padding: 0.15rem 0.5rem;
+      border-radius: 2px;
+    }
+
+    /* ── TABS ── */
+    .manifesto {
+      position: relative;
+      z-index: 10;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 6rem 4rem;
+    }
+
+    .tab-bar {
+      display: flex;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      width: fit-content;
+    }
+
+    .tab-btn {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      border-right: 1px solid var(--border);
+      padding: 0.65rem 1.4rem;
+      cursor: pointer;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .tab-btn:last-child { border-right: none; }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--accent); background: rgba(74,240,196,0.05); }
+
+    .tab-panels {
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tab-panels::after {
+      content: '';
+      position: absolute;
+      bottom: -4rem; right: -4rem;
+      width: 16rem; height: 16rem;
+      background: radial-gradient(circle, rgba(74,240,196,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .tab-panel { display: none; padding: 3.5rem; }
+    .tab-panel.active { display: block; }
+
+    /* Vision panel */
+    .tab-panel blockquote {
+      font-family: var(--serif);
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      font-weight: 200;
+      font-style: italic;
+      line-height: 1.5;
+      color: var(--text);
+      max-width: 640px;
+      margin-bottom: 2rem;
+    }
+
+    .tab-panel blockquote strong {
+      font-style: normal;
+      font-weight: 400;
+      color: var(--accent);
+    }
+
+    .vision-body {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.9;
+      max-width: 600px;
+    }
+
+    /* Manifesto panel */
+    .manifesto-content { max-width: 660px; }
+
+    .manifesto-meta {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .manifesto-meta strong { color: var(--accent); }
+
+    .manifesto-section { margin-bottom: 2.5rem; }
+
+    .manifesto-section h3 {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text);
+      margin-bottom: 1rem;
+      line-height: 1.35;
+    }
+
+    .manifesto-section p {
+      font-size: 0.83rem;
+      color: var(--muted);
+      line-height: 1.95;
+      margin-bottom: 0.9rem;
+    }
+
+    .manifesto-section p:last-child { margin-bottom: 0; }
+
+    .manifesto-pull {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-style: italic;
+      font-weight: 200;
+      color: var(--text);
+      border-left: 2px solid var(--accent);
+      padding-left: 1.5rem;
+      margin: 2rem 0;
+      line-height: 1.6;
+    }
+
+    .manifesto-footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .manifesto-footer a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .manifesto-footer a:hover { color: var(--accent); }
+
+    /* ── COLLABORATORS ── */
+    .collab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .collab-item { background: var(--bg); padding: 1.75rem 2rem; transition: background 0.2s; }
+    .collab-item:hover { background: var(--bg2); }
+    .collab-name { font-size: 0.88rem; font-weight: 500; color: var(--text); margin-bottom: 0.2rem; }
+    .collab-inst { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-left { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.06em; }
+    .footer-links { display: flex; gap: 1.5rem; }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── HERO IMAGE ── */
+    .hero-text { /* left column */ }
+
+    .hero-image {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      opacity: 0;
+      animation: fadeUp 1s 0.6s forwards;
+    }
+
+    .hero-image img {
+      width: 100%;
+      max-width: 520px;
+      mix-blend-mode: screen;
+      filter: saturate(1.1) brightness(0.95);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      header { padding: 1.5rem; }
+      nav { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 4rem 1.5rem 3rem; }
+      .hero-image { justify-content: center; }
+      .hero-image img { max-width: 320px; }
+      .section, .manifesto, .divider { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .packages { grid-template-columns: 1fr; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; }
+      .tab-panel { padding: 2rem; }
+      .tab-btn { padding: 0.6rem 1rem; font-size: 0.65rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="glow-bg"></div>
+
+<header>
+  <div class="logo">
+    <span class="logo-name">dmrai-lab</span>
+    <span class="logo-tag">/ org</span>
+  </div>
+  <nav>
+    <a href="#packages">Packages</a>
+    <a href="#vision">Vision</a>
+    <a href="#collaborators">Collaborators</a>
+    <a href="https://github.com/dmrai-lab" target="_blank">GitHub ↗</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-text">
+    <p class="hero-eyebrow"><span></span>Open Science · Diffusion MRI · Microstructure Imaging</p>
+    <h1>Physics is<br/><em>the specification.</em><br/><span class="dim">Code is the proof.</span></h1>
+    <p class="hero-sub">
+      Diffusion MRI can see inside living tissue without a scalpel — inferring axon diameters,
+      membrane densities, soma permeability from the motion of water molecules.
+      dmrai-lab is building the infrastructure this field deserves:
+      open, validated, reproducible, from simulation to compendium.
+    </p>
+    <div class="hero-cta">
+      <a href="https://github.com/dmrai-lab" target="_blank" class="btn btn-primary">View on GitHub</a>
+      <a href="#vision" class="btn btn-ghost">Manifesto</a>
+    </div>
+  </div>
+  <div class="hero-image">
+    <img src="brain_dmrai-lab.png" alt="Brain dissolving into diffusion MRI microstructure geometry" />
+  </div>
+</section>
+
+<div class="divider"><hr /></div>
+
+<section class="section" id="packages">
+  <p class="section-label reveal">Packages</p>
+  <div class="packages reveal">
+
+    <div class="pkg">
+      <div class="pkg-badge active">Active</div>
+      <div class="pkg-name">dmipy-fit</div>
+      <div class="pkg-desc">
+        JAX-native model inference across the full landscape of compartment models.
+        Amortized inference, Rician noise floor modeling, and explicit scope boundaries
+        characterized against Monte Carlo ground truth.
+      </div>
+      <div class="pkg-tags">
+        <span class="tag">JAX</span>
+        <span class="tag">amortized inference</span>
+        <span class="tag">Rician noise</span>
+        <span class="tag">T1/T2 relaxation</span>
+      </div>
+    </div>
+
+    <div class="pkg">
+      <div class="pkg-badge active">Active</div>
+      <div class="pkg-name">dmipy-sim</div>
+      <div class="pkg-desc">
+        Monte Carlo diffusion MRI simulator validated against Disimpy and MISST.
+        Substrate generation, gradient waveforms, and synthetic signal output
+        for ground-truth benchmarking.
+      </div>
+      <div class="pkg-tags">
+        <span class="tag">Monte Carlo</span>
+        <span class="tag">substrates</span>
+        <span class="tag">Disimpy validated</span>
+        <span class="tag">MISST validated</span>
+      </div>
+    </div>
+
+    <div class="pkg">
+      <div class="pkg-badge active">Active</div>
+      <div class="pkg-name">dmipy-design</div>
+      <div class="pkg-desc">
+        Acquisition waveform optimization that closes the loop between what we can measure
+        and what we claim to measure — incorporating both analytical sensitivity and
+        Monte Carlo-derived bias simultaneously.
+      </div>
+      <div class="pkg-tags">
+        <span class="tag">waveform optimization</span>
+        <span class="tag">sensitivity analysis</span>
+        <span class="tag">bias characterization</span>
+        <span class="tag">b-tensor</span>
+      </div>
+    </div>
+
+    <div class="pkg">
+      <div class="pkg-badge wip">In development</div>
+      <div class="pkg-name">dmipy-compendium</div>
+      <div class="pkg-desc">
+        A living, machine-readable knowledge graph of validated diffusion MRI
+        protocols, models, and results. Every node carries its physical assumptions,
+        scope boundaries, and Monte Carlo evidence.
+      </div>
+      <div class="pkg-tags">
+        <span class="tag">knowledge graph</span>
+        <span class="tag">reproducibility</span>
+        <span class="tag">SANDI</span>
+        <span class="tag">machine-readable</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"><hr /></div>
+
+<section class="manifesto" id="vision">
+  <p class="section-label reveal">Vision</p>
+  <div class="reveal">
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="vision">Vision</button>
+      <button class="tab-btn" data-tab="manifesto">Manifesto <span style="font-size:0.6em;opacity:0.55;font-style:italic;">v0.1</span></button>
+    </div>
+    <div class="tab-panels">
+
+      <div class="tab-panel active" id="tab-vision">
+        <blockquote>
+          The goal is not a faster fitting tool — it is the
+          <strong>living compendium</strong> of everything
+          diffusion microstructure imaging knows.
+        </blockquote>
+        <p class="vision-body">
+          dmrai-lab is the revival and extension of dmipy, originally published in
+          Frontiers in Neuroinformatics (2019). We are rebuilding it from the ground up:
+          a JAX fitting engine grounded in biophysical compartment models, a Monte Carlo
+          simulator for ground-truth validation, an acquisition design tool that closes
+          the loop between measurement and claim, and a compendium that makes every
+          validated protocol and result machine-readable and citable.
+          <br /><br />
+          Our north star: a scientist anywhere in the world should be able to describe a
+          tissue model, find the canonical validated protocol for it, simulate it, fit it,
+          and reproduce the result — in a single afternoon.
+          <br /><br />
+          The bottleneck was never intelligence. It was infrastructure.
+        </p>
+      </div>
+
+      <div class="tab-panel" id="tab-manifesto">
+        <div class="manifesto-content">
+
+          <div class="manifesto-meta">
+            <strong>Physics is the Specification</strong> &nbsp;·&nbsp;
+            A manifesto for machine-verifiable diffusion MRI science &nbsp;·&nbsp;
+            dmrai-lab &nbsp;·&nbsp; May 2026 &nbsp;·&nbsp; v0.1
+          </div>
+
+          <div class="manifesto-section">
+            <p>
+              Diffusion MRI can see inside living tissue without a scalpel. It can infer the diameter
+              of an axon, the density of cell membranes, the permeability of a soma wall — all from
+              the way water molecules move. This is one of the most remarkable capabilities in modern medicine.
+            </p>
+            <p>
+              And the field has been working without the infrastructure it deserves.
+            </p>
+            <p>
+              Not for lack of trying. The scientists who built this field are rigorous, inventive,
+              and deeply committed to getting it right. Validation has happened — but bespoke, each
+              group building its own simulation, its own ground truth, its own interpretation of what
+              the model should recover. Brilliant work, done in isolation, with tools that were
+              difficult to build and harder to share. The supporting code is often unpublished, the
+              methodology unreproducible not by choice but by circumstance. What survives in the
+              literature is the claim. What does not survive is the chain of evidence behind it.
+            </p>
+            <p>
+              The result is a field where the same model can be validated six times in six different
+              ways, with six different simulators, producing six subtly different answers — and no
+              shared language to reconcile them. Where scope boundaries exist in the author's intuition
+              but not in the publication. Where a protocol validated for one tissue type migrates
+              quietly into another without anyone having established whether it should.
+            </p>
+            <p>
+              This is not a failure of the people. It is a failure of infrastructure. And infrastructure
+              is exactly what has become possible to build.
+            </p>
+          </div>
+
+          <div class="manifesto-pull">
+            The solution is not more papers. The solution is infrastructure.
+          </div>
+
+          <div class="manifesto-section">
+            <h3>The specification exists.</h3>
+            <p>
+              Physics governs water diffusion in biological tissue completely and without ambiguity.
+              The Bloch-Torrey equation is not a hypothesis. Brownian motion in restricted geometries
+              is not a conjecture. These are the specification. Everything else — every model, every
+              protocol, every clinical claim — is an implementation that either satisfies the
+              specification or does not.
+            </p>
+            <p>
+              Monte Carlo simulation is the compiler. Given a substrate geometry, a permeability,
+              a relaxation time, and an acquisition waveform, simulation produces ground truth signal
+              with no approximation beyond the physical assumptions themselves. It does not negotiate
+              with analytical convenience. It does not care about publication deadlines.
+            </p>
+            <p>
+              A claim that cannot survive Monte Carlo validation within its stated scope is not a
+              validated claim. It is a hypothesis.
+            </p>
+          </div>
+
+          <div class="manifesto-section">
+            <h3>dmrai-lab is building the infrastructure to make this distinction enforceable.</h3>
+            <p>
+              dmipy implements three nodes of one closed loop: simulation — Monte Carlo substrate
+              generation and signal synthesis, grounded in biologically cited parameter distributions;
+              fitting — JAX-native model inference with explicit scope boundaries and bias
+              characterization against ground truth; and design — acquisition waveform optimization
+              that incorporates both analytical sensitivity and Monte Carlo-derived bias simultaneously,
+              closing the loop between what we can measure and what we claim to measure.
+            </p>
+            <p>
+              This is not three tools. It is one pipeline. The same substrate that generates training
+              data also validates the model that fits it and constrains the waveform that acquires it.
+            </p>
+          </div>
+
+          <div class="manifesto-section">
+            <h3>The compendium is the output.</h3>
+            <p>
+              Every validated result produced by this pipeline becomes a node in a public,
+              machine-readable knowledge graph. Each node carries its physical assumptions, its scope
+              boundaries, its Monte Carlo evidence, and its dependency on every node above it in the chain.
+              A reader can trace any claim backward to the physics that supports it — or discover that
+              no such chain exists.
+            </p>
+            <p>
+              This is not a database. It is a formal epistemological framework. The first one this field has had.
+            </p>
+          </div>
+
+          <div class="manifesto-section">
+            <h3>This is what the AI era makes possible.</h3>
+            <p>
+              A single researcher with the right stack can now implement, simulate, validate, and
+              publish results that previously required a laboratory, a cluster, and a team.
+              The bottleneck was never intelligence. It was infrastructure.
+            </p>
+            <p>
+              dmrai-lab is one researcher and a physics engine. The physics does not care about affiliation.
+              We are building in the open. The code is public. The compendium is public. The validation
+              pipeline is reproducible by anyone with a GPU and a pip install.
+            </p>
+            <p>
+              If your model survives the compiler, it survives. If it does not, the compiler tells you
+              exactly why, and you can fix it. That is how software has worked for fifty years.
+              It is time for science to catch up.
+            </p>
+          </div>
+
+          <div class="manifesto-footer">
+            dmrai-lab is an independent research initiative &nbsp;·&nbsp;
+            dmipy is open source under MIT license &nbsp;·&nbsp;
+            The compendium is permanently public &nbsp;·&nbsp;
+            <a href="https://github.com/dmrai-lab" target="_blank">github.com/dmrai-lab</a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"><hr /></div>
+
+<section class="section" id="collaborators">
+  <p class="section-label reveal">Collaborators</p>
+  <div class="collab-grid reveal">
+    <div class="collab-item">
+      <div class="collab-name">Marco Pizzolato</div>
+      <div class="collab-inst">DTU Copenhagen</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-left">
+    © 2026 dmrai-lab — MIT License · Content © dmrai-lab, all rights reserved
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/dmrai-lab" target="_blank">GitHub</a>
+    <a href="https://pypi.org/user/dmrai-lab/" target="_blank">PyPI</a>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
