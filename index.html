@@ -629,6 +629,7 @@
     <div class="tab-bar">
       <button class="tab-btn active" data-tab="vision">Vision</button>
       <button class="tab-btn" data-tab="manifesto">Manifesto <span style="font-size:0.6em;opacity:0.55;font-style:italic;">v0.1</span></button>
+      <button class="tab-btn" data-tab="design">Design Philosophy</button>
     </div>
     <div class="tab-panels">
 
@@ -772,6 +773,109 @@
             dmrai-lab is an independent research initiative &nbsp;·&nbsp;
             dmipy is open source under GNU Affero General Public License v3.0 &nbsp;·&nbsp;
             The compendium is permanently public &nbsp;·&nbsp;
+            <a href="https://github.com/dmrai-lab" target="_blank">github.com/dmrai-lab</a>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-design">
+        <div class="manifesto-content">
+
+          <div class="manifesto-meta">
+            <strong>Physics-Grounded Agent Development</strong> &nbsp;·&nbsp;
+            How dmipy is built &nbsp;·&nbsp; dmrai-lab
+          </div>
+
+          <div class="manifesto-section">
+            <h3>The hallucination problem has a physical solution.</h3>
+            <p>
+              dmipy is built agent-first: the majority of implementation work is done by AI agents
+              operating autonomously across simulation, fitting, and design. This makes extraordinary
+              velocity possible — but it introduces a failure mode that cannot be ignored. An agent
+              can write code that is internally consistent, passes its own tests, and is completely wrong.
+              The fix is not better prompts. The fix is physics.
+            </p>
+            <p>
+              Every feature in the dmipy ecosystem must satisfy success conditions stated entirely in
+              physical terms — conditions that can be verified from two completely independent directions.
+              Agreement between those directions is not a unit test. It is a proof.
+            </p>
+          </div>
+
+          <div class="manifesto-pull">
+            Two paths to the same answer, derived from different first principles. If they agree,
+            the implementation is correct. If they disagree, the physics tells you exactly where to look.
+          </div>
+
+          <div class="manifesto-section">
+            <h3>Direction one: the analytical equation.</h3>
+            <p>
+              For every physical phenomenon modelled in dmipy, the field has derived closed-form
+              solutions under well-defined assumptions. The Kärger model gives the exchange signal
+              for permeable membranes as a function of permeability κ and diffusion time. The
+              van Gelderen / Neuman solutions give the restricted diffusion signal inside cylinders
+              and spheres as a function of radius, intrinsic diffusivity, and the acquisition
+              parameters δ, Δ, and q derived from the gradient waveform. These equations encode
+              decades of physical intuition. They are exact — within the regime for which they were derived.
+            </p>
+            <p>
+              An agent implementing, say, the cylinder restriction model receives the analytical
+              signal equation as its specification. The implementation must reproduce it. If it does not,
+              the agent has hallucinated something — regardless of how plausible the code looks.
+            </p>
+          </div>
+
+          <div class="manifesto-section">
+            <h3>Direction two: Monte Carlo from G(t).</h3>
+            <p>
+              The second direction makes no approximations beyond the physical substrate itself.
+              Given a geometry — a packed array of cylinders, a sphere, a permeable membrane —
+              and a free gradient waveform G(t), Monte Carlo simulation propagates thousands of
+              spins through that geometry via Brownian motion, accumulates their phase under the
+              applied field, and reads out the echo signal. No analytical shortcuts. No assumption
+              about pulse shape. G(t) is the input in full.
+            </p>
+            <p>
+              This is a completely different computational path. It does not know the analytical
+              equation exists. It does not care whether δ and Δ are well-defined for the waveform
+              being tested. It just runs the physics.
+            </p>
+          </div>
+
+          <div class="manifesto-section">
+            <h3>Convergence is correctness. Divergence is knowledge.</h3>
+            <p>
+              When the analytical equation and Monte Carlo agree — across substrate geometries,
+              diffusion times, b-values, and waveform shapes — the implementation is validated.
+              Not just tested: validated against physical ground truth from two independent directions.
+              Any AI-introduced error that survives one direction is extremely unlikely to survive both.
+            </p>
+            <p>
+              When they diverge, something more valuable than a passing test emerges: a precise
+              characterisation of the analytical equation's scope boundary. The Kärger model breaks
+              down at short exchange times. The Neuman cylinder solution breaks down at high
+              b-values and non-PGSE waveforms. Monte Carlo does not break down — it simply reflects
+              the physics of that regime. Mapping where the analytical solution departs from Monte
+              Carlo ground truth is not a validation failure. It is a scientific result: the exact
+              envelope within which a published model is trustworthy, encoded directly into the compendium.
+            </p>
+          </div>
+
+          <div class="manifesto-section">
+            <h3>This is the architecture that makes agent development safe.</h3>
+            <p>
+              Each feature ships with a physics-grounded benchmark: a set of parameter regimes where
+              analytical and Monte Carlo must agree to within a stated tolerance, and a set of
+              departure curves that characterise the boundary beyond it. An agent that hallucinates
+              an implementation will fail the benchmark. An agent that ships a correct implementation
+              extends the compendium. The physics enforces the standard. The agents do the work.
+            </p>
+          </div>
+
+          <div class="manifesto-footer">
+            dmrai-lab is an independent research initiative &nbsp;·&nbsp;
+            Physics is the specification &nbsp;·&nbsp;
             <a href="https://github.com/dmrai-lab" target="_blank">github.com/dmrai-lab</a>
           </div>
 
