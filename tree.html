@@ -178,7 +178,8 @@
     <div class="row"><span class="dot" style="background:var(--accent)"></span> machine-confirmed (dual-path)</div>
     <div class="row"><span class="dot" style="background:var(--lit)"></span> literature-attested (published, not reproduced)</div>
     <div class="row"><span class="dot" style="background:var(--accent2)"></span> human-verified</div>
-    <div class="note">Fick's law is the root at the bottom; the tree grows upward. Arrows flow up from each foundation to the claims it supports. Node size ∝ in-degree (how load-bearing). Dashed border = open assumptions remain.</div>
+    <div class="row"><span class="dot" style="background:transparent;border:2px solid #ff6b6b"></span> red ring = effective confidence capped below declared</div>
+    <div class="note">Fill = declared status. Red ring = weakest-link: a node is only as confirmed as its shakiest assumption (dashed = its own open hole; solid-red = inherited from a dependency). Fick's law roots the bottom; arrows flow up from each foundation to the claims it supports. Node size ∝ in-degree.</div>
   </div>
 
   <aside id="panel">
@@ -212,7 +213,10 @@ const FT_NODES = [
         "doi": "10.1016/0006-8993(92)90178-C",
         "note": "Aboitiz et al. 1992"
       }
-    ]
+    ],
+    "effective_status": "human_verified",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-axon-diameter-mapping",
@@ -239,7 +243,10 @@ const FT_NODES = [
         "doi": "10.1002/mrm.21577",
         "note": "AxCaliber: axon diameter distribution (Assaf et al. 2008)"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-cylinder-signal"
   },
   {
     "id": "ft-ball-and-stick",
@@ -262,7 +269,10 @@ const FT_NODES = [
         "doi": "10.1002/mrm.10609",
         "note": "Behrens et al. 2003"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-stick-limit"
   },
   {
     "id": "ft-ball-compartment",
@@ -286,12 +296,16 @@ const FT_NODES = [
         "id": "A1",
         "text": "Single isotropic diffusivity, no restriction.",
         "status": "resolved",
-        "level": 2
+        "level": 2,
+        "node": null
       }
     ],
     "repro": "nodes/ft-ball-compartment/reproduce.ipynb",
     "summary": "The CSF / free-water compartment.",
-    "refs": []
+    "refs": [],
+    "effective_status": "machine_confirmed",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-bingham-dispersion",
@@ -316,12 +330,16 @@ const FT_NODES = [
         "id": "A1",
         "text": "Two-axis dispersion; reduces to Watson when isotropic.",
         "status": "resolved",
-        "level": 2
+        "level": 2,
+        "node": null
       }
     ],
     "repro": "nodes/ft-bingham-dispersion/reproduce.ipynb",
     "summary": "Extends Watson to fanning/bending - also grounded in histological ODFs.",
-    "refs": []
+    "refs": [],
+    "effective_status": "machine_confirmed",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-bloch-equations",
@@ -341,7 +359,10 @@ const FT_NODES = [
         "doi": "10.1103/PhysRev.70.460",
         "note": "Bloch 1946"
       }
-    ]
+    ],
+    "effective_status": "human_verified",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-bloch-torrey",
@@ -364,7 +385,10 @@ const FT_NODES = [
         "doi": "10.1103/PhysRev.104.563",
         "note": "Torrey 1956"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-free-propagator"
   },
   {
     "id": "ft-btensor-encoding",
@@ -386,7 +410,10 @@ const FT_NODES = [
         "doi": "10.1016/j.neuroimage.2016.02.039",
         "note": "Westin et al. 2016"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-stejskal-tanner"
   },
   {
     "id": "ft-btensor-resolves-degeneracy",
@@ -413,7 +440,10 @@ const FT_NODES = [
         "doi": "10.1016/j.neuroimage.2019.04.038",
         "note": "Disentangling micro from orientation (Reisert et al. 2019)"
       }
-    ]
+    ],
+    "effective_status": "unconfirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-model-degeneracy"
   },
   {
     "id": "ft-csd",
@@ -436,7 +466,10 @@ const FT_NODES = [
         "doi": "10.1016/j.neuroimage.2007.02.016",
         "note": "Tournier et al. 2007"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-qspace"
   },
   {
     "id": "ft-cumulant-expansion",
@@ -460,12 +493,16 @@ const FT_NODES = [
         "id": "A1",
         "text": "Truncation valid only at low b (b D < ~2).",
         "status": "conditional",
-        "level": 2
+        "level": 2,
+        "node": null
       }
     ],
     "repro": "nodes/ft-cumulant-expansion/reproduce.ipynb",
     "summary": "The low-b expansion underpinning DTI (1st cumulant) and DKI (2nd).",
-    "refs": []
+    "refs": [],
+    "effective_status": "machine_confirmed",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-cylinder-signal",
@@ -490,7 +527,8 @@ const FT_NODES = [
         "id": "A1",
         "text": "Impermeable cylinder; perpendicular component only.",
         "status": "conditional",
-        "level": 4
+        "level": 4,
+        "node": null
       }
     ],
     "repro": "nodes/ft-cylinder-signal/reproduce.ipynb",
@@ -500,7 +538,10 @@ const FT_NODES = [
         "doi": "10.1006/jmrb.1994.1038",
         "note": "van Gelderen et al. 1994"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-dki",
@@ -522,7 +563,10 @@ const FT_NODES = [
         "doi": "10.1002/mrm.20508",
         "note": "Jensen et al. 2005"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-cumulant-expansion"
   },
   {
     "id": "ft-dti",
@@ -544,7 +588,10 @@ const FT_NODES = [
         "doi": "10.1016/S0006-3495(94)80775-1",
         "note": "Basser et al. 1994"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-cumulant-expansion"
   },
   {
     "id": "ft-einstein-diffusion",
@@ -564,7 +611,10 @@ const FT_NODES = [
         "doi": "10.1002/andp.19053220806",
         "note": "Einstein 1905"
       }
-    ]
+    ],
+    "effective_status": "human_verified",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-exchange",
@@ -588,12 +638,16 @@ const FT_NODES = [
         "id": "A1",
         "text": "Membrane permeability kappa is unknown in vivo.",
         "status": "open",
-        "level": 4
+        "level": 4,
+        "node": null
       }
     ],
     "repro": "nodes/ft-exchange/reproduce.ipynb",
     "summary": "Paths DISAGREE (permeable MC != impermeable analytic). The Standard Model's no-exchange assumption made explicit.",
-    "refs": []
+    "refs": [],
+    "effective_status": "unconfirmed",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-fiber-dispersion-histology",
@@ -613,7 +667,10 @@ const FT_NODES = [
         "doi": "10.1016/j.neuroimage.2017.06.001",
         "note": "Mollink et al. 2017"
       }
-    ]
+    ],
+    "effective_status": "human_verified",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-fick-law",
@@ -633,7 +690,10 @@ const FT_NODES = [
         "doi": "10.1002/andp.18551700105",
         "note": "Fick 1855"
       }
-    ]
+    ],
+    "effective_status": "human_verified",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-free-propagator",
@@ -658,12 +718,16 @@ const FT_NODES = [
         "id": "A1",
         "text": "Unbounded domain (no boundaries).",
         "status": "resolved",
-        "level": 2
+        "level": 2,
+        "node": null
       }
     ],
     "repro": "nodes/ft-free-propagator/reproduce.ipynb",
     "summary": "Theorem on Fick+Einstein: the propagator every model perturbs.",
-    "refs": []
+    "refs": [],
+    "effective_status": "machine_confirmed",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-gpa-validity",
@@ -688,12 +752,16 @@ const FT_NODES = [
         "id": "A1",
         "text": "Single radius (no size distribution).",
         "status": "resolved",
-        "level": 2
+        "level": 2,
+        "node": null
       }
     ],
     "repro": "nodes/ft-gpa-validity/reproduce.ipynb",
     "summary": "Discharges the GPA assumption used by the closed-form kernels.",
-    "refs": []
+    "refs": [],
+    "effective_status": "machine_confirmed",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-gradient-encoding",
@@ -715,7 +783,10 @@ const FT_NODES = [
         "doi": "10.1038/242190a0",
         "note": "Lauterbur 1973"
       }
-    ]
+    ],
+    "effective_status": "human_verified",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-map-mri",
@@ -737,7 +808,10 @@ const FT_NODES = [
         "doi": "10.1016/j.neuroimage.2013.04.016",
         "note": "Ozarslan et al. 2013"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-qspace"
   },
   {
     "id": "ft-model-degeneracy",
@@ -759,7 +833,10 @@ const FT_NODES = [
         "doi": "10.1002/nbm.3450",
         "note": "Jelescu et al. 2016"
       }
-    ]
+    ],
+    "effective_status": "unconfirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-standard-model"
   },
   {
     "id": "ft-ndi-demyelination",
@@ -778,7 +855,8 @@ const FT_NODES = [
         "id": "A1",
         "text": "NDI change is specific to axon loss vs inflammation/oedema.",
         "status": "open",
-        "level": 4
+        "level": 4,
+        "node": null
       }
     ],
     "repro": null,
@@ -788,7 +866,10 @@ const FT_NODES = [
         "doi": "10.1002/acn3.445",
         "note": "Grussu et al. 2017"
       }
-    ]
+    ],
+    "effective_status": "unconfirmed",
+    "eff_capped": true,
+    "eff_reason": "open assumption A1"
   },
   {
     "id": "ft-noddi",
@@ -810,7 +891,10 @@ const FT_NODES = [
         "doi": "10.1016/j.neuroimage.2012.03.072",
         "note": "Zhang et al. 2012"
       }
-    ]
+    ],
+    "effective_status": "unconfirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-standard-model"
   },
   {
     "id": "ft-ogse",
@@ -833,7 +917,10 @@ const FT_NODES = [
         "doi": "10.1002/mrm.10519",
         "note": "Does et al. 2003"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-stejskal-tanner"
   },
   {
     "id": "ft-qspace",
@@ -855,7 +942,10 @@ const FT_NODES = [
         "doi": "10.1002/mrm.1910140311",
         "note": "Cory & Garroway 1990"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-stejskal-tanner"
   },
   {
     "id": "ft-rotinv-branches",
@@ -878,7 +968,10 @@ const FT_NODES = [
         "doi": "10.1016/j.neuroimage.2018.03.006",
         "note": "Novikov et al. 2018"
       }
-    ]
+    ],
+    "effective_status": "unconfirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-model-degeneracy"
   },
   {
     "id": "ft-sandi",
@@ -902,7 +995,10 @@ const FT_NODES = [
         "doi": "10.1016/j.neuroimage.2020.116835",
         "note": "Palombo et al. 2020"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-sphere-signal"
   },
   {
     "id": "ft-soma-histology",
@@ -921,12 +1017,16 @@ const FT_NODES = [
         "id": "A1",
         "text": "No automated substitute - needs fixed-tissue histology with matched acquisition.",
         "status": "open",
-        "level": 4
+        "level": 4,
+        "node": null
       }
     ],
     "repro": null,
     "summary": "FRONTIER LEAF at the physics->biology boundary - the Level-4 experiment a human must run.",
-    "refs": []
+    "refs": [],
+    "effective_status": "unconfirmed",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-soma-invivo",
@@ -945,18 +1045,23 @@ const FT_NODES = [
         "id": "A1",
         "text": "HCP b=6000 shell adequately samples the spherical mean.",
         "status": "open",
-        "level": 3
+        "level": 3,
+        "node": null
       },
       {
         "id": "A2",
         "text": "Preprocessing does not bias the spherical mean.",
         "status": "open",
-        "level": 3
+        "level": 3,
+        "node": null
       }
     ],
     "repro": null,
     "summary": "FRONTIER LEAF - needs the dmipy-preprocess pipeline. Simulation only.",
-    "refs": []
+    "refs": [],
+    "effective_status": "unconfirmed",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-sphere-signal",
@@ -981,7 +1086,8 @@ const FT_NODES = [
         "id": "A1",
         "text": "Impermeable spherical boundary.",
         "status": "conditional",
-        "level": 4
+        "level": 4,
+        "node": null
       }
     ],
     "repro": "nodes/ft-sphere-signal/reproduce.ipynb",
@@ -991,7 +1097,10 @@ const FT_NODES = [
         "doi": "10.1063/1.1680931",
         "note": "Neuman 1974"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-spherical-mean",
@@ -1015,7 +1124,8 @@ const FT_NODES = [
         "id": "A1",
         "text": "Identical kernels across all fibre orientations.",
         "status": "resolved",
-        "level": 2
+        "level": 2,
+        "node": null
       }
     ],
     "repro": "nodes/ft-spherical-mean/reproduce.ipynb",
@@ -1025,7 +1135,10 @@ const FT_NODES = [
         "doi": "10.1016/j.neuroimage.2016.06.002",
         "note": "Kaden et al. 2016"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-standard-model",
@@ -1040,15 +1153,47 @@ const FT_NODES = [
     "in_degree": 3,
     "success": "The dispersed-stick + zeppelin model spans the published WM multi-compartment models as special cases.",
     "ic": null,
-    "ledger": [],
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "No exchange between intra- and extra-axonal water at clinical diffusion times.",
+        "status": "open",
+        "level": 4,
+        "node": "ft-exchange"
+      },
+      {
+        "id": "A2",
+        "text": "Sticks: axon radius negligible, zero perpendicular intra-axonal signal.",
+        "status": "conditional",
+        "level": 4,
+        "node": "ft-stick-limit"
+      },
+      {
+        "id": "A3",
+        "text": "Gaussian (time-independent) diffusion within each compartment.",
+        "status": "conditional",
+        "level": 3,
+        "node": "ft-time-dependence"
+      },
+      {
+        "id": "A4",
+        "text": "Microstructure factorizes from orientation: one kernel for all fibre directions.",
+        "status": "conditional",
+        "level": 3,
+        "node": "ft-csd"
+      }
+    ],
     "repro": null,
-    "summary": "The unifying 'Standard Model' of WM diffusion.",
+    "summary": "The unifying 'Standard Model' of WM diffusion - a CONJUNCTION of four idealizations. 'Standard' is a fact about the literature, not about tissue; its effective confidence is capped by its shakiest assumption (no-exchange).",
     "refs": [
       {
         "doi": "10.1002/nbm.3998",
         "note": "Novikov et al. 2019"
       }
-    ]
+    ],
+    "effective_status": "unconfirmed",
+    "eff_capped": true,
+    "eff_reason": "open assumption A1"
   },
   {
     "id": "ft-stejskal-tanner",
@@ -1073,13 +1218,15 @@ const FT_NODES = [
         "id": "A1",
         "text": "Narrow-pulse approximation (delta << Delta).",
         "status": "conditional",
-        "level": 2
+        "level": 2,
+        "node": null
       },
       {
         "id": "A2",
         "text": "Free Gaussian diffusion.",
         "status": "resolved",
-        "level": 2
+        "level": 2,
+        "node": null
       }
     ],
     "repro": "nodes/ft-stejskal-tanner/reproduce.ipynb",
@@ -1089,7 +1236,10 @@ const FT_NODES = [
         "doi": "10.1063/1.1695690",
         "note": "Stejskal & Tanner 1965"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-stick-limit",
@@ -1113,12 +1263,16 @@ const FT_NODES = [
         "id": "A1",
         "text": "Axon radius negligible at clinical b (r -> 0).",
         "status": "conditional",
-        "level": 4
+        "level": 4,
+        "node": null
       }
     ],
     "repro": "nodes/ft-stick-limit/reproduce.ipynb",
     "summary": "The 'stick': intra-neurite compartment, r->0 limit of the cylinder.",
-    "refs": []
+    "refs": [],
+    "effective_status": "machine_confirmed",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-time-dependence",
@@ -1140,7 +1294,10 @@ const FT_NODES = [
         "doi": "10.1073/pnas.1316944111",
         "note": "Novikov et al. 2014"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-bloch-torrey"
   },
   {
     "id": "ft-watson-dispersion-kernel",
@@ -1165,12 +1322,16 @@ const FT_NODES = [
         "id": "A1",
         "text": "Watson ODF (single axis, isotropic dispersion) is adequate.",
         "status": "conditional",
-        "level": 4
+        "level": 4,
+        "node": null
       }
     ],
     "repro": "nodes/ft-watson-dispersion-kernel/reproduce.ipynb",
     "summary": "Dispersed-stick model: physics kernel grounded by the histological dispersion finding.",
-    "refs": []
+    "refs": [],
+    "effective_status": "machine_confirmed",
+    "eff_capped": false,
+    "eff_reason": null
   },
   {
     "id": "ft-zeppelin-tortuosity",
@@ -1192,7 +1353,10 @@ const FT_NODES = [
         "doi": "10.1002/mrm.1910330516",
         "note": "Szafer et al. 1995"
       }
-    ]
+    ],
+    "effective_status": "machine_confirmed",
+    "eff_capped": true,
+    "eff_reason": "weakest dependency ft-free-propagator"
   }
 ];
 
@@ -1219,7 +1383,7 @@ FT_NODES.forEach(n => {
     id:n.id,
     label:n.title.length > 42 ? n.title.slice(0,40)+"…" : n.title,
     status:n.status, level:n.level,
-    deg:inDeg[n.id], hasOpen: openCount > 0
+    deg:inDeg[n.id], hasOpen: openCount > 0, capped: !!n.eff_capped
   }});
 });
 // Edges are drawn in the direction information FLOWS: from each foundation
@@ -1243,9 +1407,11 @@ const cy = cytoscape({
         "text-valign":"bottom", "text-margin-y":6,
         "width":  e => 22 + 10 * e.data("deg"),
         "height": e => 22 + 10 * e.data("deg"),
-        "border-width": e => e.data("hasOpen") ? 3 : 1.5,
+        // red ring = effective confidence capped below declared (weakest link).
+        // dashed = the node's OWN open assumption; solid-red = inherited from a dependency.
+        "border-width": e => e.data("capped") ? 3.5 : (e.data("hasOpen") ? 3 : 1.5),
         "border-style": e => e.data("hasOpen") ? "dashed" : "solid",
-        "border-color":"rgba(255,255,255,0.35)",
+        "border-color": e => e.data("capped") ? "#ff6b6b" : "rgba(255,255,255,0.35)",
         "shape": e => e.data("level") === 1 ? "round-rectangle" : "ellipse"
     }},
     { selector:"node:selected", style:{ "border-width":4, "border-color":"#fff" }},
@@ -1276,7 +1442,10 @@ function renderPanel(n){
     <h3>Assumption ledger</h3>
     <ul class="ledger">${n.ledger.map(l => `
       <li class="${l.status}">${l.text}
-        <div class="lstat">${l.status} · discharged at L${l.level}</div></li>`).join("")}</ul>` : "";
+        <div class="lstat">${l.status} · tests at L${l.level}${l.node ? ` · <a class="repro" href="#" data-goto="${l.node}">${l.node} ↗</a>` : ''}</div></li>`).join("")}</ul>` : "";
+  const dash = s => (s || "").replace(/_/g, "-");
+  const eff = n.eff_capped ? `
+    <p class="agree-no">⚠ Effective confidence: <b>${dash(n.effective_status)}</b> (declared ${dash(n.status)}) — capped by ${n.eff_reason || 'a weaker foundation'}. A claim is only as confirmed as its shakiest load-bearing assumption.</p>` : "";
   const refs = (n.refs && n.refs.length) ? `
     <h3>References</h3>
     <ul class="ledger">${n.refs.map(r => `
@@ -1295,8 +1464,14 @@ function renderPanel(n){
       <span class="badge origin">in-degree ${inDeg[n.id]}</span>
     </div>
     <p>${n.summary}</p>
+    ${eff}
     <h3>Success criterion</h3><p>${n.success}</p>
     ${ic}${ledger}${refs}${repro}`;
+  panel.querySelectorAll("a[data-goto]").forEach(a => a.onclick = ev => {
+    ev.preventDefault();
+    const t = cy.getElementById(a.dataset.goto);
+    if (t.length) { cy.center(t); t.emit("tap"); }
+  });
 }
 cy.on("tap","node", e => {
   const n = byId[e.target.id()];
