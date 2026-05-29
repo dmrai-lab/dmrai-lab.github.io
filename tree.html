@@ -173,7 +173,7 @@
     <div class="row"><span class="dot" style="background:var(--amber)"></span> unconfirmed — simulation only</div>
     <div class="row"><span class="dot" style="background:var(--accent)"></span> machine-confirmed (human-unconfirmed)</div>
     <div class="row"><span class="dot" style="background:var(--accent2)"></span> human-verified</div>
-    <div class="note">Node size ∝ in-degree (how load-bearing). Edges point from a claim down to the assumptions it depends on. ◇ = open assumptions remain.</div>
+    <div class="note">Fick's law is the root at the bottom; the tree grows upward. Arrows flow up from each foundation to the claims it supports. Node size ∝ in-degree (how load-bearing). Dashed border = open assumptions remain.</div>
   </div>
 
   <aside id="panel">
@@ -295,8 +295,12 @@ FT_NODES.forEach(n => {
     deg:inDeg[n.id], hasOpen: openCount > 0
   }});
 });
+// Edges are drawn in the direction information FLOWS: from each foundation
+// UP to the claim it supports (source = dependency/root, target = dependent).
+// Combined with rankDir "BT" below, this keeps Fick's law at the bottom while
+// the arrows point upward — the tree grows from the trunk outward.
 FT_NODES.forEach(n => n.depends_on.forEach(d => {
-  if (d in byId) elements.push({ data:{ id:n.id+"→"+d, source:n.id, target:d } });
+  if (d in byId) elements.push({ data:{ id:d+"→"+n.id, source:d, target:n.id } });
 }));
 
 const cy = cytoscape({
@@ -328,7 +332,7 @@ const cy = cytoscape({
     { selector:".dim", style:{ "opacity":0.12 }},
     { selector:".hot", style:{ "border-color":"#fff","border-width":4 }}
   ],
-  layout: { name:"dagre", rankDir:"TB", nodeSep:55, rankSep:90, edgeSep:20 }
+  layout: { name:"dagre", rankDir:"BT", nodeSep:55, rankSep:90, edgeSep:20 }
 });
 
 // ── detail panel ─────────────────────────────────────────────────────────────
