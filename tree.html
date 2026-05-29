@@ -190,6 +190,35 @@
 // ──────────────────────────────────────────────────────────────────────────
 const FT_NODES = [
   {
+    "id": "ft-bingham-dispersion",
+    "title": "Bingham dispersion captures anisotropic fibre fanning",
+    "level": 2,
+    "status": "machine_confirmed",
+    "origin": "agent_proposed",
+    "depends_on": [
+      "ft-stick-limit",
+      "ft-fiber-dispersion-histology"
+    ],
+    "in_degree": 0,
+    "success": "Anisotropic (Bingham) ODF convolution matches MC of fanned-stick substrates within SE.",
+    "ic": {
+      "analytic": 0.318,
+      "mc": 0.314,
+      "mc_stderr": 0.007,
+      "agree": true
+    },
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "Two-axis (anisotropic) dispersion; reduces to Watson when isotropic.",
+        "status": "resolved",
+        "level": 2
+      }
+    ],
+    "repro": "nodes/ft-bingham-dispersion/reproduce.ipynb",
+    "summary": "Extends Watson to anisotropic fanning/bending - also grounded in the histological fibre ODFs."
+  },
+  {
     "id": "ft-bloch-equations",
     "title": "Bloch equations govern nuclear magnetization (1946)",
     "level": 1,
@@ -290,6 +319,20 @@ const FT_NODES = [
     ],
     "repro": "nodes/ft-exchange/reproduce.ipynb",
     "summary": "Paths DISAGREE (permeable MC != impermeable analytic). Stays unconfirmed - the shared assumption made explicit."
+  },
+  {
+    "id": "ft-fiber-dispersion-histology",
+    "title": "White-matter axons are orientationally dispersed (histology)",
+    "level": 4,
+    "status": "human_verified",
+    "origin": "literature_claim",
+    "depends_on": [],
+    "in_degree": 2,
+    "success": "Histology and polarized-light imaging confirm fibre orientation dispersion; Watson/Bingham distributions describe the measured fibre ODFs.",
+    "ic": null,
+    "ledger": [],
+    "repro": null,
+    "summary": "EMPIRICAL ROOT (Level 4). The histological ground truth that justifies orientation dispersion in the signal models above - it feeds upward into the kernels, not down from physics."
   },
   {
     "id": "ft-fick-law",
@@ -403,7 +446,7 @@ const FT_NODES = [
     "status": "machine_confirmed",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-cylinder-signal"
+      "ft-watson-dispersion-kernel"
     ],
     "in_degree": 1,
     "success": "Fitted NDI bias <0.05 on synthetic Watson-dispersed stick substrates at SNR=30.",
@@ -619,6 +662,63 @@ const FT_NODES = [
     ],
     "repro": "nodes/ft-stejskal-tanner/reproduce.ipynb",
     "summary": "Bedrock measurement physics: the b-value. Bloch-Torrey solved for the PGSE sequence."
+  },
+  {
+    "id": "ft-stick-limit",
+    "title": "Zero-radius cylinder (stick) limit for intra-axonal signal",
+    "level": 2,
+    "status": "machine_confirmed",
+    "origin": "agent_proposed",
+    "depends_on": [
+      "ft-cylinder-signal"
+    ],
+    "in_degree": 2,
+    "success": "Perpendicular intra-axonal signal fully attenuates as radius->0; matches thin-cylinder MC.",
+    "ic": {
+      "analytic": 0.502,
+      "mc": 0.498,
+      "mc_stderr": 0.005,
+      "agree": true
+    },
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "Axon radius negligible at clinical b (r -> 0).",
+        "status": "conditional",
+        "level": 4
+      }
+    ],
+    "repro": "nodes/ft-stick-limit/reproduce.ipynb",
+    "summary": "The 'stick': the r->0 limit of the cylinder kernel - the intra-neurite compartment."
+  },
+  {
+    "id": "ft-watson-dispersion-kernel",
+    "title": "Watson-dispersed stick signal (orientation-averaged kernel)",
+    "level": 2,
+    "status": "machine_confirmed",
+    "origin": "agent_proposed",
+    "depends_on": [
+      "ft-stick-limit",
+      "ft-fiber-dispersion-histology"
+    ],
+    "in_degree": 1,
+    "success": "Stick kernel convolved with a Watson ODF matches MC of Watson-dispersed sticks within SE.",
+    "ic": {
+      "analytic": 0.331,
+      "mc": 0.327,
+      "mc_stderr": 0.006,
+      "agree": true
+    },
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "Watson ODF (single axis, isotropic dispersion) adequately describes the fibre population.",
+        "status": "conditional",
+        "level": 4
+      }
+    ],
+    "repro": "nodes/ft-watson-dispersion-kernel/reproduce.ipynb",
+    "summary": "Dispersed-stick model: the stick physics kernel grounded by the histological dispersion finding."
   }
 ];
 
