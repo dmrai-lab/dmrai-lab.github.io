@@ -189,85 +189,437 @@
 // engine; each entry mirrors that export's per-node record + ledger detail.
 // ──────────────────────────────────────────────────────────────────────────
 const FT_NODES = [
-  { id:"ft-fick-law-000", title:"Diffusion of water follows Fick's law (Bloch–Torrey)",
-    level:1, status:"human_verified", origin:"literature_claim", depends_on:[],
-    success:"Signal attenuation derivable from the Bloch–Torrey equation for free diffusion.",
-    ic:null, ledger:[], repro:null,
-    summary:"Root axiom. The physical basis the entire tree rests on." },
-
-  { id:"ft-soma-compartment-basis-001", title:"A spherical soma compartment is biophysically admissible",
-    level:1, status:"human_verified", origin:"agent_proposed", depends_on:["ft-fick-law-000"],
-    success:"Restricted diffusion in a sphere has a closed-form GPA signal expression.",
-    ic:null, ledger:[
-      {id:"A1",text:"Cell bodies approximated as impermeable spheres.",status:"conditional",level:4}
-    ], repro:null,
-    summary:"Establishes the soma term used by SANDI-type models." },
-
-  { id:"ft-gpa-validity-002", title:"Gaussian-phase approximation valid for spheres at b≤10000",
-    level:2, status:"machine_confirmed", origin:"agent_proposed", depends_on:["ft-fick-law-000"],
-    success:"Analytic GPA sphere signal agrees with exact-phase MC to <1% across radii 2–8µm.",
-    ic:{ analytic:0.241, mc:0.238, mc_stderr:0.004, agree:true },
-    ledger:[ {id:"A1",text:"Single radius per voxel (no size distribution).",status:"resolved",level:2} ],
-    repro:"nodes/ft-gpa-validity-002/reproduce.ipynb",
-    summary:"Discharges the GPA assumption used downstream by soma-fraction nodes." },
-
-  { id:"ft-soma-separability-003", title:"Soma signal separable from neurite signal at b≥6000",
-    level:2, status:"machine_confirmed", origin:"agent_proposed",
-    depends_on:["ft-soma-compartment-basis-001","ft-gpa-validity-002"],
-    success:"Soma fraction recoverable from spherical-mean signal with bias <0.05; analytic vs MC within 2× MC SE.",
-    ic:{ analytic:0.612, mc:0.598, mc_stderr:0.011, agree:true },
-    ledger:[
-      {id:"A1",text:"Membranes impermeable (no exchange).",status:"conditional",level:4},
-      {id:"A2",text:"Gaussian-phase approximation for sphere term.",status:"resolved",level:2}
+  {
+    "id": "ft-bloch-equations",
+    "title": "Bloch equations govern nuclear magnetization (1946)",
+    "level": 1,
+    "status": "human_verified",
+    "origin": "literature_claim",
+    "depends_on": [],
+    "in_degree": 2,
+    "success": "Magnetization precession and T1/T2 relaxation follow the Bloch equations.",
+    "ic": null,
+    "ledger": [],
+    "repro": null,
+    "summary": "AXIOM. The root of the MR/spin trunk - independent of diffusion until Bloch-Torrey."
+  },
+  {
+    "id": "ft-bloch-torrey",
+    "title": "Bloch-Torrey unifies spin dynamics and diffusion (1956)",
+    "level": 1,
+    "status": "human_verified",
+    "origin": "literature_claim",
+    "depends_on": [
+      "ft-bloch-equations",
+      "ft-free-propagator"
     ],
-    repro:"nodes/ft-soma-separability-003/reproduce.ipynb",
-    summary:"Adversary cleared ledger (re-ran without GPA, +permeable substrate). Conditional on no-exchange." },
-
-  { id:"ft-noddi-ndi-004", title:"NODDI neurite density (NDI) bias <0.05 at SNR=30",
-    level:2, status:"machine_confirmed", origin:"literature_claim",
-    depends_on:["ft-soma-compartment-basis-001"],
-    success:"Fitted NDI bias <0.05 on synthetic Watson substrates at SNR=30.",
-    ic:{ analytic:0.701, mc:0.689, mc_stderr:0.009, agree:true },
-    ledger:[
-      {id:"A1",text:"Fixed intrinsic diffusivity d∥=1.7e-9.",status:"conditional",level:3},
-      {id:"A2",text:"Tortuosity model for extra-axonal space.",status:"conditional",level:3}
+    "in_degree": 2,
+    "success": "Adding a diffusion term D*grad^2(M) to the Bloch equations gives the governing PDE of diffusion MRI.",
+    "ic": null,
+    "ledger": [],
+    "repro": null,
+    "summary": "THE CONFLUENCE - where the spin trunk meets the diffusion trunk. All of dMRI sits above this."
+  },
+  {
+    "id": "ft-cylinder-signal",
+    "title": "Closed-form restricted signal for a cylinder (van Gelderen 1994)",
+    "level": 2,
+    "status": "machine_confirmed",
+    "origin": "literature_claim",
+    "depends_on": [
+      "ft-gpa-validity",
+      "ft-qspace"
     ],
-    repro:"nodes/ft-noddi-ndi-004/reproduce.ipynb",
-    summary:"Zhang 2012 claim. Both shared assumptions are scoped (conditional), so it is machine-confirmed only within those scopes; lifting them needs Level-3 in-vivo evidence." },
-
-  { id:"ft-soma-invivo-005", title:"Soma fraction stable across HCP subjects (b=6000 shell)",
-    level:3, status:"unconfirmed", origin:"agent_proposed",
-    depends_on:["ft-soma-separability-003"],
-    success:"Recovered soma fraction CV <15% across 20 HCP subjects.",
-    ic:null,
-    ledger:[
-      {id:"A1",text:"HCP b=6000 shell adequately samples spherical mean.",status:"open",level:3},
-      {id:"A2",text:"Preprocessing (denoise, gibbs) does not bias spherical mean.",status:"open",level:3}
+    "in_degree": 1,
+    "success": "Restricted cylinder signal matches cylinder-substrate MC within SE.",
+    "ic": {
+      "analytic": 0.412,
+      "mc": 0.405,
+      "mc_stderr": 0.006,
+      "agree": true
+    },
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "Impermeable cylinder; perpendicular component only.",
+        "status": "conditional",
+        "level": 4
+      }
     ],
-    repro:null,
-    summary:"FRONTIER LEAF — needs dmipy-preprocess spherical-mean pipeline (roadmap #14). Simulation only." },
-
-  { id:"ft-soma-histology-006", title:"In-vivo soma fraction matches histological cell density",
-    level:4, status:"unconfirmed", origin:"agent_proposed",
-    depends_on:["ft-soma-invivo-005"],
-    success:"Correlation r>0.7 between MR soma fraction and histological soma volume fraction.",
-    ic:null,
-    ledger:[
-      {id:"A1",text:"No automated substitute — requires fixed-tissue histology with matched acquisition.",status:"open",level:4}
+    "repro": "nodes/ft-cylinder-signal/reproduce.ipynb",
+    "summary": "Closed-form geometry kernel - the axon/neurite (stick) signal."
+  },
+  {
+    "id": "ft-einstein-diffusion",
+    "title": "Brownian motion: <r^2> = 2nDt (Einstein 1905)",
+    "level": 1,
+    "status": "human_verified",
+    "origin": "literature_claim",
+    "depends_on": [],
+    "in_degree": 1,
+    "success": "Mean-squared displacement of a freely diffusing particle is <r^2> = 2nDt.",
+    "ic": null,
+    "ledger": [],
+    "repro": null,
+    "summary": "AXIOM. The microscopic/statistical root of diffusion, beside Fick."
+  },
+  {
+    "id": "ft-exchange",
+    "title": "Inter-compartment exchange negligible at clinical Delta",
+    "level": 2,
+    "status": "unconfirmed",
+    "origin": "agent_proposed",
+    "depends_on": [
+      "ft-soma-compartment-basis"
     ],
-    repro:null,
-    summary:"FRONTIER LEAF at the physics→biology boundary. Specifies exactly the Level-4 experiment a human must run." },
-
-  { id:"ft-exchange-007", title:"Inter-compartment exchange negligible at clinical Δ",
-    level:2, status:"unconfirmed", origin:"agent_proposed",
-    depends_on:["ft-soma-compartment-basis-001"],
-    success:"Permeable-substrate MC soma fraction within tolerance of impermeable estimate.",
-    ic:{ analytic:0.612, mc:0.547, mc_stderr:0.010, agree:false },
-    ledger:[
-      {id:"A1",text:"Membrane permeability κ unknown in vivo.",status:"open",level:4}
+    "in_degree": 0,
+    "success": "Permeable-substrate MC soma fraction within tolerance of the impermeable estimate.",
+    "ic": {
+      "analytic": 0.612,
+      "mc": 0.547,
+      "mc_stderr": 0.01,
+      "agree": false
+    },
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "Membrane permeability kappa is unknown in vivo.",
+        "status": "open",
+        "level": 4
+      }
     ],
-    repro:"nodes/ft-exchange-007/reproduce.ipynb",
-    summary:"Paths DISAGREE (permeable MC ≠ impermeable analytic). This is the assumption A1 of node 003 made explicit — stays unconfirmed." }
+    "repro": "nodes/ft-exchange/reproduce.ipynb",
+    "summary": "Paths DISAGREE (permeable MC != impermeable analytic). Stays unconfirmed - the shared assumption made explicit."
+  },
+  {
+    "id": "ft-fick-law",
+    "title": "Diffusion of matter follows Fick's law (1855)",
+    "level": 1,
+    "status": "human_verified",
+    "origin": "literature_claim",
+    "depends_on": [],
+    "in_degree": 1,
+    "success": "Macroscopic flux J = -D grad(c); concentration obeys the diffusion equation.",
+    "ic": null,
+    "ledger": [],
+    "repro": null,
+    "summary": "AXIOM. The bottom of the diffusion trunk."
+  },
+  {
+    "id": "ft-free-propagator",
+    "title": "Free diffusion has a Gaussian displacement propagator",
+    "level": 1,
+    "status": "machine_confirmed",
+    "origin": "agent_proposed",
+    "depends_on": [
+      "ft-fick-law",
+      "ft-einstein-diffusion"
+    ],
+    "in_degree": 1,
+    "success": "P(r,t) is Gaussian with variance 2Dt; analytic form matches free-walker MC.",
+    "ic": {
+      "analytic": 1.0,
+      "mc": 0.998,
+      "mc_stderr": 0.003,
+      "agree": true
+    },
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "Unbounded domain - no restricting boundaries.",
+        "status": "resolved",
+        "level": 2
+      }
+    ],
+    "repro": "nodes/ft-free-propagator/reproduce.ipynb",
+    "summary": "Theorem on Fick+Einstein: the free propagator every microstructure model perturbs."
+  },
+  {
+    "id": "ft-gpa-validity",
+    "title": "Gaussian-phase approximation valid for spheres at b<=10000",
+    "level": 2,
+    "status": "machine_confirmed",
+    "origin": "agent_proposed",
+    "depends_on": [
+      "ft-bloch-torrey",
+      "ft-qspace"
+    ],
+    "in_degree": 3,
+    "success": "Analytic GPA sphere signal agrees with exact-phase MC to <1% across radii 2-8 um.",
+    "ic": {
+      "analytic": 0.241,
+      "mc": 0.238,
+      "mc_stderr": 0.004,
+      "agree": true
+    },
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "Single radius per voxel (no size distribution).",
+        "status": "resolved",
+        "level": 2
+      }
+    ],
+    "repro": "nodes/ft-gpa-validity/reproduce.ipynb",
+    "summary": "Discharges the GPA assumption used by all closed-form geometry kernels."
+  },
+  {
+    "id": "ft-gradient-encoding",
+    "title": "Field gradients encode spatial position (k-space, 1973)",
+    "level": 1,
+    "status": "human_verified",
+    "origin": "literature_claim",
+    "depends_on": [
+      "ft-bloch-equations"
+    ],
+    "in_degree": 1,
+    "success": "A linear gradient imposes a position-dependent phase; the signal samples k-space.",
+    "ic": null,
+    "ledger": [],
+    "repro": null,
+    "summary": "The 'MRI' half: spatial/gradient encoding built on the Bloch equations."
+  },
+  {
+    "id": "ft-model-degeneracy",
+    "title": "Multi-compartment parameter estimation is degenerate",
+    "level": 2,
+    "status": "human_verified",
+    "origin": "literature_claim",
+    "depends_on": [
+      "ft-noddi-ndi",
+      "ft-soma-separability"
+    ],
+    "in_degree": 0,
+    "success": "The standard two-compartment fit has multiple equally-good minima; parameters are not uniquely recoverable from the powder signal.",
+    "ic": null,
+    "ledger": [],
+    "repro": null,
+    "summary": "The COMPUTATIONAL/INVERSE layer: forward models can be internally consistent yet non-invertible. Where computational MRI must add constraints or data."
+  },
+  {
+    "id": "ft-noddi-ndi",
+    "title": "NODDI neurite density (NDI) bias <0.05 at SNR=30",
+    "level": 2,
+    "status": "machine_confirmed",
+    "origin": "literature_claim",
+    "depends_on": [
+      "ft-cylinder-signal"
+    ],
+    "in_degree": 1,
+    "success": "Fitted NDI bias <0.05 on synthetic Watson-dispersed stick substrates at SNR=30.",
+    "ic": {
+      "analytic": 0.701,
+      "mc": 0.689,
+      "mc_stderr": 0.009,
+      "agree": true
+    },
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "Fixed intrinsic diffusivity d_par = 1.7e-9 m^2/s.",
+        "status": "conditional",
+        "level": 3
+      },
+      {
+        "id": "A2",
+        "text": "Tortuosity model for the extra-axonal space.",
+        "status": "conditional",
+        "level": 3
+      }
+    ],
+    "repro": "nodes/ft-noddi-ndi/reproduce.ipynb",
+    "summary": "Zhang 2012 claim. Machine-confirmed within scoped (conditional) assumptions."
+  },
+  {
+    "id": "ft-qspace",
+    "title": "q-space: signal and propagator are a Fourier pair",
+    "level": 1,
+    "status": "human_verified",
+    "origin": "literature_claim",
+    "depends_on": [
+      "ft-stejskal-tanner"
+    ],
+    "in_degree": 3,
+    "success": "Under the narrow-pulse approximation E(q) is the Fourier transform of the displacement propagator.",
+    "ic": null,
+    "ledger": [],
+    "repro": null,
+    "summary": "The propagator-signal duality: lets you read microstructure off the q-dependence."
+  },
+  {
+    "id": "ft-soma-compartment-basis",
+    "title": "A spherical soma compartment is biophysically admissible",
+    "level": 1,
+    "status": "human_verified",
+    "origin": "agent_proposed",
+    "depends_on": [
+      "ft-sphere-signal"
+    ],
+    "in_degree": 2,
+    "success": "The restricted sphere kernel is an admissible model of the soma compartment.",
+    "ic": null,
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "Cell bodies approximated as impermeable spheres.",
+        "status": "conditional",
+        "level": 4
+      }
+    ],
+    "repro": null,
+    "summary": "Derived modeling choice (human-verified): the soma term used by SANDI-type models."
+  },
+  {
+    "id": "ft-soma-histology",
+    "title": "In-vivo soma fraction matches histological cell density",
+    "level": 4,
+    "status": "unconfirmed",
+    "origin": "agent_proposed",
+    "depends_on": [
+      "ft-soma-invivo"
+    ],
+    "in_degree": 0,
+    "success": "Correlation r>0.7 between the MR soma fraction and histological soma volume fraction.",
+    "ic": null,
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "No automated substitute - requires fixed-tissue histology with matched acquisition.",
+        "status": "open",
+        "level": 4
+      }
+    ],
+    "repro": null,
+    "summary": "FRONTIER LEAF at the physics->biology boundary. Specifies the Level-4 experiment a human must run."
+  },
+  {
+    "id": "ft-soma-invivo",
+    "title": "Soma fraction stable across HCP subjects (b=6000 shell)",
+    "level": 3,
+    "status": "unconfirmed",
+    "origin": "agent_proposed",
+    "depends_on": [
+      "ft-soma-separability"
+    ],
+    "in_degree": 1,
+    "success": "Recovered soma fraction coefficient of variation <15% across 20 HCP subjects.",
+    "ic": null,
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "HCP b=6000 shell adequately samples the spherical mean.",
+        "status": "open",
+        "level": 3
+      },
+      {
+        "id": "A2",
+        "text": "Preprocessing (denoise, Gibbs) does not bias the spherical mean.",
+        "status": "open",
+        "level": 3
+      }
+    ],
+    "repro": null,
+    "summary": "FRONTIER LEAF - needs the dmipy-preprocess spherical-mean pipeline. Simulation only."
+  },
+  {
+    "id": "ft-soma-separability",
+    "title": "Soma signal separable from neurite signal at b>=6000",
+    "level": 2,
+    "status": "machine_confirmed",
+    "origin": "agent_proposed",
+    "depends_on": [
+      "ft-soma-compartment-basis",
+      "ft-gpa-validity"
+    ],
+    "in_degree": 2,
+    "success": "Soma fraction recoverable from the spherical-mean signal with bias <0.05; analytic vs MC within 2x MC SE.",
+    "ic": {
+      "analytic": 0.612,
+      "mc": 0.598,
+      "mc_stderr": 0.011,
+      "agree": true
+    },
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "Membranes impermeable (no inter-compartment exchange).",
+        "status": "conditional",
+        "level": 4
+      },
+      {
+        "id": "A2",
+        "text": "Gaussian-phase approximation for the sphere term.",
+        "status": "resolved",
+        "level": 2
+      }
+    ],
+    "repro": "nodes/ft-soma-separability/reproduce.ipynb",
+    "summary": "Machine-confirmed, conditional on the no-exchange regime."
+  },
+  {
+    "id": "ft-sphere-signal",
+    "title": "Closed-form restricted signal for a sphere (Neuman 1974)",
+    "level": 2,
+    "status": "machine_confirmed",
+    "origin": "literature_claim",
+    "depends_on": [
+      "ft-gpa-validity",
+      "ft-qspace"
+    ],
+    "in_degree": 1,
+    "success": "Restricted sphere signal (Neuman/GPA) matches sphere-substrate MC within SE.",
+    "ic": {
+      "analytic": 0.305,
+      "mc": 0.309,
+      "mc_stderr": 0.005,
+      "agree": true
+    },
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "Impermeable spherical boundary.",
+        "status": "conditional",
+        "level": 4
+      }
+    ],
+    "repro": "nodes/ft-sphere-signal/reproduce.ipynb",
+    "summary": "Closed-form geometry kernel - the soma compartment's signal."
+  },
+  {
+    "id": "ft-stejskal-tanner",
+    "title": "PGSE attenuation S/S0 = exp(-bD) for free diffusion (1965)",
+    "level": 1,
+    "status": "machine_confirmed",
+    "origin": "literature_claim",
+    "depends_on": [
+      "ft-bloch-torrey",
+      "ft-gradient-encoding"
+    ],
+    "in_degree": 1,
+    "success": "For free diffusion the PGSE signal is exp(-bD); analytic and MC agree.",
+    "ic": {
+      "analytic": 0.368,
+      "mc": 0.371,
+      "mc_stderr": 0.004,
+      "agree": true
+    },
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "Narrow-pulse approximation (delta << Delta).",
+        "status": "conditional",
+        "level": 2
+      },
+      {
+        "id": "A2",
+        "text": "Free Gaussian diffusion (no restriction).",
+        "status": "resolved",
+        "level": 2
+      }
+    ],
+    "repro": "nodes/ft-stejskal-tanner/reproduce.ipynb",
+    "summary": "Bedrock measurement physics: the b-value. Bloch-Torrey solved for the PGSE sequence."
+  }
 ];
 
 // ── status → colour ─────────────────────────────────────────────────────────
