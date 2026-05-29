@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fick's Tree — Evidence Graph · dmrai-lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,400;0,9..144,700;1,9..144,200&display=swap" rel="stylesheet" />
+
+  <!-- DAG rendering: cytoscape + dagre layout (CDN, no backend required) -->
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dagre@0.8.5/dist/dagre.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#07090f; --bg2:#0d1120; --surface:#111827;
+      --border:rgba(255,255,255,0.07);
+      --accent:#4af0c4;      /* machine-confirmed (teal)  */
+      --accent2:#7b9cff;     /* human-verified  (blue)    */
+      --amber:#d6a14a;       /* unconfirmed     (amber)   */
+      --text:#e8edf5; --muted:#7a8499;
+      --mono:'DM Mono',monospace; --serif:'Fraunces',Georgia,serif;
+    }
+    html { scroll-behavior:smooth; }
+    body {
+      background:var(--bg); color:var(--text);
+      font-family:var(--mono); font-size:15px; line-height:1.6;
+      height:100vh; overflow:hidden; display:flex; flex-direction:column;
+    }
+    body::before {
+      content:''; position:fixed; inset:0; z-index:1000; pointer-events:none; opacity:0.025;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ── header ── */
+    header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:1.1rem 2.5rem; border-bottom:1px solid var(--border);
+      background:rgba(7,9,15,0.8); backdrop-filter:blur(8px); z-index:20;
+    }
+    .logo { display:flex; align-items:baseline; gap:0.5rem; }
+    .logo-name { font-size:1rem; font-weight:500; letter-spacing:0.05em; color:var(--accent); }
+    .logo-tag  { font-size:0.7rem; color:var(--muted); letter-spacing:0.1em; }
+    nav { display:flex; gap:2rem; }
+    nav a {
+      color:var(--muted); text-decoration:none; font-size:0.74rem;
+      letter-spacing:0.12em; text-transform:uppercase; transition:color .2s;
+    }
+    nav a:hover, nav a.active { color:var(--text); }
+
+    /* ── toolbar ── */
+    .toolbar {
+      display:flex; flex-wrap:wrap; align-items:center; gap:1.2rem;
+      padding:0.8rem 2.5rem; border-bottom:1px solid var(--border);
+      background:var(--bg2); z-index:15;
+    }
+    .toolbar .grp { display:flex; align-items:center; gap:0.5rem; }
+    .toolbar label { font-size:0.66rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); }
+    .search {
+      background:var(--surface); border:1px solid var(--border); color:var(--text);
+      font-family:var(--mono); font-size:0.8rem; padding:0.4rem 0.7rem; border-radius:6px; width:240px;
+    }
+    .search:focus { outline:none; border-color:var(--accent); }
+    .chip {
+      font-family:var(--mono); font-size:0.7rem; letter-spacing:0.04em;
+      padding:0.3rem 0.65rem; border-radius:999px; cursor:pointer; user-select:none;
+      border:1px solid var(--border); background:transparent; color:var(--muted); transition:all .15s;
+    }
+    .chip:hover { color:var(--text); }
+    .chip.on { color:var(--bg); font-weight:500; }
+    .chip.lvl.on   { background:var(--text); border-color:var(--text); }
+    .chip.s-unconfirmed.on       { background:var(--amber);   border-color:var(--amber); }
+    .chip.s-machine_confirmed.on { background:var(--accent);  border-color:var(--accent); }
+    .chip.s-human_verified.on    { background:var(--accent2); border-color:var(--accent2); }
+    .btn {
+      font-family:var(--mono); font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase;
+      padding:0.42rem 0.9rem; border-radius:6px; cursor:pointer; border:1px solid var(--accent2);
+      background:transparent; color:var(--accent2); transition:all .15s;
+    }
+    .btn:hover { background:var(--accent2); color:var(--bg); }
+
+    /* ── main split ── */
+    .main { flex:1; display:flex; min-height:0; position:relative; }
+    #cy { flex:1; height:100%; }
+
+    /* ── detail panel ── */
+    aside {
+      width:380px; border-left:1px solid var(--border); background:var(--bg2);
+      padding:1.6rem 1.6rem 3rem; overflow-y:auto; z-index:10;
+    }
+    aside .placeholder { color:var(--muted); font-size:0.82rem; line-height:1.8; }
+    aside h2 { font-family:var(--serif); font-weight:400; font-size:1.25rem; line-height:1.3; margin-bottom:0.6rem; }
+    .node-id { font-size:0.66rem; color:var(--muted); letter-spacing:0.1em; margin-bottom:1rem; word-break:break-all; }
+    .badges { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1.3rem; }
+    .badge { font-size:0.64rem; letter-spacing:0.06em; padding:0.25rem 0.55rem; border-radius:4px; border:1px solid var(--border); }
+    .badge.lvl { color:var(--text); }
+    .badge.st-unconfirmed       { color:var(--amber);   border-color:var(--amber); }
+    .badge.st-machine_confirmed { color:var(--accent);  border-color:var(--accent); }
+    .badge.st-human_verified    { color:var(--accent2); border-color:var(--accent2); }
+    .badge.origin { color:var(--muted); }
+    aside h3 {
+      font-size:0.66rem; letter-spacing:0.16em; text-transform:uppercase;
+      color:var(--muted); margin:1.4rem 0 0.6rem; border-bottom:1px solid var(--border); padding-bottom:0.35rem;
+    }
+    aside p, aside li { font-size:0.8rem; line-height:1.6; }
+    .ledger li { list-style:none; margin-bottom:0.7rem; padding-left:1rem; position:relative; }
+    .ledger li::before { content:''; position:absolute; left:0; top:0.5em; width:6px; height:6px; border-radius:50%; }
+    .ledger li.resolved::before    { background:var(--accent); }
+    .ledger li.conditional::before { background:var(--amber); }
+    .ledger li.open::before        { background:#ff6b6b; }
+    .ledger .lstat { font-size:0.62rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); }
+    .ic { display:flex; gap:1.2rem; font-size:0.78rem; margin-bottom:0.3rem; }
+    .ic b { color:var(--accent); font-weight:500; }
+    .agree-yes { color:var(--accent); } .agree-no { color:#ff6b6b; }
+    aside a.repro { color:var(--accent); text-decoration:none; font-size:0.76rem; word-break:break-all; }
+    aside a.repro:hover { text-decoration:underline; }
+
+    /* ── legend ── */
+    .legend {
+      position:absolute; bottom:1rem; left:1rem; z-index:12;
+      background:rgba(13,17,32,0.85); border:1px solid var(--border); border-radius:8px;
+      padding:0.8rem 1rem; font-size:0.68rem; line-height:1.9; backdrop-filter:blur(6px);
+    }
+    .legend .row { display:flex; align-items:center; gap:0.55rem; color:var(--muted); }
+    .legend .dot { width:11px; height:11px; border-radius:50%; }
+    .legend .note { margin-top:0.5rem; color:var(--muted); opacity:0.7; font-size:0.62rem; max-width:220px; line-height:1.5; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-name">dmrai-lab</span>
+    <span class="logo-tag">/ Fick's Tree</span>
+  </div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="tree.html" class="active">Evidence Graph</a>
+    <a href="https://github.com/dmrai-lab" target="_blank">GitHub ↗</a>
+  </nav>
+</header>
+
+<div class="toolbar">
+  <div class="grp">
+    <input id="search" class="search" placeholder="search hypotheses…" autocomplete="off" />
+  </div>
+  <div class="grp">
+    <label>Level</label>
+    <span class="chip lvl on" data-lvl="1">1</span>
+    <span class="chip lvl on" data-lvl="2">2</span>
+    <span class="chip lvl on" data-lvl="3">3</span>
+    <span class="chip lvl on" data-lvl="4">4</span>
+  </div>
+  <div class="grp">
+    <label>Status</label>
+    <span class="chip s-unconfirmed on"       data-status="unconfirmed">unconfirmed</span>
+    <span class="chip s-machine_confirmed on"  data-status="machine_confirmed">machine-confirmed</span>
+    <span class="chip s-human_verified on"     data-status="human_verified">human-verified</span>
+  </div>
+  <div class="grp" style="margin-left:auto;">
+    <button id="q-loadbearing" class="btn" title="machine-confirmed but human-unconfirmed root nodes, by in-degree">⚑ load-bearing &amp; unverified</button>
+    <button id="q-reset" class="btn" style="border-color:var(--border);color:var(--muted);">reset</button>
+  </div>
+</div>
+
+<div class="main">
+  <div id="cy"></div>
+
+  <div class="legend">
+    <div class="row"><span class="dot" style="background:var(--amber)"></span> unconfirmed — simulation only</div>
+    <div class="row"><span class="dot" style="background:var(--accent)"></span> machine-confirmed (human-unconfirmed)</div>
+    <div class="row"><span class="dot" style="background:var(--accent2)"></span> human-verified</div>
+    <div class="note">Node size ∝ in-degree (how load-bearing). Edges point from a claim down to the assumptions it depends on. ◇ = open assumptions remain.</div>
+  </div>
+
+  <aside id="panel">
+    <p class="placeholder">Select a node to inspect its epistemic level, confirmation status, dual-path consistency result, and assumption ledger.<br/><br/>The graph is the queryable surface of the <em>Fick's Tree Protocol</em> — every node maps to a <code>node.yaml</code> and a reproduction notebook.</p>
+  </aside>
+</div>
+
+<script>
+// ──────────────────────────────────────────────────────────────────────────
+// ILLUSTRATIVE PROOF-OF-CONCEPT DATA built from published, public-domain dMRI
+// literature with placeholder numbers — it does not reflect ongoing research.
+// In production the graph is fed by a DAG export from the (private) protocol
+// engine; each entry mirrors that export's per-node record + ledger detail.
+// ──────────────────────────────────────────────────────────────────────────
+const FT_NODES = [
+  { id:"ft-fick-law-000", title:"Diffusion of water follows Fick's law (Bloch–Torrey)",
+    level:1, status:"human_verified", origin:"literature_claim", depends_on:[],
+    success:"Signal attenuation derivable from the Bloch–Torrey equation for free diffusion.",
+    ic:null, ledger:[], repro:null,
+    summary:"Root axiom. The physical basis the entire tree rests on." },
+
+  { id:"ft-soma-compartment-basis-001", title:"A spherical soma compartment is biophysically admissible",
+    level:1, status:"human_verified", origin:"agent_proposed", depends_on:["ft-fick-law-000"],
+    success:"Restricted diffusion in a sphere has a closed-form GPA signal expression.",
+    ic:null, ledger:[
+      {id:"A1",text:"Cell bodies approximated as impermeable spheres.",status:"conditional",level:4}
+    ], repro:null,
+    summary:"Establishes the soma term used by SANDI-type models." },
+
+  { id:"ft-gpa-validity-002", title:"Gaussian-phase approximation valid for spheres at b≤10000",
+    level:2, status:"machine_confirmed", origin:"agent_proposed", depends_on:["ft-fick-law-000"],
+    success:"Analytic GPA sphere signal agrees with exact-phase MC to <1% across radii 2–8µm.",
+    ic:{ analytic:0.241, mc:0.238, mc_stderr:0.004, agree:true },
+    ledger:[ {id:"A1",text:"Single radius per voxel (no size distribution).",status:"resolved",level:2} ],
+    repro:"nodes/ft-gpa-validity-002/reproduce.ipynb",
+    summary:"Discharges the GPA assumption used downstream by soma-fraction nodes." },
+
+  { id:"ft-soma-separability-003", title:"Soma signal separable from neurite signal at b≥6000",
+    level:2, status:"machine_confirmed", origin:"agent_proposed",
+    depends_on:["ft-soma-compartment-basis-001","ft-gpa-validity-002"],
+    success:"Soma fraction recoverable from spherical-mean signal with bias <0.05; analytic vs MC within 2× MC SE.",
+    ic:{ analytic:0.612, mc:0.598, mc_stderr:0.011, agree:true },
+    ledger:[
+      {id:"A1",text:"Membranes impermeable (no exchange).",status:"conditional",level:4},
+      {id:"A2",text:"Gaussian-phase approximation for sphere term.",status:"resolved",level:2}
+    ],
+    repro:"nodes/ft-soma-separability-003/reproduce.ipynb",
+    summary:"Adversary cleared ledger (re-ran without GPA, +permeable substrate). Conditional on no-exchange." },
+
+  { id:"ft-noddi-ndi-004", title:"NODDI neurite density (NDI) bias <0.05 at SNR=30",
+    level:2, status:"machine_confirmed", origin:"literature_claim",
+    depends_on:["ft-soma-compartment-basis-001"],
+    success:"Fitted NDI bias <0.05 on synthetic Watson substrates at SNR=30.",
+    ic:{ analytic:0.701, mc:0.689, mc_stderr:0.009, agree:true },
+    ledger:[
+      {id:"A1",text:"Fixed intrinsic diffusivity d∥=1.7e-9.",status:"conditional",level:3},
+      {id:"A2",text:"Tortuosity model for extra-axonal space.",status:"conditional",level:3}
+    ],
+    repro:"nodes/ft-noddi-ndi-004/reproduce.ipynb",
+    summary:"Zhang 2012 claim. Both shared assumptions are scoped (conditional), so it is machine-confirmed only within those scopes; lifting them needs Level-3 in-vivo evidence." },
+
+  { id:"ft-soma-invivo-005", title:"Soma fraction stable across HCP subjects (b=6000 shell)",
+    level:3, status:"unconfirmed", origin:"agent_proposed",
+    depends_on:["ft-soma-separability-003"],
+    success:"Recovered soma fraction CV <15% across 20 HCP subjects.",
+    ic:null,
+    ledger:[
+      {id:"A1",text:"HCP b=6000 shell adequately samples spherical mean.",status:"open",level:3},
+      {id:"A2",text:"Preprocessing (denoise, gibbs) does not bias spherical mean.",status:"open",level:3}
+    ],
+    repro:null,
+    summary:"FRONTIER LEAF — needs dmipy-preprocess spherical-mean pipeline (roadmap #14). Simulation only." },
+
+  { id:"ft-soma-histology-006", title:"In-vivo soma fraction matches histological cell density",
+    level:4, status:"unconfirmed", origin:"agent_proposed",
+    depends_on:["ft-soma-invivo-005"],
+    success:"Correlation r>0.7 between MR soma fraction and histological soma volume fraction.",
+    ic:null,
+    ledger:[
+      {id:"A1",text:"No automated substitute — requires fixed-tissue histology with matched acquisition.",status:"open",level:4}
+    ],
+    repro:null,
+    summary:"FRONTIER LEAF at the physics→biology boundary. Specifies exactly the Level-4 experiment a human must run." },
+
+  { id:"ft-exchange-007", title:"Inter-compartment exchange negligible at clinical Δ",
+    level:2, status:"unconfirmed", origin:"agent_proposed",
+    depends_on:["ft-soma-compartment-basis-001"],
+    success:"Permeable-substrate MC soma fraction within tolerance of impermeable estimate.",
+    ic:{ analytic:0.612, mc:0.547, mc_stderr:0.010, agree:false },
+    ledger:[
+      {id:"A1",text:"Membrane permeability κ unknown in vivo.",status:"open",level:4}
+    ],
+    repro:"nodes/ft-exchange-007/reproduce.ipynb",
+    summary:"Paths DISAGREE (permeable MC ≠ impermeable analytic). This is the assumption A1 of node 003 made explicit — stays unconfirmed." }
+];
+
+// ── status → colour ─────────────────────────────────────────────────────────
+const STATUS_COLOR = {
+  unconfirmed:       "#d6a14a",
+  machine_confirmed: "#4af0c4",
+  human_verified:    "#7b9cff"
+};
+
+// compute in-degree (how many nodes depend ON this node = load-bearing-ness)
+const inDeg = {};
+FT_NODES.forEach(n => inDeg[n.id] = 0);
+FT_NODES.forEach(n => n.depends_on.forEach(d => { if (d in inDeg) inDeg[d]++; }));
+
+const byId = Object.fromEntries(FT_NODES.map(n => [n.id, n]));
+
+// build cytoscape elements
+const elements = [];
+FT_NODES.forEach(n => {
+  const openCount = n.ledger.filter(l => l.status === "open").length;
+  elements.push({ data:{
+    id:n.id,
+    label:n.title.length > 42 ? n.title.slice(0,40)+"…" : n.title,
+    status:n.status, level:n.level,
+    deg:inDeg[n.id], hasOpen: openCount > 0
+  }});
+});
+FT_NODES.forEach(n => n.depends_on.forEach(d => {
+  if (d in byId) elements.push({ data:{ id:n.id+"→"+d, source:n.id, target:d } });
+}));
+
+const cy = cytoscape({
+  container: document.getElementById("cy"),
+  elements,
+  wheelSensitivity: 0.2,
+  style: [
+    { selector:"node", style:{
+        "background-color": e => STATUS_COLOR[e.data("status")],
+        "label":"data(label)",
+        "color":"#e8edf5", "font-family":"DM Mono, monospace", "font-size":"9px",
+        "text-wrap":"wrap", "text-max-width":"130px",
+        "text-valign":"bottom", "text-margin-y":6,
+        "width":  e => 22 + 10 * e.data("deg"),
+        "height": e => 22 + 10 * e.data("deg"),
+        "border-width": e => e.data("hasOpen") ? 3 : 1.5,
+        "border-style": e => e.data("hasOpen") ? "dashed" : "solid",
+        "border-color":"rgba(255,255,255,0.35)",
+        "shape": e => e.data("level") === 1 ? "round-rectangle" : "ellipse"
+    }},
+    { selector:"node:selected", style:{ "border-width":4, "border-color":"#fff" }},
+    { selector:".lvlbadge", style:{ "font-size":"7px","color":"#07090f" }},
+    { selector:"edge", style:{
+        "width":1.2, "line-color":"rgba(255,255,255,0.16)",
+        "curve-style":"bezier",
+        "target-arrow-shape":"triangle", "target-arrow-color":"rgba(255,255,255,0.16)",
+        "arrow-scale":0.8
+    }},
+    { selector:".dim", style:{ "opacity":0.12 }},
+    { selector:".hot", style:{ "border-color":"#fff","border-width":4 }}
+  ],
+  layout: { name:"dagre", rankDir:"TB", nodeSep:55, rankSep:90, edgeSep:20 }
+});
+
+// ── detail panel ─────────────────────────────────────────────────────────────
+const panel = document.getElementById("panel");
+function renderPanel(n){
+  const ic = n.ic ? `
+    <h3>Internal consistency (dual path)</h3>
+    <div class="ic"><span>analytic <b>${n.ic.analytic}</b></span>
+      <span>MC <b>${n.ic.mc}</b> ±${n.ic.mc_stderr}</span></div>
+    <p class="${n.ic.agree?'agree-yes':'agree-no'}">${n.ic.agree
+        ? '✓ paths agree within tolerance'
+        : '✗ paths DISAGREE — claim cannot be machine-confirmed'}</p>` : "";
+  const ledger = n.ledger.length ? `
+    <h3>Assumption ledger</h3>
+    <ul class="ledger">${n.ledger.map(l => `
+      <li class="${l.status}">${l.text}
+        <div class="lstat">${l.status} · discharged at L${l.level}</div></li>`).join("")}</ul>` : "";
+  const repro = n.repro
+    ? `<h3>Reproduce</h3><a class="repro" href="https://github.com/dmrai-lab" title="${n.repro}">${n.repro} ↗</a>`
+    : `<h3>Reproduce</h3><p style="color:var(--muted)">No notebook — node has not been executed (frontier leaf).</p>`;
+  panel.innerHTML = `
+    <h2>${n.title}</h2>
+    <div class="node-id">${n.id}</div>
+    <div class="badges">
+      <span class="badge lvl">Level ${n.level}</span>
+      <span class="badge st-${n.status}">${n.status.replace("_","-")}</span>
+      <span class="badge origin">${n.origin.replace("_","-")}</span>
+      <span class="badge origin">in-degree ${inDeg[n.id]}</span>
+    </div>
+    <p>${n.summary}</p>
+    <h3>Success criterion</h3><p>${n.success}</p>
+    ${ic}${ledger}${repro}`;
+}
+cy.on("tap","node", e => {
+  const n = byId[e.target.id()];
+  if (n) renderPanel(n);
+  cy.elements().removeClass("dim");
+  const nbhd = e.target.closedNeighborhood();
+  cy.elements().difference(nbhd).addClass("dim");
+});
+cy.on("tap", e => { if (e.target === cy){ cy.elements().removeClass("dim"); } });
+
+// ── filters ──────────────────────────────────────────────────────────────────
+const activeLevels  = new Set([1,2,3,4]);
+const activeStatus  = new Set(["unconfirmed","machine_confirmed","human_verified"]);
+let   searchTerm    = "";
+
+function applyFilters(){
+  cy.batch(() => {
+    cy.nodes().forEach(node => {
+      const n = byId[node.id()];
+      const passLvl = activeLevels.has(n.level);
+      const passSt  = activeStatus.has(n.status);
+      const passSrch= !searchTerm || (n.title+" "+n.id+" "+n.summary).toLowerCase().includes(searchTerm);
+      const show = passLvl && passSt && passSrch;
+      node.style("display", show ? "element" : "none");
+    });
+  });
+}
+document.querySelectorAll(".chip.lvl").forEach(c => c.onclick = () => {
+  const lv = +c.dataset.lvl; c.classList.toggle("on");
+  c.classList.contains("on") ? activeLevels.add(lv) : activeLevels.delete(lv);
+  applyFilters();
+});
+document.querySelectorAll(".chip[data-status]").forEach(c => c.onclick = () => {
+  const st = c.dataset.status; c.classList.toggle("on");
+  c.classList.contains("on") ? activeStatus.add(st) : activeStatus.delete(st);
+  applyFilters();
+});
+document.getElementById("search").addEventListener("input", e => {
+  searchTerm = e.target.value.trim().toLowerCase(); applyFilters();
+});
+
+// ── canned query: load-bearing & unverified roots ───────────────────────────
+// machine_confirmed, NOT human_verified, ranked by in-degree → highest leverage.
+document.getElementById("q-loadbearing").onclick = () => {
+  const hits = FT_NODES
+    .filter(n => n.status === "machine_confirmed")
+    .sort((a,b) => inDeg[b.id] - inDeg[a.id]);
+  cy.elements().removeClass("hot dim");
+  cy.nodes().addClass("dim");
+  hits.forEach(n => cy.getElementById(n.id).removeClass("dim").addClass("hot"));
+  if (hits.length) renderPanel(hits[0]);
+};
+document.getElementById("q-reset").onclick = () => {
+  cy.elements().removeClass("hot dim");
+  activeLevels.clear(); [1,2,3,4].forEach(l => activeLevels.add(l));
+  activeStatus.clear(); ["unconfirmed","machine_confirmed","human_verified"].forEach(s => activeStatus.add(s));
+  document.querySelectorAll(".chip").forEach(c => c.classList.add("on"));
+  document.getElementById("search").value = ""; searchTerm = "";
+  applyFilters(); cy.fit(undefined, 40);
+};
+
+cy.fit(undefined, 40);
+</script>
+</body>
+</html>
