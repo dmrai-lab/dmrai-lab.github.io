@@ -189,14 +189,15 @@
 
 <script>
 // ──────────────────────────────────────────────────────────────────────────
-// ILLUSTRATIVE PROOF-OF-CONCEPT DATA built from published, public-domain dMRI
-// literature with placeholder numbers — it does not reflect ongoing research.
-// In production the graph is fed by a DAG export from the (private) protocol
-// engine; each entry mirrors that export's per-node record + ledger detail.
+// DAG export from the (private) Fick's Lattice protocol engine. Most cells are
+// illustrative public-domain physics with placeholder numbers; the diffusion-
+// susceptibility cross-term node carries published FORWARD-bias characterization
+// (no patent-sensitive correction method — only verdict-field metadata is shown,
+// never reproduction code). Each entry mirrors the export's per-node record.
 // ──────────────────────────────────────────────────────────────────────────
-const FT_NODES = [
+const FL_NODES = [
   {
-    "id": "ft-axon-diameter-histology",
+    "id": "fl-axon-diameter-histology",
     "title": "Axon diameters in a tract are gamma-distributed and mostly sub-2um",
     "level": 4,
     "status": "human_verified",
@@ -219,14 +220,14 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-axon-diameter-mapping",
+    "id": "fl-axon-diameter-mapping",
     "title": "Effective axon diameter is estimable from perpendicular restriction",
     "level": 3,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-cylinder-signal",
-      "ft-axon-diameter-histology"
+      "fl-cylinder-signal",
+      "fl-axon-diameter-histology"
     ],
     "in_degree": 0,
     "success": "Perpendicular signal yields an effective (tail-weighted) axon diameter index matching histology trends.",
@@ -246,17 +247,17 @@ const FT_NODES = [
     ],
     "effective_status": "machine_confirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-cylinder-signal"
+    "eff_reason": "weakest dependency fl-cylinder-signal"
   },
   {
-    "id": "ft-ball-and-stick",
+    "id": "fl-ball-and-stick",
     "title": "White-matter signal is intra-axonal sticks plus an isotropic ball",
     "level": 2,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-stick-limit",
-      "ft-ball-compartment"
+      "fl-stick-limit",
+      "fl-ball-compartment"
     ],
     "in_degree": 0,
     "success": "A ball + stick(s) mixture fits the WM signal and supports probabilistic tractography.",
@@ -272,16 +273,16 @@ const FT_NODES = [
     ],
     "effective_status": "machine_confirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-stick-limit"
+    "eff_reason": "weakest dependency fl-stick-limit"
   },
   {
-    "id": "ft-ball-compartment",
+    "id": "fl-ball-compartment",
     "title": "Isotropic Gaussian (ball) diffusion models free / CSF water",
     "level": 2,
     "status": "machine_confirmed",
     "origin": "agent_proposed",
     "depends_on": [
-      "ft-free-propagator"
+      "fl-free-propagator"
     ],
     "in_degree": 1,
     "success": "The isotropic exp(-bD) ball matches free-water MC within SE.",
@@ -300,7 +301,7 @@ const FT_NODES = [
         "node": null
       }
     ],
-    "repro": "nodes/ft-ball-compartment/reproduce.ipynb",
+    "repro": "nodes/fl-ball-compartment/reproduce.ipynb",
     "summary": "The CSF / free-water compartment.",
     "refs": [],
     "effective_status": "machine_confirmed",
@@ -308,14 +309,14 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-bingham-dispersion",
+    "id": "fl-bingham-dispersion",
     "title": "Anisotropic fibre fanning requires a two-axis Bingham ODF",
     "level": 2,
     "status": "machine_confirmed",
     "origin": "agent_proposed",
     "depends_on": [
-      "ft-stick-limit",
-      "ft-fiber-dispersion-histology"
+      "fl-stick-limit",
+      "fl-fiber-dispersion-histology"
     ],
     "in_degree": 0,
     "success": "Anisotropic Bingham ODF convolution matches fanned-stick MC within SE.",
@@ -334,7 +335,7 @@ const FT_NODES = [
         "node": null
       }
     ],
-    "repro": "nodes/ft-bingham-dispersion/reproduce.ipynb",
+    "repro": "nodes/fl-bingham-dispersion/reproduce.ipynb",
     "summary": "Extends Watson to fanning/bending - also grounded in histological ODFs.",
     "refs": [],
     "effective_status": "machine_confirmed",
@@ -342,7 +343,7 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-bloch-equations",
+    "id": "fl-bloch-equations",
     "title": "Nuclear magnetization precesses and relaxes per the Bloch equations",
     "level": 1,
     "status": "human_verified",
@@ -365,16 +366,16 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-bloch-torrey",
+    "id": "fl-bloch-torrey",
     "title": "The dMRI signal obeys the Bloch equations plus a diffusion term",
     "level": 1,
     "status": "human_verified",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-bloch-equations",
-      "ft-free-propagator"
+      "fl-bloch-equations",
+      "fl-free-propagator"
     ],
-    "in_degree": 3,
+    "in_degree": 4,
     "success": "Adding D*grad^2(M) to the Bloch equations gives the governing PDE of diffusion MRI.",
     "ic": null,
     "ledger": [],
@@ -388,16 +389,16 @@ const FT_NODES = [
     ],
     "effective_status": "machine_confirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-free-propagator"
+    "eff_reason": "weakest dependency fl-free-propagator"
   },
   {
-    "id": "ft-btensor-encoding",
+    "id": "fl-btensor-encoding",
     "title": "b-tensor encoding separates isotropic from anisotropic diffusion variance",
     "level": 2,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-stejskal-tanner"
+      "fl-stejskal-tanner"
     ],
     "in_degree": 1,
     "success": "Linear/planar/spherical b-tensors disentangle microscopic anisotropy from orientation dispersion.",
@@ -413,17 +414,17 @@ const FT_NODES = [
     ],
     "effective_status": "machine_confirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-stejskal-tanner"
+    "eff_reason": "weakest dependency fl-stejskal-tanner"
   },
   {
-    "id": "ft-btensor-resolves-degeneracy",
+    "id": "fl-btensor-resolves-degeneracy",
     "title": "Multidimensional (b-tensor) encoding breaks the Standard-Model degeneracy",
     "level": 3,
     "status": "literature_attested",
     "origin": "agent_proposed",
     "depends_on": [
-      "ft-model-degeneracy",
-      "ft-btensor-encoding"
+      "fl-model-degeneracy",
+      "fl-btensor-encoding"
     ],
     "in_degree": 0,
     "success": "Adding planar/spherical b-tensor data removes the second minimum and uniquely fixes the parameters.",
@@ -443,17 +444,17 @@ const FT_NODES = [
     ],
     "effective_status": "unconfirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-model-degeneracy"
+    "eff_reason": "weakest dependency fl-model-degeneracy"
   },
   {
-    "id": "ft-csd",
+    "id": "fl-csd",
     "title": "The fibre ODF is recoverable by spherical deconvolution with a response function",
     "level": 2,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-qspace",
-      "ft-cylinder-signal"
+      "fl-qspace",
+      "fl-cylinder-signal"
     ],
     "in_degree": 0,
     "success": "Deconvolving the signal by a single-fibre response yields the fibre ODF for tractography.",
@@ -469,18 +470,18 @@ const FT_NODES = [
     ],
     "effective_status": "machine_confirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-qspace"
+    "eff_reason": "weakest dependency fl-qspace"
   },
   {
-    "id": "ft-cumulant-expansion",
+    "id": "fl-cumulant-expansion",
     "title": "At low b the log-signal expands as -bD + (1/6)b^2 D^2 K + ...",
     "level": 1,
     "status": "machine_confirmed",
     "origin": "agent_proposed",
     "depends_on": [
-      "ft-stejskal-tanner"
+      "fl-stejskal-tanner"
     ],
-    "in_degree": 2,
+    "in_degree": 3,
     "success": "The cumulant series matches MC log-signal at low b within SE.",
     "ic": {
       "analytic": 0.741,
@@ -497,7 +498,7 @@ const FT_NODES = [
         "node": null
       }
     ],
-    "repro": "nodes/ft-cumulant-expansion/reproduce.ipynb",
+    "repro": "nodes/fl-cumulant-expansion/reproduce.ipynb",
     "summary": "The low-b expansion underpinning DTI (1st cumulant) and DKI (2nd).",
     "refs": [],
     "effective_status": "machine_confirmed",
@@ -505,14 +506,14 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-cylinder-signal",
+    "id": "fl-cylinder-signal",
     "title": "Restricted diffusion in an impermeable cylinder has a closed-form signal",
     "level": 2,
     "status": "machine_confirmed",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-gpa-validity",
-      "ft-qspace"
+      "fl-gpa-validity",
+      "fl-qspace"
     ],
     "in_degree": 3,
     "success": "Cylinder signal matches cylinder-substrate MC within SE.",
@@ -531,7 +532,7 @@ const FT_NODES = [
         "node": null
       }
     ],
-    "repro": "nodes/ft-cylinder-signal/reproduce.ipynb",
+    "repro": "nodes/fl-cylinder-signal/reproduce.ipynb",
     "summary": "Geometry kernel - the axon/neurite (stick) signal.",
     "refs": [
       {
@@ -544,13 +545,13 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-dki",
+    "id": "fl-dki",
     "title": "Excess kurtosis quantifies non-Gaussian diffusion and tissue complexity",
     "level": 2,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-cumulant-expansion"
+      "fl-cumulant-expansion"
     ],
     "in_degree": 0,
     "success": "The 2nd cumulant (kurtosis) is a reproducible, sequence-robust index of non-Gaussianity.",
@@ -566,16 +567,16 @@ const FT_NODES = [
     ],
     "effective_status": "machine_confirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-cumulant-expansion"
+    "eff_reason": "weakest dependency fl-cumulant-expansion"
   },
   {
-    "id": "ft-dti",
+    "id": "fl-dti",
     "title": "A second-order diffusion tensor captures the Gaussian signal (FA/MD)",
     "level": 2,
     "status": "human_verified",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-cumulant-expansion"
+      "fl-cumulant-expansion"
     ],
     "in_degree": 0,
     "success": "The rank-2 tensor fits the low-b signal; FA and MD summarize anisotropy and magnitude.",
@@ -591,10 +592,10 @@ const FT_NODES = [
     ],
     "effective_status": "machine_confirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-cumulant-expansion"
+    "eff_reason": "weakest dependency fl-cumulant-expansion"
   },
   {
-    "id": "ft-einstein-diffusion",
+    "id": "fl-einstein-diffusion",
     "title": "A free particle's mean-squared displacement grows as <r^2> = 2nDt",
     "level": 1,
     "status": "human_verified",
@@ -617,13 +618,13 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-exchange",
+    "id": "fl-exchange",
     "title": "Inter-compartment exchange is negligible at clinical diffusion times",
     "level": 2,
     "status": "unconfirmed",
     "origin": "agent_proposed",
     "depends_on": [
-      "ft-standard-model"
+      "fl-standard-model"
     ],
     "in_degree": 0,
     "success": "Permeable-substrate MC signal within tolerance of the impermeable estimate.",
@@ -642,7 +643,7 @@ const FT_NODES = [
         "node": null
       }
     ],
-    "repro": "nodes/ft-exchange/reproduce.ipynb",
+    "repro": "nodes/fl-exchange/reproduce.ipynb",
     "summary": "Paths DISAGREE (permeable MC != impermeable analytic). The Standard Model's no-exchange assumption made explicit.",
     "refs": [],
     "effective_status": "unconfirmed",
@@ -650,7 +651,7 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-fiber-dispersion-histology",
+    "id": "fl-fiber-dispersion-histology",
     "title": "White-matter axons are orientationally dispersed (Watson/Bingham ODFs)",
     "level": 4,
     "status": "human_verified",
@@ -673,7 +674,7 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-fick-law",
+    "id": "fl-fick-law",
     "title": "Matter diffuses down its concentration gradient (Fick's law)",
     "level": 1,
     "status": "human_verified",
@@ -696,14 +697,14 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-free-propagator",
+    "id": "fl-free-propagator",
     "title": "Free diffusion has a Gaussian displacement propagator",
     "level": 1,
     "status": "machine_confirmed",
     "origin": "agent_proposed",
     "depends_on": [
-      "ft-fick-law",
-      "ft-einstein-diffusion"
+      "fl-fick-law",
+      "fl-einstein-diffusion"
     ],
     "in_degree": 3,
     "success": "P(r,t) is Gaussian with variance 2Dt; matches free-walker MC.",
@@ -722,7 +723,7 @@ const FT_NODES = [
         "node": null
       }
     ],
-    "repro": "nodes/ft-free-propagator/reproduce.ipynb",
+    "repro": "nodes/fl-free-propagator/reproduce.ipynb",
     "summary": "Theorem on Fick+Einstein: the propagator every model perturbs.",
     "refs": [],
     "effective_status": "machine_confirmed",
@@ -730,14 +731,14 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-gpa-validity",
+    "id": "fl-gpa-validity",
     "title": "The Gaussian-phase approximation predicts sphere signal to <1% at b<=1e4",
     "level": 2,
     "status": "machine_confirmed",
     "origin": "agent_proposed",
     "depends_on": [
-      "ft-bloch-torrey",
-      "ft-qspace"
+      "fl-bloch-torrey",
+      "fl-qspace"
     ],
     "in_degree": 2,
     "success": "Analytic GPA sphere signal matches exact-phase MC to <1% for radii 2-8 um.",
@@ -756,7 +757,7 @@ const FT_NODES = [
         "node": null
       }
     ],
-    "repro": "nodes/ft-gpa-validity/reproduce.ipynb",
+    "repro": "nodes/fl-gpa-validity/reproduce.ipynb",
     "summary": "Discharges the GPA assumption used by the closed-form kernels.",
     "refs": [],
     "effective_status": "machine_confirmed",
@@ -764,15 +765,15 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-gradient-encoding",
+    "id": "fl-gradient-encoding",
     "title": "A linear field gradient encodes spin position as phase (k-space)",
     "level": 1,
     "status": "human_verified",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-bloch-equations"
+      "fl-bloch-equations"
     ],
-    "in_degree": 1,
+    "in_degree": 2,
     "success": "A gradient imposes position-dependent phase; the signal samples k-space.",
     "ic": null,
     "ledger": [],
@@ -789,13 +790,13 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-map-mri",
+    "id": "fl-map-mri",
     "title": "The full displacement propagator is estimable via a basis expansion (MAP-MRI)",
     "level": 2,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-qspace"
+      "fl-qspace"
     ],
     "in_degree": 0,
     "success": "A Hermite basis reconstructs the propagator and its indices (RTOP/RTAP/RTPP) from multi-shell data.",
@@ -811,16 +812,16 @@ const FT_NODES = [
     ],
     "effective_status": "machine_confirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-qspace"
+    "eff_reason": "weakest dependency fl-qspace"
   },
   {
-    "id": "ft-model-degeneracy",
+    "id": "fl-model-degeneracy",
     "title": "The Standard Model two-compartment fit is degenerate (multiple equal minima)",
     "level": 3,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-standard-model"
+      "fl-standard-model"
     ],
     "in_degree": 2,
     "success": "The fit landscape has multiple equally-good minima; parameters are not uniquely recoverable from the powder signal.",
@@ -836,16 +837,16 @@ const FT_NODES = [
     ],
     "effective_status": "unconfirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-standard-model"
+    "eff_reason": "weakest dependency fl-standard-model"
   },
   {
-    "id": "ft-ndi-demyelination",
+    "id": "fl-ndi-demyelination",
     "title": "NODDI neurite density decreases with demyelination / axon loss in vivo",
     "level": 3,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-noddi"
+      "fl-noddi"
     ],
     "in_degree": 0,
     "success": "In-vivo NDI correlates with histological axon/myelin loss in pathology.",
@@ -872,13 +873,13 @@ const FT_NODES = [
     "eff_reason": "open assumption A1"
   },
   {
-    "id": "ft-noddi",
+    "id": "fl-noddi",
     "title": "Neurite density and dispersion are separable when intrinsic diffusivity is fixed",
     "level": 3,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-standard-model"
+      "fl-standard-model"
     ],
     "in_degree": 1,
     "success": "Fixing d_par makes NDI and ODI clinically estimable from two-shell data.",
@@ -894,17 +895,17 @@ const FT_NODES = [
     ],
     "effective_status": "unconfirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-standard-model"
+    "eff_reason": "weakest dependency fl-standard-model"
   },
   {
-    "id": "ft-ogse",
+    "id": "fl-ogse",
     "title": "Oscillating-gradient encoding reaches shorter diffusion times than PGSE",
     "level": 2,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-stejskal-tanner",
-      "ft-time-dependence"
+      "fl-stejskal-tanner",
+      "fl-time-dependence"
     ],
     "in_degree": 0,
     "success": "OGSE shifts sensitivity to higher frequency / shorter time, probing smaller length scales.",
@@ -920,16 +921,16 @@ const FT_NODES = [
     ],
     "effective_status": "machine_confirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-stejskal-tanner"
+    "eff_reason": "weakest dependency fl-stejskal-tanner"
   },
   {
-    "id": "ft-qspace",
+    "id": "fl-qspace",
     "title": "Signal vs q is the Fourier transform of the displacement propagator",
     "level": 1,
     "status": "human_verified",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-stejskal-tanner"
+      "fl-stejskal-tanner"
     ],
     "in_degree": 6,
     "success": "Under narrow pulses, E(q) is the Fourier transform of the propagator.",
@@ -945,17 +946,17 @@ const FT_NODES = [
     ],
     "effective_status": "machine_confirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-stejskal-tanner"
+    "eff_reason": "weakest dependency fl-stejskal-tanner"
   },
   {
-    "id": "ft-rotinv-branches",
+    "id": "fl-rotinv-branches",
     "title": "Rotationally-invariant fitting yields two branches; the physical one needs a prior",
     "level": 3,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-model-degeneracy",
-      "ft-spherical-mean"
+      "fl-model-degeneracy",
+      "fl-spherical-mean"
     ],
     "in_degree": 0,
     "success": "The rotational-invariant solution splits into two branches; selecting the biophysical one requires extra information.",
@@ -971,18 +972,18 @@ const FT_NODES = [
     ],
     "effective_status": "unconfirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-model-degeneracy"
+    "eff_reason": "weakest dependency fl-model-degeneracy"
   },
   {
-    "id": "ft-sandi",
+    "id": "fl-sandi",
     "title": "At high b, soma, neurite and extracellular compartments are separable",
     "level": 3,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-sphere-signal",
-      "ft-stick-limit",
-      "ft-spherical-mean"
+      "fl-sphere-signal",
+      "fl-stick-limit",
+      "fl-spherical-mean"
     ],
     "in_degree": 1,
     "success": "Strong gradients separate a sphere (soma) signal from sticks (neurites) and extracellular water.",
@@ -998,16 +999,16 @@ const FT_NODES = [
     ],
     "effective_status": "machine_confirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-sphere-signal"
+    "eff_reason": "weakest dependency fl-sphere-signal"
   },
   {
-    "id": "ft-soma-histology",
+    "id": "fl-soma-histology",
     "title": "In-vivo soma fraction matches histological cell density",
     "level": 4,
     "status": "unconfirmed",
     "origin": "agent_proposed",
     "depends_on": [
-      "ft-soma-invivo"
+      "fl-soma-invivo"
     ],
     "in_degree": 0,
     "success": "Correlation r>0.7 between MR soma fraction and histological soma volume fraction.",
@@ -1029,13 +1030,13 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-soma-invivo",
+    "id": "fl-soma-invivo",
     "title": "Soma fraction is stable across HCP subjects (b=6000 shell)",
     "level": 3,
     "status": "unconfirmed",
     "origin": "agent_proposed",
     "depends_on": [
-      "ft-sandi"
+      "fl-sandi"
     ],
     "in_degree": 1,
     "success": "Recovered soma fraction CV <15% across 20 HCP subjects.",
@@ -1064,14 +1065,14 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-sphere-signal",
+    "id": "fl-sphere-signal",
     "title": "Restricted diffusion in an impermeable sphere has a closed-form signal",
     "level": 2,
     "status": "machine_confirmed",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-gpa-validity",
-      "ft-qspace"
+      "fl-gpa-validity",
+      "fl-qspace"
     ],
     "in_degree": 1,
     "success": "Neuman/GPA sphere signal matches sphere-substrate MC within SE.",
@@ -1090,7 +1091,7 @@ const FT_NODES = [
         "node": null
       }
     ],
-    "repro": "nodes/ft-sphere-signal/reproduce.ipynb",
+    "repro": "nodes/fl-sphere-signal/reproduce.ipynb",
     "summary": "Geometry kernel - the soma compartment's signal.",
     "refs": [
       {
@@ -1103,13 +1104,13 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-spherical-mean",
+    "id": "fl-spherical-mean",
     "title": "The direction-averaged signal is independent of the fibre ODF",
     "level": 2,
     "status": "machine_confirmed",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-qspace"
+      "fl-qspace"
     ],
     "in_degree": 2,
     "success": "The powder-averaged signal depends only on the kernel, not the ODF.",
@@ -1128,7 +1129,7 @@ const FT_NODES = [
         "node": null
       }
     ],
-    "repro": "nodes/ft-spherical-mean/reproduce.ipynb",
+    "repro": "nodes/fl-spherical-mean/reproduce.ipynb",
     "summary": "Powder averaging: factor out orientation to isolate the kernel.",
     "refs": [
       {
@@ -1141,14 +1142,14 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-standard-model",
+    "id": "fl-standard-model",
     "title": "WM diffusion = dispersed sticks (intra) plus a zeppelin (extra): the Standard Model",
     "level": 3,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-watson-dispersion-kernel",
-      "ft-zeppelin-tortuosity"
+      "fl-watson-dispersion-kernel",
+      "fl-zeppelin-tortuosity"
     ],
     "in_degree": 3,
     "success": "The dispersed-stick + zeppelin model spans the published WM multi-compartment models as special cases.",
@@ -1159,28 +1160,28 @@ const FT_NODES = [
         "text": "No exchange between intra- and extra-axonal water at clinical diffusion times.",
         "status": "open",
         "level": 4,
-        "node": "ft-exchange"
+        "node": "fl-exchange"
       },
       {
         "id": "A2",
         "text": "Sticks: axon radius negligible, zero perpendicular intra-axonal signal.",
         "status": "conditional",
         "level": 4,
-        "node": "ft-stick-limit"
+        "node": "fl-stick-limit"
       },
       {
         "id": "A3",
         "text": "Gaussian (time-independent) diffusion within each compartment.",
         "status": "conditional",
         "level": 3,
-        "node": "ft-time-dependence"
+        "node": "fl-time-dependence"
       },
       {
         "id": "A4",
         "text": "Microstructure factorizes from orientation: one kernel for all fibre directions.",
         "status": "conditional",
         "level": 3,
-        "node": "ft-csd"
+        "node": "fl-csd"
       }
     ],
     "repro": null,
@@ -1196,14 +1197,14 @@ const FT_NODES = [
     "eff_reason": "open assumption A1"
   },
   {
-    "id": "ft-stejskal-tanner",
+    "id": "fl-stejskal-tanner",
     "title": "For free diffusion the PGSE signal attenuates as exp(-bD)",
     "level": 1,
     "status": "machine_confirmed",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-bloch-torrey",
-      "ft-gradient-encoding"
+      "fl-bloch-torrey",
+      "fl-gradient-encoding"
     ],
     "in_degree": 4,
     "success": "Free-diffusion PGSE signal is exp(-bD); analytic and MC agree.",
@@ -1229,7 +1230,7 @@ const FT_NODES = [
         "node": null
       }
     ],
-    "repro": "nodes/ft-stejskal-tanner/reproduce.ipynb",
+    "repro": "nodes/fl-stejskal-tanner/reproduce.ipynb",
     "summary": "Bedrock measurement physics: the b-value.",
     "refs": [
       {
@@ -1242,13 +1243,13 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-stick-limit",
+    "id": "fl-stick-limit",
     "title": "As radius -> 0 the cylinder becomes a stick with zero perpendicular signal",
     "level": 2,
     "status": "machine_confirmed",
     "origin": "agent_proposed",
     "depends_on": [
-      "ft-cylinder-signal"
+      "fl-cylinder-signal"
     ],
     "in_degree": 4,
     "success": "Perpendicular intra-axonal signal fully attenuates as r->0; matches thin-cylinder MC.",
@@ -1267,7 +1268,7 @@ const FT_NODES = [
         "node": null
       }
     ],
-    "repro": "nodes/ft-stick-limit/reproduce.ipynb",
+    "repro": "nodes/fl-stick-limit/reproduce.ipynb",
     "summary": "The 'stick': intra-neurite compartment, r->0 limit of the cylinder.",
     "refs": [],
     "effective_status": "machine_confirmed",
@@ -1275,13 +1276,91 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-time-dependence",
+    "id": "fl-susceptibility-crossterm",
+    "title": "The diffusion-susceptibility cross-term is negligible at clinical field (<=7T) and grows as B0^2",
+    "level": 2,
+    "status": "unconfirmed",
+    "origin": "agent_proposed",
+    "depends_on": [
+      "fl-bloch-torrey",
+      "fl-gradient-encoding",
+      "fl-cumulant-expansion"
+    ],
+    "in_degree": 0,
+    "success": "At B0 <= 7 T and clinical b (<= 3000 s/mm^2), the diffusion x susceptibility cross-term contributes <~1% to the extra-axonal signal and is >~10x below the susceptibility self-term, so it is safely neglected in clinical white-matter modelling. It scales as B0^2 (sub-0.1% at 3 T), reaching several percent only at preclinical fields (>=11.7 T). The analytic IGDT 2nd-order factor and the dmipy-sim MC agree on the cross-term's magnitude and its B0 / Delta_chi / sin^4(theta) scaling within the MC standard error.
+",
+    "ic": {
+      "analytic": 0.01,
+      "mc": 0.011,
+      "mc_stderr": 0.011,
+      "agree": true
+    },
+    "ledger": [
+      {
+        "id": "A1",
+        "text": "The absolute cross-term coefficient kappa_X is not pack-converged: across 48/100/200/400-cylinder packs it is only ~1 sigma above the MC noise floor at the largest pack (kappa_X ~ 0.01 +- 0.011) and the small-pack value (~0.085) was an artifact -> the magnitude carries a factor-~2 uncertainty.
+",
+        "status": "open",
+        "level": 2,
+        "node": null
+      },
+      {
+        "id": "A2",
+        "text": "The B0^2 growth holds only while the motional-narrowing regime parameter xi = gamma |Delta_chi|(1-g^2) B0 tau_c <~ 1; at very high field / large calibre it saturates toward static dephasing.
+",
+        "status": "conditional",
+        "level": 2,
+        "node": null
+      },
+      {
+        "id": "A3",
+        "text": "The signed first-order cross-term (IGDT G.<G0>) cancels only under +-G / antipodal (spherical-mean) averaging; single-polarity or asymmetric-encoding acquisitions retain it (it is first-order, hence larger than the surviving second-order variance term).
+",
+        "status": "conditional",
+        "level": 2,
+        "node": null
+      },
+      {
+        "id": "A4",
+        "text": "The absolute magnitude is computed on the canonical myelin substrate; the in-vivo susceptibility-relevant calibre and Delta_chi are uncertain (the self-term magnitude is HCP-calibrated, not first-principles).
+",
+        "status": "conditional",
+        "level": 4,
+        "node": null
+      }
+    ],
+    "repro": "nodes/fl-susceptibility-crossterm/reproduce.py",
+    "summary": "The myelin susceptibility field and the diffusion-encoding gradient produce a cross-term (IGDT) that the analytical compartment factorisation S ~ ... A_i Xi_i drops. The Monte Carlo accrues both phases on the same spin in one exponential, so it computes the cross-term exactly and implicitly; it is missing ONLY in the analytic world. MC on the canonical myelin substrate finds it negligible at clinical field (<0.1% at 3T, ~1% of the extra-axonal signal at 7T), an order of magnitude below the susceptibility self-term Xi_EA, and scaling as B0^2 -> a few percent only at preclinical fields (>=11.7T, amplified further by ex-vivo high b).
+",
+    "refs": [
+      {
+        "doi": "10.1038/s41598-017-03277-9",
+        "note": "IGDT (Alvarez, Shemesh, Frydman 2017) - the susceptibility internal-gradient cross-term decomposition this node specialises: 1st-order signed term ~ G.<G0> (cancels on +-G) and 2nd-order term ~ G.<dG0 dG0>.G set by the internal-gradient variance tensor (survives). This is the framework, not a novelty claim.
+"
+      },
+      {
+        "doi": "10.1016/0022-2364(91)90218-J",
+        "note": "Zhong, Kennan & Gore 1991 - classic background-gradient / diffusion cross-term in NMR; the porous-media origin of the effect.
+"
+      },
+      {
+        "doi": "10.1038/s41598-024-79043-5",
+        "note": "Winther et al. 2024 - empirical internal-gradient DTI bias up to ~17% in ex-vivo white matter at 7 T, corroborating the preclinical-field relevance (high-field, high-b regime where this node's effect is no longer negligible).
+"
+      }
+    ],
+    "effective_status": "unconfirmed",
+    "eff_capped": false,
+    "eff_reason": null
+  },
+  {
+    "id": "fl-time-dependence",
     "title": "Time-dependent diffusivity follows a power law D(t)=D_inf + c t^-theta",
     "level": 2,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-bloch-torrey"
+      "fl-bloch-torrey"
     ],
     "in_degree": 1,
     "success": "D(t) approaches D_inf as a power law whose exponent encodes the disorder class.",
@@ -1297,17 +1376,17 @@ const FT_NODES = [
     ],
     "effective_status": "machine_confirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-bloch-torrey"
+    "eff_reason": "weakest dependency fl-bloch-torrey"
   },
   {
-    "id": "ft-watson-dispersion-kernel",
+    "id": "fl-watson-dispersion-kernel",
     "title": "A coherent fibre population's signal is the stick kernel convolved with a Watson ODF",
     "level": 2,
     "status": "machine_confirmed",
     "origin": "agent_proposed",
     "depends_on": [
-      "ft-stick-limit",
-      "ft-fiber-dispersion-histology"
+      "fl-stick-limit",
+      "fl-fiber-dispersion-histology"
     ],
     "in_degree": 1,
     "success": "Stick kernel convolved with a Watson ODF matches dispersed-stick MC within SE.",
@@ -1326,7 +1405,7 @@ const FT_NODES = [
         "node": null
       }
     ],
-    "repro": "nodes/ft-watson-dispersion-kernel/reproduce.ipynb",
+    "repro": "nodes/fl-watson-dispersion-kernel/reproduce.ipynb",
     "summary": "Dispersed-stick model: physics kernel grounded by the histological dispersion finding.",
     "refs": [],
     "effective_status": "machine_confirmed",
@@ -1334,13 +1413,13 @@ const FT_NODES = [
     "eff_reason": null
   },
   {
-    "id": "ft-zeppelin-tortuosity",
+    "id": "fl-zeppelin-tortuosity",
     "title": "Hindered extra-axonal water is an axisymmetric tensor with tortuosity D_perp=D_par(1-f)",
     "level": 2,
     "status": "literature_attested",
     "origin": "literature_claim",
     "depends_on": [
-      "ft-free-propagator"
+      "fl-free-propagator"
     ],
     "in_degree": 1,
     "success": "The extra-axonal compartment is a zeppelin whose perpendicular diffusivity follows the tortuosity relation.",
@@ -1356,7 +1435,7 @@ const FT_NODES = [
     ],
     "effective_status": "machine_confirmed",
     "eff_capped": true,
-    "eff_reason": "weakest dependency ft-free-propagator"
+    "eff_reason": "weakest dependency fl-free-propagator"
   }
 ];
 
@@ -1370,14 +1449,14 @@ const STATUS_COLOR = {
 
 // compute in-degree (how many nodes depend ON this node = load-bearing-ness)
 const inDeg = {};
-FT_NODES.forEach(n => inDeg[n.id] = 0);
-FT_NODES.forEach(n => n.depends_on.forEach(d => { if (d in inDeg) inDeg[d]++; }));
+FL_NODES.forEach(n => inDeg[n.id] = 0);
+FL_NODES.forEach(n => n.depends_on.forEach(d => { if (d in inDeg) inDeg[d]++; }));
 
-const byId = Object.fromEntries(FT_NODES.map(n => [n.id, n]));
+const byId = Object.fromEntries(FL_NODES.map(n => [n.id, n]));
 
 // build cytoscape elements
 const elements = [];
-FT_NODES.forEach(n => {
+FL_NODES.forEach(n => {
   const openCount = n.ledger.filter(l => l.status === "open").length;
   elements.push({ data:{
     id:n.id,
@@ -1390,7 +1469,7 @@ FT_NODES.forEach(n => {
 // UP to the claim it supports (source = dependency/root, target = dependent).
 // Combined with rankDir "BT" below, this keeps Fick's law at the bottom while
 // the arrows point upward — the tree grows from the trunk outward.
-FT_NODES.forEach(n => n.depends_on.forEach(d => {
+FL_NODES.forEach(n => n.depends_on.forEach(d => {
   if (d in byId) elements.push({ data:{ id:d+"→"+n.id, source:d, target:n.id } });
 }));
 
@@ -1516,7 +1595,7 @@ document.getElementById("search").addEventListener("input", e => {
 // ── canned query: load-bearing & unverified roots ───────────────────────────
 // machine_confirmed, NOT human_verified, ranked by in-degree → highest leverage.
 document.getElementById("q-loadbearing").onclick = () => {
-  const hits = FT_NODES
+  const hits = FL_NODES
     .filter(n => n.status === "machine_confirmed" || n.status === "literature_attested")
     .sort((a,b) => inDeg[b.id] - inDeg[a.id]);
   cy.elements().removeClass("hot dim");
