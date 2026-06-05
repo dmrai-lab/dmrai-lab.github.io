@@ -1287,8 +1287,7 @@ const FL_NODES = [
       "fl-cumulant-expansion"
     ],
     "in_degree": 0,
-    "success": "At B0 <= 7 T and clinical b (<= 3000 s/mm^2), the diffusion x susceptibility cross-term contributes <~1% to the extra-axonal signal and is >~10x below the susceptibility self-term, so it is safely neglected in clinical white-matter modelling. It scales as B0^2 (sub-0.1% at 3 T), reaching several percent only at preclinical fields (>=11.7 T). The analytic IGDT 2nd-order factor and the dmipy-sim MC agree on the cross-term's magnitude and its B0 / Delta_chi / sin^4(theta) scaling within the MC standard error.
-",
+    "success": "At B0 <= 7 T and clinical b (<= 3000 s/mm^2), the diffusion x susceptibility cross-term contributes <~1% to the extra-axonal signal and is >~10x below the susceptibility self-term, so it is safely neglected in clinical white-matter modelling. It scales as B0^2 (sub-0.1% at 3 T), reaching several percent only at preclinical fields (>=11.7 T). The analytic IGDT 2nd-order factor and the dmipy-sim MC agree on the cross-term's magnitude and its B0 / Delta_chi / sin^4(theta) scaling within the MC standard error.\n",
     "ic": {
       "analytic": 0.01,
       "mc": 0.011,
@@ -1298,55 +1297,47 @@ const FL_NODES = [
     "ledger": [
       {
         "id": "A1",
-        "text": "The absolute cross-term coefficient kappa_X is not pack-converged: across 48/100/200/400-cylinder packs it is only ~1 sigma above the MC noise floor at the largest pack (kappa_X ~ 0.01 +- 0.011) and the small-pack value (~0.085) was an artifact -> the magnitude carries a factor-~2 uncertainty.
-",
+        "text": "The absolute cross-term coefficient kappa_X is not pack-converged: across 48/100/200/400-cylinder packs it is only ~1 sigma above the MC noise floor at the largest pack (kappa_X ~ 0.01 +- 0.011) and the small-pack value (~0.085) was an artifact -> the magnitude carries a factor-~2 uncertainty.\n",
         "status": "open",
         "level": 2,
         "node": null
       },
       {
         "id": "A2",
-        "text": "The B0^2 growth holds only while the motional-narrowing regime parameter xi = gamma |Delta_chi|(1-g^2) B0 tau_c <~ 1; at very high field / large calibre it saturates toward static dephasing.
-",
+        "text": "The B0^2 growth holds only while the motional-narrowing regime parameter xi = gamma |Delta_chi|(1-g^2) B0 tau_c <~ 1; at very high field / large calibre it saturates toward static dephasing.\n",
         "status": "conditional",
         "level": 2,
         "node": null
       },
       {
         "id": "A3",
-        "text": "The signed first-order cross-term (IGDT G.<G0>) cancels only under +-G / antipodal (spherical-mean) averaging; single-polarity or asymmetric-encoding acquisitions retain it (it is first-order, hence larger than the surviving second-order variance term).
-",
+        "text": "The signed first-order cross-term (IGDT G.<G0>) cancels only under +-G / antipodal (spherical-mean) averaging; single-polarity or asymmetric-encoding acquisitions retain it (it is first-order, hence larger than the surviving second-order variance term).\n",
         "status": "conditional",
         "level": 2,
         "node": null
       },
       {
         "id": "A4",
-        "text": "The absolute magnitude is computed on the canonical myelin substrate; the in-vivo susceptibility-relevant calibre and Delta_chi are uncertain (the self-term magnitude is HCP-calibrated, not first-principles).
-",
+        "text": "The absolute magnitude is computed on the canonical myelin substrate; the in-vivo susceptibility-relevant calibre and Delta_chi are uncertain (the self-term magnitude is HCP-calibrated, not first-principles).\n",
         "status": "conditional",
         "level": 4,
         "node": null
       }
     ],
     "repro": "nodes/fl-susceptibility-crossterm/reproduce.py",
-    "summary": "The myelin susceptibility field and the diffusion-encoding gradient produce a cross-term (IGDT) that the analytical compartment factorisation S ~ ... A_i Xi_i drops. The Monte Carlo accrues both phases on the same spin in one exponential, so it computes the cross-term exactly and implicitly; it is missing ONLY in the analytic world. MC on the canonical myelin substrate finds it negligible at clinical field (<0.1% at 3T, ~1% of the extra-axonal signal at 7T), an order of magnitude below the susceptibility self-term Xi_EA, and scaling as B0^2 -> a few percent only at preclinical fields (>=11.7T, amplified further by ex-vivo high b).
-",
+    "summary": "The myelin susceptibility field and the diffusion-encoding gradient produce a cross-term (IGDT) that the analytical compartment factorisation S ~ ... A_i Xi_i drops. The Monte Carlo accrues both phases on the same spin in one exponential, so it computes the cross-term exactly and implicitly; it is missing ONLY in the analytic world. MC on the canonical myelin substrate finds it negligible at clinical field (<0.1% at 3T, ~1% of the extra-axonal signal at 7T), an order of magnitude below the susceptibility self-term Xi_EA, and scaling as B0^2 -> a few percent only at preclinical fields (>=11.7T, amplified further by ex-vivo high b).\n",
     "refs": [
       {
         "doi": "10.1038/s41598-017-03277-9",
-        "note": "IGDT (Alvarez, Shemesh, Frydman 2017) - the susceptibility internal-gradient cross-term decomposition this node specialises: 1st-order signed term ~ G.<G0> (cancels on +-G) and 2nd-order term ~ G.<dG0 dG0>.G set by the internal-gradient variance tensor (survives). This is the framework, not a novelty claim.
-"
+        "note": "IGDT (Alvarez, Shemesh, Frydman 2017) - the susceptibility internal-gradient cross-term decomposition this node specialises: 1st-order signed term ~ G.<G0> (cancels on +-G) and 2nd-order term ~ G.<dG0 dG0>.G set by the internal-gradient variance tensor (survives). This is the framework, not a novelty claim.\n"
       },
       {
         "doi": "10.1016/0022-2364(91)90218-J",
-        "note": "Zhong, Kennan & Gore 1991 - classic background-gradient / diffusion cross-term in NMR; the porous-media origin of the effect.
-"
+        "note": "Zhong, Kennan & Gore 1991 - classic background-gradient / diffusion cross-term in NMR; the porous-media origin of the effect.\n"
       },
       {
         "doi": "10.1038/s41598-024-79043-5",
-        "note": "Winther et al. 2024 - empirical internal-gradient DTI bias up to ~17% in ex-vivo white matter at 7 T, corroborating the preclinical-field relevance (high-field, high-b regime where this node's effect is no longer negligible).
-"
+        "note": "Winther et al. 2024 - empirical internal-gradient DTI bias up to ~17% in ex-vivo white matter at 7 T, corroborating the preclinical-field relevance (high-field, high-b regime where this node's effect is no longer negligible).\n"
       }
     ],
     "effective_status": "unconfirmed",
