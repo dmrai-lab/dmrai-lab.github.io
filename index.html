@@ -532,12 +532,12 @@
 <section class="hero">
   <div class="hero-text">
     <p class="hero-eyebrow"><span></span>Open Science · Diffusion MRI · Microstructure Imaging</p>
-    <h1>Physics is<br/><em>the specification.</em><br/><span class="dim">Code is the proof.</span></h1>
+    <h1>Physics is<br/><em>the specification.</em><br/><span class="dim">Open code is how we check it.</span></h1>
     <p class="hero-sub">
       Diffusion MRI can see inside living tissue without a scalpel — inferring axon diameters,
       membrane densities, soma permeability from the motion of water molecules.
-      dmrai-lab is building the infrastructure this field deserves:
-      open, validated, reproducible, from simulation to compendium.
+      dmrai-lab is building open, validated, reproducible infrastructure for this work:
+      two engines that keep each other honest, free for the whole field to use, extend, and check.
     </p>
     <div class="hero-cta">
       <a href="https://github.com/dmrai-lab" target="_blank" class="btn btn-primary">View on GitHub</a>
@@ -587,38 +587,6 @@
       </div>
     </div>
 
-    <div class="pkg">
-      <div class="pkg-badge active">Active</div>
-      <div class="pkg-name">dmipy-design</div>
-      <div class="pkg-desc">
-        Acquisition waveform optimization that closes the loop between what we can measure
-        and what we claim to measure — incorporating both analytical sensitivity and
-        Monte Carlo-derived bias simultaneously.
-      </div>
-      <div class="pkg-tags">
-        <span class="tag">waveform optimization</span>
-        <span class="tag">sensitivity analysis</span>
-        <span class="tag">bias characterization</span>
-        <span class="tag">b-tensor</span>
-      </div>
-    </div>
-
-    <div class="pkg">
-      <div class="pkg-badge wip">In development</div>
-      <div class="pkg-name">dmipy-compendium</div>
-      <div class="pkg-desc">
-        A living, machine-readable knowledge graph of validated diffusion MRI
-        protocols, models, and results. Every node carries its physical assumptions,
-        scope boundaries, and Monte Carlo evidence.
-      </div>
-      <div class="pkg-tags">
-        <span class="tag">knowledge graph</span>
-        <span class="tag">reproducibility</span>
-        <span class="tag">SANDI</span>
-        <span class="tag">machine-readable</span>
-      </div>
-    </div>
-
   </div>
 </section>
 
@@ -636,23 +604,23 @@
 
       <div class="tab-panel active" id="tab-vision">
         <blockquote>
-          The goal is not a faster fitting tool — it is the
-          <strong>living compendium</strong> of everything
-          diffusion microstructure imaging knows.
+          The goal is not a faster fitting tool — it is an
+          <strong>open, validated foundation</strong> the whole field
+          can build on together.
         </blockquote>
         <p class="vision-body">
           dmrai-lab is the revival and extension of dmipy, originally published in
-          <a href="https://www.frontiersin.org/journals/neuroinformatics/articles/10.3389/fninf.2019.00064/full" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(74,240,196,0.3);transition:border-color 0.2s;" onmouseover="this.style.borderBottomColor='var(--accent)'" onmouseout="this.style.borderBottomColor='rgba(74,240,196,0.3)'">Frontiers in Neuroinformatics (2019)</a>. We are rebuilding it from the ground up:
-          a JAX fitting engine grounded in biophysical compartment models, a Monte Carlo
-          simulator for ground-truth validation, an acquisition design tool that closes
-          the loop between measurement and claim, and a compendium that makes every
-          validated protocol and result machine-readable and citable.
+          <a href="https://www.frontiersin.org/journals/neuroinformatics/articles/10.3389/fninf.2019.00064/full" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(74,240,196,0.3);transition:border-color 0.2s;" onmouseover="this.style.borderBottomColor='var(--accent)'" onmouseout="this.style.borderBottomColor='rgba(74,240,196,0.3)'">Frontiers in Neuroinformatics (2019)</a>. We are rebuilding it in the open,
+          around two engines that keep each other honest: a JAX fitting engine grounded in
+          biophysical compartment models, and a Monte Carlo simulator that provides the
+          ground truth to check it against.
           <br /><br />
           Our north star: a scientist anywhere in the world should be able to describe a
-          tissue model, find the canonical validated protocol for it, simulate it, fit it,
-          and reproduce the result — in a single afternoon.
+          tissue model, simulate it, fit it, and reproduce the result — in a single afternoon,
+          with the evidence open for anyone to check.
           <br /><br />
-          The bottleneck was never intelligence. It was infrastructure.
+          The bottleneck was never intelligence. It was shared infrastructure — and that is
+          finally something we can build together.
         </p>
       </div>
 
@@ -672,108 +640,105 @@
               the way water molecules move. This is one of the most remarkable capabilities in modern medicine.
             </p>
             <p>
-              And the field has been working without the infrastructure it deserves.
+              Like every fast-moving field, it has grown faster than the shared tooling that supports it.
+              That isn't a flaw — it's the natural shape of a young, ambitious science, and it's a
+              solvable, shared problem.
             </p>
             <p>
-              Not for lack of trying. The scientists who built this field are rigorous, inventive,
-              and deeply committed to getting it right. Validation has happened — but bespoke, each
-              group building its own simulation, its own ground truth, its own interpretation of what
-              the model should recover. Brilliant work, done in isolation, with tools that were
-              difficult to build and harder to share. The supporting code is often unpublished, the
-              methodology unreproducible not by choice but by circumstance. What survives in the
-              literature is the claim. What does not survive is the chain of evidence behind it.
+              The scientists who built this field are rigorous, inventive, and deeply committed to getting
+              it right. Validation happens constantly — but often bespoke, each group building its own
+              simulation, its own ground truth, its own interpretation of what a model should recover.
+              Excellent work, frequently done in isolation, with tools that were difficult to build and
+              harder to share. What survives in the literature is the claim; what is hardest to carry
+              alongside it is the chain of evidence behind it.
             </p>
             <p>
-              The result is a field where the same model can be validated six times in six different
-              ways, with six different simulators, producing six subtly different answers — and no
-              shared language to reconcile them. Where scope boundaries exist in the author's intuition
-              but not in the publication. Where a protocol validated for one tissue type migrates
-              quietly into another without anyone having established whether it should.
+              So the same model is often validated independently by several groups, each with its own
+              simulator, producing subtly different answers — with no shared ground truth to reconcile
+              them against. That independence reflects how seriously the community takes rigor. It also
+              leaves scope boundaries living in the author's intuition rather than the publication, and
+              lets a protocol validated for one tissue type quietly migrate to another. A shared, open
+              reference is exactly the gap we'd love to help close.
             </p>
             <p>
-              This is not a failure of the people. It is a failure of infrastructure. And infrastructure
-              is exactly what has become possible to build.
+              None of this is a shortcoming of the people; the ideas are excellent. It's a gap in shared
+              infrastructure — and infrastructure is exactly what has become possible to build.
             </p>
           </div>
 
           <div class="manifesto-pull">
-            The solution is not more papers. The solution is infrastructure.
+            Papers carry the ideas. Shared infrastructure can carry the evidence alongside them.
           </div>
 
           <div class="manifesto-section">
-            <h3>The specification exists.</h3>
+            <h3>The specification is the physics.</h3>
             <p>
-              Physics governs water diffusion in biological tissue completely and without ambiguity.
-              The Bloch-Torrey equation is not a hypothesis. Brownian motion in restricted geometries
-              is not a conjecture. These are the specification. Everything else — every model, every
-              protocol, every clinical claim — is an implementation that either satisfies the
-              specification or does not.
+              Physics governs water diffusion in biological tissue. The Bloch-Torrey equation is not a
+              hypothesis; Brownian motion in restricted geometries is not a conjecture. These are the
+              specification — and every model, every protocol, every clinical claim is an implementation
+              we can measure against it.
             </p>
             <p>
-              Monte Carlo simulation is the compiler. Given a substrate geometry, a permeability,
-              a relaxation time, and an acquisition waveform, simulation produces ground truth signal
-              with no approximation beyond the physical assumptions themselves. It does not negotiate
-              with analytical convenience. It does not care about publication deadlines.
+              Monte Carlo simulation is how we generate that reference. Given a substrate geometry, a
+              permeability, a relaxation time, and an acquisition waveform, it produces a signal with no
+              approximation beyond the physical assumptions themselves — a neutral ground truth anyone
+              can compare against.
             </p>
             <p>
-              A claim that cannot survive Monte Carlo validation within its stated scope is not a
-              validated claim. It is a hypothesis.
+              So for any model we can ask: within its stated scope, does it match the physics? When it
+              does, we can say so with confidence. When it doesn't, we've found exactly where its scope
+              ends — which is just as useful to know.
             </p>
           </div>
 
           <div class="manifesto-section">
-            <h3>dmrai-lab is building the infrastructure to make this distinction enforceable.</h3>
+            <h3>dmrai-lab is building shared infrastructure for that comparison.</h3>
             <p>
-              dmipy implements three nodes of one closed loop: simulation — Monte Carlo substrate
+              dmipy is two engines that keep each other honest: simulation — Monte Carlo substrate
               generation and signal synthesis, grounded in biologically cited parameter distributions;
-              fitting — JAX-native model inference with explicit scope boundaries and bias
-              characterization against ground truth; and design — acquisition waveform optimization
-              that incorporates both analytical sensitivity and Monte Carlo-derived bias simultaneously,
-              closing the loop between what we can measure and what we claim to measure.
+              and fitting — JAX-native model inference with explicit scope boundaries, characterised
+              against that ground truth.
             </p>
             <p>
-              This is not three tools. It is one pipeline. The same substrate that generates training
-              data also validates the model that fits it and constrains the waveform that acquires it.
+              It isn't two separate tools so much as one loop: the same substrate that generates a
+              signal also validates the model that fits it.
             </p>
           </div>
 
           <div class="manifesto-section">
-            <h3>The compendium is the output.</h3>
+            <h3>Open, traceable evidence is the point.</h3>
             <p>
-              Every validated result produced by this pipeline becomes a node in a public,
-              machine-readable knowledge graph. Each node carries its physical assumptions, its scope
-              boundaries, its Monte Carlo evidence, and its dependency on every node above it in the chain.
-              A reader can trace any claim backward to the physics that supports it — or discover that
-              no such chain exists.
+              Every result can carry its physical assumptions, its scope boundaries, and its evidence
+              with it — open and reproducible, so a reader can follow any claim back to the physics that
+              supports it, or see where that chain runs out.
             </p>
             <p>
-              This is not a database. It is a formal epistemological framework. The first one this field has had.
+              More than a database: a way to keep findings and the evidence behind them together, in the open.
             </p>
           </div>
 
           <div class="manifesto-section">
             <h3>This is what the AI era makes possible.</h3>
             <p>
-              A single researcher with the right stack can now implement, simulate, validate, and
-              publish results that previously required a laboratory, a cluster, and a team.
-              The bottleneck was never intelligence. It was infrastructure.
+              A single researcher with the right stack can now implement, simulate, validate, and share
+              results that previously took a laboratory, a cluster, and a team. The bottleneck was never
+              intelligence. It was infrastructure.
             </p>
             <p>
-              dmrai-lab is one researcher and a physics engine. The physics does not care about affiliation.
-              We are building in the open. The code is public. The compendium is public. The validation
-              pipeline is reproducible by anyone with a GPU and a pip install.
+              dmrai-lab is one researcher and a physics engine, building in the open. The code is public,
+              and the validation pipeline is reproducible by anyone with a GPU and a pip install.
             </p>
             <p>
-              If your model survives the compiler, it survives. If it does not, the compiler tells you
-              exactly why, and you can fix it. That is how software has worked for fifty years.
-              It is time for science to catch up.
+              Open source taught software to share not just its claims but the means to check them. We'd
+              love to help bring a little of that spirit to diffusion MRI — not as a standard imposed on
+              anyone, but as a shared tool, freely offered, for the field to use and improve.
             </p>
           </div>
 
           <div class="manifesto-footer">
             dmrai-lab is an independent research initiative &nbsp;·&nbsp;
             dmipy is open source under GNU Affero General Public License v3.0 &nbsp;·&nbsp;
-            The compendium is permanently public &nbsp;·&nbsp;
+            Built in the open &nbsp;·&nbsp;
             <a href="https://github.com/dmrai-lab" target="_blank">github.com/dmrai-lab</a>
           </div>
 
@@ -799,14 +764,15 @@
             </p>
             <p>
               Every feature in the dmipy ecosystem must satisfy success conditions stated entirely in
-              physical terms — conditions that can be verified from two completely independent directions.
-              Agreement between those directions is not a unit test. It is a proof.
+              physical terms — conditions that can be checked from two independent directions. Agreement
+              between those directions is far stronger than a unit test; as below, we treat it as strong
+              evidence rather than the last word.
             </p>
           </div>
 
           <div class="manifesto-pull">
-            Two paths to the same answer, derived from different first principles. If they agree,
-            the implementation is correct. If they disagree, the physics tells you exactly where to look.
+            Two paths to the same answer, from different first principles. If they agree, that's strong
+            evidence the implementation is right. If they disagree, the physics shows you where to look.
           </div>
 
           <div class="manifesto-section">
@@ -845,12 +811,13 @@
           </div>
 
           <div class="manifesto-section">
-            <h3>Convergence is correctness. Divergence is knowledge.</h3>
+            <h3>Agreement is strong evidence. Divergence is knowledge.</h3>
             <p>
               When the analytical equation and Monte Carlo agree — across substrate geometries,
-              diffusion times, b-values, and waveform shapes — the implementation is validated.
-              Not just tested: validated against physical ground truth from two independent directions.
-              Any AI-introduced error that survives one direction is extremely unlikely to survive both.
+              diffusion times, b-values, and waveform shapes — that is strong evidence the implementation
+              is right: an AI-introduced error that survives one direction is unlikely to survive both.
+              It isn't the final word, though. Both paths can share a blind spot, and the substrate
+              itself is still a simplification of real tissue — so the researcher always has the last call.
             </p>
             <p>
               When they diverge, something more valuable than a passing test emerges: a precise
@@ -859,27 +826,26 @@
               b-values and non-PGSE waveforms. Monte Carlo does not break down — it simply reflects
               the physics of that regime. Mapping where the analytical solution departs from Monte
               Carlo ground truth is not a validation failure. It is a scientific result: the exact
-              envelope within which a published model is trustworthy, encoded directly into the compendium.
+              envelope within which a published model is trustworthy, recorded openly alongside the benchmark.
             </p>
           </div>
 
           <div class="manifesto-section">
-            <h3>This is the architecture that makes agent development safe.</h3>
+            <h3>This is the architecture that makes agent development trustworthy.</h3>
             <p>
               Each feature ships with a physics-grounded benchmark: a set of parameter regimes where
               analytical and Monte Carlo must agree to within a stated tolerance, and a set of
               departure curves that characterise the boundary beyond it. An agent that hallucinates
               an implementation will fail the benchmark. An agent that ships a correct implementation
-              extends the compendium. The physics enforces the standard. The agents do the work.
+              extends what's been verified. The physics sets the standard; the agents do the work.
             </p>
             <p>
-              In practice, the heavy lifting across the entire dmipy ecosystem — simulation engine,
-              fitting framework, acquisition design, tractography, preprocessing, and compendium
-              pipeline — has been done by agent teams running
-              <a href="https://www.anthropic.com/claude" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(74,240,196,0.3);transition:border-color 0.2s;" onmouseover="this.style.borderBottomColor='var(--accent)'" onmouseout="this.style.borderBottomColor='rgba(74,240,196,0.3)'">Anthropic's Claude Sonnet 4.6</a>.
+              In practice, much of the work across dmipy's two engines — the Monte Carlo simulator and
+              the fitting framework — has been done by agent teams running
+              <a href="https://www.anthropic.com/claude" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(74,240,196,0.3);transition:border-color 0.2s;" onmouseover="this.style.borderBottomColor='var(--accent)'" onmouseout="this.style.borderBottomColor='rgba(74,240,196,0.3)'">Anthropic's Claude</a>.
               The role of the human researcher is to set direction, state the physics, and hold the
-              agents accountable to it. This is not a workflow where AI assists. It is a workflow
-              where AI builds and physics audits.
+              work accountable to it. This is not a workflow where AI merely assists: AI builds,
+              physics audits, and the researcher decides.
             </p>
           </div>
 
