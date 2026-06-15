@@ -627,6 +627,12 @@
           can build on together.
         </blockquote>
         <p class="vision-body">
+          The name is the thesis in miniature: <strong style="color:var(--accent);font-weight:400;">dmrai</strong> is
+          diffusion MRI + AI. Diffusion, because water diffusion is the mechanism beneath every quantity
+          we estimate — relaxation, susceptibility, and exchange are all read out through how water moves;
+          quantitative maps are what you get, water diffusion is how you get them. AI, because the work is
+          built by and with AI agents.
+          <br /><br />
           dmrai-lab is the revival and extension of dmipy, originally published in
           <a href="https://www.frontiersin.org/journals/neuroinformatics/articles/10.3389/fninf.2019.00064/full" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(74,240,196,0.3);transition:border-color 0.2s;" onmouseover="this.style.borderBottomColor='var(--accent)'" onmouseout="this.style.borderBottomColor='rgba(74,240,196,0.3)'">Frontiers in Neuroinformatics (2019)</a>. We are rebuilding it in the open,
           around two engines that keep each other honest: a JAX fitting engine grounded in
@@ -736,20 +742,23 @@
           </div>
 
           <div class="manifesto-section">
-            <h3>This is what the AI era makes possible.</h3>
+            <h3>A different layer of open.</h3>
             <p>
-              A single researcher with the right stack can now implement, simulate, validate, and share
-              results that previously took a laboratory, a cluster, and a team. The bottleneck was never
-              intelligence. It was infrastructure.
+              Diffusion MRI already has a generous open-source tradition — DIPY, MRtrix, FSL, the original
+              dmipy, and more — and dmrai-lab stands on it. What's different here isn't that the code is
+              open. It's that the work is built by and with AI agents, and that changes what "open" has to carry.
             </p>
             <p>
-              dmrai-lab is one researcher and a physics engine, building in the open. The code is public,
-              and the validation pipeline is reproducible by anyone with a GPU and a pip install.
+              Agents collapse the cost of producing output toward zero — and raise the cost of trusting it
+              just as sharply. An agent can produce something plausible, internally consistent, and
+              confidently wrong faster than anyone can review it.
             </p>
             <p>
-              Open source taught software to share not just its claims but the means to check them. We'd
-              love to help bring a little of that spirit to diffusion MRI — not as a standard imposed on
-              anyone, but as a shared tool, freely offered, for the field to use and improve.
+              So the scarce thing flips. When making the artifact was expensive, sharing it was the
+              contribution. When the artifact is cheap, the contribution is the verification: two
+              independent engines that cross-check each other, findings pinned to exact versions and
+              regression-tested so they can't quietly rot, and a human who stays the final arbiter.
+              We don't just open the code — we open the means to trust it.
             </p>
           </div>
 
