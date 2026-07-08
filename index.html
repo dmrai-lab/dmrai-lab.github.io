@@ -557,19 +557,19 @@
   <div class="packages reveal">
 
     <div class="pkg" style="grid-column: 1 / -1;">
-      <div class="pkg-badge active">Active</div>
-      <div class="pkg-name">dmrai</div>
+      <div class="pkg-badge active">Active · flagship</div>
+      <div class="pkg-name">dmipy</div>
       <div class="pkg-desc">
-        The workspace that ties the two engines together: pinned, validated versions of
-        dmipy-fit and dmipy-sim, the cross-engine benchmarks that check them against each other,
-        and the provenance and figure-regression tooling that keep published findings reproducible.
-        Install dmrai and you get a known-good combination of the whole stack.
+        The one thing you install. A single <span style="color:var(--accent)">pip install dmipy</span>
+        pulls both engines — dmipy-fit and dmipy-sim — in a known-good, validated combination,
+        with the cross-engine benchmarks that check them against each other and the documentation
+        at dmipy.org. The successor to the original 2019 dmipy toolbox, rebuilt in the open.
       </div>
       <div class="pkg-tags">
         <span class="tag">meta-package</span>
-        <span class="tag">pinned versions</span>
+        <span class="tag">two engines, one install</span>
         <span class="tag">benchmarks</span>
-        <span class="tag">observability</span>
+        <span class="tag">dmipy.org</span>
         <span class="tag">reproducibility</span>
       </div>
     </div>
@@ -578,15 +578,16 @@
       <div class="pkg-badge active">Active</div>
       <div class="pkg-name">dmipy-fit</div>
       <div class="pkg-desc">
-        JAX-native model inference across the full landscape of compartment models.
-        Amortized inference, Rician noise floor modeling, and explicit scope boundaries
-        characterized against Monte Carlo ground truth.
+        JAX-native fitting across the full landscape of compartment models, vmap-ed across
+        voxels on GPU. Transverse T2 and surface relaxivity as composable factors, Rician
+        noise-floor modeling, and explicit scope boundaries characterized against Monte-Carlo
+        ground truth.
       </div>
       <div class="pkg-tags">
-        <span class="tag">JAX</span>
-        <span class="tag">amortized inference</span>
+        <span class="tag">JAX GPU</span>
+        <span class="tag">surface relaxivity</span>
         <span class="tag">Rician noise</span>
-        <span class="tag">T1/T2 relaxation</span>
+        <span class="tag">T2 · CSD · NNLS MWF</span>
       </div>
     </div>
 
@@ -603,6 +604,23 @@
         <span class="tag">substrates</span>
         <span class="tag">analytics-validated</span>
         <span class="tag">MISST cross-checked</span>
+      </div>
+    </div>
+
+    <div class="pkg">
+      <div class="pkg-badge wip">Roadmap</div>
+      <div class="pkg-name">dmrai</div>
+      <div class="pkg-desc">
+        The end-to-end vision the lab is building toward: a governed workflow from scanner to
+        bundle metrics — provenance and figure-regression tooling, a microstructure atlas, and
+        the record layer (dmrai.record) — so every published finding carries its evidence. The
+        name is the thesis: diffusion MRI + AI. Not yet public.
+      </div>
+      <div class="pkg-tags">
+        <span class="tag">provenance</span>
+        <span class="tag">microstructure atlas</span>
+        <span class="tag">scanner → metrics</span>
+        <span class="tag">governance</span>
       </div>
     </div>
 
