@@ -239,6 +239,9 @@
     .pkg:nth-child(2)::before { background: var(--accent2); }
     .pkg:nth-child(3)::before { background: var(--accent2); }
     .pkg:nth-child(4)::before { background: var(--accent); }
+    .pkg:nth-child(5)::before { background: var(--accent2); }
+    .pkg:nth-child(6)::before { background: var(--accent); }
+    .pkg:nth-child(7)::before { background: var(--accent2); }
     .pkg:hover::before { transform: scaleY(1); }
 
     .pkg-badge {
@@ -266,6 +269,12 @@
 
     .pkg-name { font-family: var(--mono); font-size: 1.15rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem; }
     .pkg-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.75; margin-bottom: 1.5rem; }
+    .pkg-name a { color: inherit; text-decoration: none; transition: color 0.2s; }
+    .pkg-name a:hover { color: var(--accent); }
+    .pkg-ver { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; margin-left: 0.4rem; }
+    .pkg-desc a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(74,240,196,0.3); transition: border-color 0.2s; }
+    .pkg-desc a:hover { border-bottom-color: var(--accent); }
+    .pkg-desc .lic { display: block; margin-top: 0.6rem; font-size: 0.72rem; letter-spacing: 0.06em; }
     .pkg-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
     .tag {
@@ -522,6 +531,7 @@
   </div>
   <nav>
     <a href="#packages">Packages</a>
+    <a href="#data">Data</a>
     <a href="#vision">Vision</a>
     <a href="#about">About</a>
     <a href="#collaborators">Collaborators</a>
@@ -537,11 +547,14 @@
       Diffusion MRI can see inside living tissue without a scalpel — inferring axon diameters,
       membrane densities, soma permeability from the motion of water molecules.
       dmrai-lab is building open, validated, reproducible infrastructure for this work:
-      two engines that keep each other honest, free for the whole field to use, extend, and check.
+      a Monte-Carlo engine whose walks are stored once and replayed for any acquisition, a reader
+      that needs only NumPy, and the fitting, design and tractography tools that check against it,
+      free for the whole field to use, extend, and check.
     </p>
     <div class="hero-cta">
       <a href="https://dmipy.org" target="_blank" class="btn btn-primary">Documentation → dmipy.org</a>
       <a href="https://github.com/dmrai-lab" target="_blank" class="btn btn-ghost">View on GitHub</a>
+      <a href="https://huggingface.co/spaces/rfick/disco-replay" target="_blank" class="btn btn-ghost">DiSCo Space ↗</a>
       <a href="#vision" class="btn btn-ghost">Manifesto</a>
     </div>
   </div>
@@ -561,13 +574,14 @@
       <div class="pkg-name">dmipy</div>
       <div class="pkg-desc">
         The one thing you install. A single <span style="color:var(--accent)">pip install dmipy</span>
-        pulls both engines — dmipy-fit and dmipy-sim — in a known-good, validated combination,
-        with the cross-engine benchmarks that check them against each other and the documentation
+        pulls the design, simulation and fitting packages in a known-good, validated combination,
+        with the cross-package benchmarks that check them against each other and the documentation
         at dmipy.org. The successor to the original 2019 dmipy toolbox, rebuilt in the open.
+        <span class="lic">Code: AGPL-3.0 or commercial</span>
       </div>
       <div class="pkg-tags">
         <span class="tag">meta-package</span>
-        <span class="tag">two engines, one install</span>
+        <span class="tag">one install</span>
         <span class="tag">benchmarks</span>
         <span class="tag">dmipy.org</span>
         <span class="tag">reproducibility</span>
@@ -576,34 +590,93 @@
 
     <div class="pkg">
       <div class="pkg-badge active">Active</div>
-      <div class="pkg-name">dmipy-fit</div>
+      <div class="pkg-name"><a href="https://github.com/dmrai-lab/dmipy-sim" target="_blank">dmipy-sim</a><span class="pkg-ver">3.0</span></div>
       <div class="pkg-desc">
-        JAX-native fitting across the full landscape of compartment models, vmap-ed across
-        voxels on GPU. Transverse T2 and surface relaxivity as composable factors, Rician
-        noise-floor modeling, and explicit scope boundaries characterized against Monte-Carlo
-        ground truth.
+        The Monte-Carlo replay engine. Spins walk once through an explicit tissue substrate
+        (axon bundles, packed cylinders and spheres, meshes, DiSCo strands) with surface relaxivity,
+        membrane permeability, magnetization transfer and susceptibility fields in the walk. The walk
+        is stored as a certified replay pack that answers any gradient waveform, RF schedule, tissue
+        value and orientation without another simulation. JAX, on CPU or GPU.
+        <span class="lic">AGPL-3.0 or commercial</span>
       </div>
       <div class="pkg-tags">
+        <span class="tag">Monte Carlo</span>
+        <span class="tag">replay packs</span>
+        <span class="tag">wall physics</span>
         <span class="tag">JAX GPU</span>
-        <span class="tag">surface relaxivity</span>
-        <span class="tag">Rician noise</span>
-        <span class="tag">T2 · CSD · NNLS MWF</span>
       </div>
     </div>
 
     <div class="pkg">
       <div class="pkg-badge active">Active</div>
-      <div class="pkg-name">dmipy-sim</div>
+      <div class="pkg-name"><a href="https://github.com/dmrai-lab/dmipy-replay" target="_blank">dmipy-replay</a></div>
       <div class="pkg-desc">
-        Monte Carlo diffusion MRI simulator validated against analytical solutions and
-        MISST, sharing the disimpy / Camino Monte-Carlo physics. Substrate generation,
-        gradient waveforms, and synthetic signal output for ground-truth benchmarking.
+        The reader of replay packs: NumPy only, no walk, no GPU. It reads packs from the Hugging Face
+        Hub by ranged requests, replays any acquisition against them, and states what a replay will
+        read before it reads. Every pack declares the scanner class it is certified for, and a request
+        outside that class is refused by name.
+        <span class="lic">Apache-2.0</span>
       </div>
       <div class="pkg-tags">
-        <span class="tag">Monte Carlo</span>
-        <span class="tag">substrates</span>
-        <span class="tag">analytics-validated</span>
-        <span class="tag">MISST cross-checked</span>
+        <span class="tag">NumPy only</span>
+        <span class="tag">Hub client</span>
+        <span class="tag">Pulseq</span>
+        <span class="tag">scanner-class certificate</span>
+      </div>
+    </div>
+
+    <div class="pkg">
+      <div class="pkg-badge active">Active</div>
+      <div class="pkg-name"><a href="https://github.com/dmrai-lab/dmipy-fit" target="_blank">dmipy-fit</a></div>
+      <div class="pkg-desc">
+        JAX-native fitting across the full landscape of compartment models, vmap-ed across
+        voxels on GPU. T2, T1 and surface relaxivity as composable factors, exact matrix-method
+        restricted-diffusion compartments, and replay compartments that fit through a stored
+        Monte-Carlo walk. Batched CSD and DTI on the device, with explicit scope boundaries
+        characterized against Monte-Carlo ground truth.
+        <span class="lic">AGPL-3.0 or commercial</span>
+      </div>
+      <div class="pkg-tags">
+        <span class="tag">JAX GPU</span>
+        <span class="tag">matrix method</span>
+        <span class="tag">replay compartments</span>
+        <span class="tag">T2 · T1 · surface relaxivity</span>
+        <span class="tag">CSD</span>
+      </div>
+    </div>
+
+    <div class="pkg">
+      <div class="pkg-badge active">Active</div>
+      <div class="pkg-name"><a href="https://github.com/dmrai-lab/dmipy-design" target="_blank">dmipy-design</a></div>
+      <div class="pkg-desc">
+        Deliverable acquisition design under real scanner limits: gradient waveforms for any
+        b-tensor shape (LTE, PTE, STE, OGSE, stimulated echo), B1-robust refocusing pulses, and
+        waveforms designed through replay packs to tell substrates apart. It exports scanner-runnable
+        Pulseq sequences.
+        <span class="lic">AGPL-3.0 or commercial</span>
+      </div>
+      <div class="pkg-tags">
+        <span class="tag">waveform design</span>
+        <span class="tag">scanner limits</span>
+        <span class="tag">refocusing RF</span>
+        <span class="tag">Pulseq export</span>
+      </div>
+    </div>
+
+    <div class="pkg">
+      <div class="pkg-badge active">Active</div>
+      <div class="pkg-name"><a href="https://github.com/dmrai-lab/dmipy-tract" target="_blank">dmipy-tract</a></div>
+      <div class="pkg-desc">
+        Streamline tractography on fibre-orientation fields, batched on the device. One FOD field,
+        one tracker (probabilistic and deterministic rules, JAX or PyTorch), one tractogram written
+        as .tck. It follows dipy's LocalTracking conventions, and a streamline depends on the key,
+        its seed and the field alone.
+        <span class="lic">AGPL-3.0 or commercial</span>
+      </div>
+      <div class="pkg-tags">
+        <span class="tag">FOD tracking</span>
+        <span class="tag">JAX · PyTorch</span>
+        <span class="tag">reproducible streams</span>
       </div>
     </div>
 
@@ -621,6 +694,66 @@
         <span class="tag">microstructure atlas</span>
         <span class="tag">scanner → metrics</span>
         <span class="tag">governance</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"><hr /></div>
+
+<section class="section" id="data">
+  <p class="section-label reveal">Data, demo and paper</p>
+  <div class="packages reveal">
+
+    <div class="pkg">
+      <div class="pkg-badge active">Open data</div>
+      <div class="pkg-name"><a href="https://huggingface.co/SubstrateCommons" target="_blank">SubstrateCommons</a></div>
+      <div class="pkg-desc">
+        Replay packs on the Hugging Face Hub: canonical pores (planes, cylinders and spheres),
+        a permeable slab, CACTUS axons, susceptibility-bearing axons, the DiSCo phantom and more.
+        Each pack is certified for a stated scanner class, not for a list of protocols, and is
+        read with dmipy-replay.
+        <span class="lic">Replay packs: CC BY-NC-SA 4.0 or commercial</span>
+      </div>
+      <div class="pkg-tags">
+        <span class="tag">Hugging Face Hub</span>
+        <span class="tag">replay packs</span>
+        <span class="tag">certified</span>
+      </div>
+    </div>
+
+    <div class="pkg">
+      <div class="pkg-badge active">Live demo</div>
+      <div class="pkg-name"><a href="https://huggingface.co/spaces/rfick/disco-replay" target="_blank">DiSCo Space</a></div>
+      <div class="pkg-desc">
+        The DiSCo connectivity phantom replayed in the browser on a shared GPU: pick an acquisition
+        (DiSCo's own, clinical, research, Connectome 2.0, OGSE), replay every voxel from the stored
+        walk, reconstruct and track. The packs come from SubstrateCommons; the code is dmipy-sim,
+        dmipy-fit and dmipy-tract. Source: <a href="https://github.com/dmrai-lab/disco-space" target="_blank">disco-space</a>.
+      </div>
+      <div class="pkg-tags">
+        <span class="tag">DiSCo</span>
+        <span class="tag">replay</span>
+        <span class="tag">CSD</span>
+        <span class="tag">tractography</span>
+      </div>
+    </div>
+
+    <div class="pkg" style="grid-column: 1 / -1;">
+      <div class="pkg-badge wip">Preprint</div>
+      <div class="pkg-name">Replayable Monte Carlo MRI</div>
+      <div class="pkg-desc">
+        <em>Replayable Monte Carlo MRI: From Persistent Tissue Microphysics to Queryable Virtual Phantoms.</em>
+        A Monte-Carlo walk is stored once, as the projections it leaves, and every acquisition is then
+        a query against it. The paper describes the representation, the guarantee a pack carries and
+        the packs that follow. <!-- ARXIV_URL: replace the placeholder href below with the arXiv link before merging -->
+        <a href="ARXIV_URL" target="_blank">Preprint (arXiv) ↗</a>
+      </div>
+      <div class="pkg-tags">
+        <span class="tag">preprint</span>
+        <span class="tag">replay packs</span>
+        <span class="tag">virtual phantoms</span>
       </div>
     </div>
 
@@ -654,9 +787,10 @@
           <br /><br />
           dmrai-lab is the revival and extension of dmipy, originally published in
           <a href="https://www.frontiersin.org/journals/neuroinformatics/articles/10.3389/fninf.2019.00064/full" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(74,240,196,0.3);transition:border-color 0.2s;" onmouseover="this.style.borderBottomColor='var(--accent)'" onmouseout="this.style.borderBottomColor='rgba(74,240,196,0.3)'">Frontiers in Neuroinformatics (2019)</a>. We are rebuilding it in the open,
-          around two engines that keep each other honest: a JAX fitting engine grounded in
-          biophysical compartment models, and a Monte Carlo simulator that provides the
-          ground truth to check it against.
+          around a Monte Carlo replay engine that provides the ground truth, a walk stored once
+          that answers any acquisition, and the tools that check against it: a JAX fitting engine
+          grounded in biophysical compartment models, an acquisition designer and a tractography
+          tracker.
           <br /><br />
           Our north star: a scientist anywhere in the world should be able to describe a
           tissue model, simulate it, fit it, and reproduce the result — in a single afternoon,
@@ -941,7 +1075,7 @@
 
 <footer>
   <div class="footer-left">
-    © 2026 dmrai-lab — Software: AGPL-3.0 or commercial · Site content © dmrai-lab, all rights reserved
+    © 2026 dmrai-lab — Code: AGPL-3.0 or commercial (dmipy-replay: Apache-2.0) · Replay packs: CC BY-NC-SA 4.0 or commercial · Site content © dmrai-lab, all rights reserved
   </div>
   <div class="footer-links">
     <a href="https://github.com/dmrai-lab" target="_blank">GitHub</a>
