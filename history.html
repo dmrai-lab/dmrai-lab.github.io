@@ -430,7 +430,7 @@
     <h1>From ball and stick<br/><em>to replay packs.</em></h1>
     <p class="hero-sub">
       dmipy began in 2017 as an open toolbox for diffusion MRI microstructure. After six quiet years
-      it was revived in March 2026 as a collaboration between Rutger and Claude. This is what got
+      it was revived in April 2026 as a collaboration between Rutger and Claude. This is what got
       built, and when.
     </p>
   </section>
@@ -643,7 +643,7 @@
     var yN = new Date(todayT).getUTCFullYear();
     for (var y = y0; y <= yN; y++) {
       var tt = y === y0 ? ms[0].t : Date.UTC(y, 0, 1);
-      if (tt < parseDate(revivalEra.from)) ticks.push({ x: xOf(tt), label: String(y), major: true });
+      if (y < new Date(parseDate(revivalEra.from)).getUTCFullYear()) ticks.push({ x: xOf(tt), label: String(y), major: true });
     }
     var rv = new Date(parseDate(revivalEra.from));
     for (var mt = Date.UTC(rv.getUTCFullYear(), rv.getUTCMonth(), 1); mt <= todayT; ) {
