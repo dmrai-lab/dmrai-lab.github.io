@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>History · dmrai-lab</title>
+  <meta name="description" content="How dmipy grew, from the 2017 toolbox with its analytic Watson and Bingham distributions to the 2026 family of packages, replay packs and open datasets." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,400;0,9..144,700;1,9..144,200;1,9..144,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #07090f;
+      --bg2:       #0d1120;
+      --surface:   #111827;
+      --border:    rgba(255,255,255,0.07);
+      --accent:    #4af0c4;
+      --accent2:   #7b9cff;
+      --text:      #e8edf5;
+      --muted:     #7a8499;
+      --mono:      'DM Mono', monospace;
+      --serif:     'Fraunces', Georgia, serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .glow-bg {
+      position: fixed;
+      top: -30vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120vw;
+      height: 80vh;
+      background: radial-gradient(ellipse at 50% 0%, rgba(74,240,196,0.07) 0%, rgba(123,156,255,0.05) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    /* ── HEADER (as index.html) ── */
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem 4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo { display: flex; align-items: baseline; gap: 0.5rem; text-decoration: none; }
+
+    .logo-name {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+    }
+
+    .logo-tag { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; }
+
+    nav { display: flex; gap: 2.5rem; }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav a:hover, nav a[aria-current="page"] { color: var(--text); }
+    nav a[aria-current="page"] { border-bottom: 1px solid var(--accent); }
+
+    /* ── HERO ── */
+    .hist-hero {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5.5rem 4rem 2.5rem;
+    }
+
+    .back-link {
+      display: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      margin-bottom: 2rem;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.1s forwards;
+    }
+
+    .hero-eyebrow span {
+      display: inline-block;
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+      vertical-align: middle;
+      margin-right: 0.75rem;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 5.5vw, 4.4rem);
+      font-weight: 200;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.25s forwards;
+    }
+
+    h1 em { font-style: italic; color: var(--accent); font-weight: 200; }
+
+    .hero-sub {
+      font-size: 0.92rem;
+      color: var(--muted);
+      max-width: 640px;
+      line-height: 1.9;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.4s forwards;
+    }
+
+    /* ── SECTION ── */
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .tl-section {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 4rem 5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.55s forwards;
+    }
+
+    /* toolbar: legend and jumps */
+    .tl-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem 2rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .tl-legend { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem 1.1rem; max-width: 760px; }
+    .tl-legend li { font-size: 0.7rem; letter-spacing: 0.04em; }
+    .tl-legend a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .tl-legend a:hover { color: var(--text); }
+    .tl-swatch { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%; margin-right: 0.4rem; vertical-align: 0; }
+
+    .tl-jump { display: flex; align-items: center; gap: 0.5rem; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+    .tl-btn {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 0.35rem 0.75rem;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .tl-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .tl-btn:disabled { opacity: 0.35; cursor: default; }
+
+    /* the map */
+    .tl-scroller {
+      position: relative;
+      overflow-x: auto;
+      overflow-y: hidden;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(13,17,32,0.7), rgba(7,9,15,0.7));
+      scrollbar-color: rgba(122,132,153,0.5) transparent;
+    }
+
+    .tl-canvas { position: relative; }
+    .tl-canvas svg { position: absolute; top: 0; left: 0; display: block; }
+
+    .tl-node {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      margin: -15px 0 0 -15px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    .tl-node:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; }
+
+    .tl-label {
+      position: absolute;
+      transform: translateX(-50%);
+      font-size: 10.5px;
+      line-height: 14px;
+      white-space: nowrap;
+      color: var(--muted);
+      background: rgba(7,9,15,0.82);
+      padding: 0 3px;
+      border-radius: 2px;
+      cursor: pointer;
+      z-index: 2;
+      transition: color 0.2s;
+    }
+
+    .tl-label.is-highlight { color: var(--text); }
+    .tl-label:hover, .tl-label.is-hover { color: var(--text); }
+    .tl-label.is-selected { color: var(--bg); background: var(--lane, var(--accent)); }
+
+    .tl-ring { opacity: 0; transition: opacity 0.2s; }
+    .tl-ring.is-selected { opacity: 1; }
+
+    .tl-pulse { transform-box: fill-box; transform-origin: center; animation: pulse 2.4s ease-in-out infinite; }
+
+    .tl-hint { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.04em; margin-top: 0.6rem; }
+
+    /* the card under the map */
+    .tl-panel {
+      margin-top: 1.5rem;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--lane, var(--accent));
+      background: var(--bg2);
+      padding: 2rem 2.5rem;
+      min-height: 14rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tl-panel.is-era {
+      background: linear-gradient(120deg, rgba(74,240,196,0.08), rgba(123,156,255,0.06) 55%, var(--bg2));
+    }
+
+    .tl-meta { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.8rem; }
+    .tl-meta .lane-name { color: var(--lane, var(--accent)); }
+    .tl-kind { margin-left: 0.4rem; padding: 0.05rem 0.45rem; border: 1px solid var(--border); font-size: 0.62rem; }
+
+    .tl-title {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 0.9rem;
+    }
+
+    .tl-text { font-size: 0.88rem; color: var(--text); opacity: 0.86; line-height: 1.85; max-width: 720px; margin-bottom: 1.1rem; }
+
+    .tl-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; font-size: 0.78rem; margin-bottom: 1.4rem; }
+    .tl-links a, .tl-list a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(74,240,196,0.3); transition: border-color 0.2s; }
+    .tl-links a:hover, .tl-list a:hover { border-bottom-color: var(--accent); }
+
+    .tl-nav { display: flex; align-items: center; gap: 1rem; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; }
+
+    /* the vertical list (phones) */
+    .tl-list { display: none; list-style: none; position: relative; padding-left: 2rem; }
+    .tl-list::before {
+      content: '';
+      position: absolute;
+      left: 0.55rem; top: 0.5rem; bottom: 0.5rem;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(232,237,245,0.35), rgba(232,237,245,0.35) 22%, rgba(74,240,196,0.7) 30%, rgba(123,156,255,0.7));
+    }
+
+    .tl-list li { position: relative; margin-bottom: 1.6rem; }
+    .tl-list li::before {
+      content: '';
+      position: absolute;
+      left: calc(-2rem + 0.55rem + 1px - 5px);
+      top: 0.45rem;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--lane, var(--text));
+      box-shadow: 0 0 0 3px var(--bg);
+    }
+
+    .tl-list li.is-highlight::before { width: 14px; height: 14px; left: calc(-2rem + 0.55rem + 1px - 7px); top: 0.3rem; box-shadow: 0 0 0 3px var(--bg), 0 0 0 7px rgba(74,240,196,0.15); }
+
+    .tl-list .tl-era-item { margin: 2.4rem 0 1.4rem; }
+    .tl-list .tl-era-item::before { display: none; }
+    .tl-list .tl-era-item h3 { font-size: 0.7rem; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); }
+    .tl-list .tl-era-item p { font-size: 0.72rem; color: var(--muted); }
+
+    .tl-list .tl-branch { font-size: 0.74rem; color: var(--lane); letter-spacing: 0.04em; }
+    .tl-list .tl-branch::before { width: 8px; height: 8px; left: calc(-2rem + 0.55rem + 1px - 4px); top: 0.5rem; background: transparent; border: 2px solid var(--lane); }
+
+    .tl-list .tl-item-meta { font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .tl-list .tl-item-meta .lane-name { color: var(--lane); }
+    .tl-list h4 { font-family: var(--serif); font-weight: 300; font-size: 1.25rem; line-height: 1.3; margin: 0.15rem 0 0.35rem; }
+    .tl-list p { font-size: 0.82rem; color: var(--text); opacity: 0.86; line-height: 1.75; }
+    .tl-list .tl-item-links { font-size: 0.74rem; margin-top: 0.35rem; display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; opacity: 1; }
+    .tl-list li:target h4 { color: var(--accent); }
+
+    .tl-fallback { font-size: 0.85rem; color: var(--muted); border: 1px solid var(--border); padding: 1.5rem; }
+    .tl-fallback a { color: var(--accent); }
+
+    /* ── FOOTER (as index.html) ── */
+    footer {
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-left { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.06em; }
+    .footer-links { display: flex; gap: 1.5rem; }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.25; transform: scale(1); }
+      50%      { opacity: 0.6;  transform: scale(1.35); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .hero-eyebrow, h1, .hero-sub, .tl-section { animation: none; opacity: 1; }
+      .tl-pulse { animation: none; }
+      .tl-label, .tl-ring, .tl-btn { transition: none; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 760px) {
+      header { padding: 1.5rem; }
+      nav { display: none; }
+      .back-link { display: inline-block; }
+      .hist-hero { padding: 3rem 1rem 1.5rem; }
+      .tl-section { padding: 1rem 1rem 3rem; }
+      .tl-desktop { display: none; }
+      .tl-list { display: block; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="glow-bg"></div>
+
+<header>
+  <a class="logo" href="./">
+    <span class="logo-name">dmrai-lab</span>
+    <span class="logo-tag">/ org</span>
+  </a>
+  <nav>
+    <a href="./#packages">Packages</a>
+    <a href="./#data">Data</a>
+    <a href="./#vision">Vision</a>
+    <a href="history.html" aria-current="page">History</a>
+    <a href="./#about">About</a>
+    <a href="./#collaborators">Collaborators</a>
+    <a href="https://github.com/dmrai-lab" target="_blank">GitHub ↗</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hist-hero">
+    <a class="back-link" href="./">← dmrai-lab</a>
+    <p class="hero-eyebrow"><span></span>History · 2017 to today</p>
+    <h1>From Watson &amp; Bingham<br/><em>to replay packs.</em></h1>
+    <p class="hero-sub">
+      dmipy began in 2017 as an open toolbox for diffusion MRI microstructure. After six quiet years
+      it was revived in March 2026 as a collaboration between Rutger and Claude. This is what got
+      built, and when.
+    </p>
+  </section>
+
+  <section class="tl-section" aria-labelledby="tl-heading">
+    <h2 class="section-label" id="tl-heading">The family tree</h2>
+
+    <div class="tl-desktop">
+      <div class="tl-toolbar">
+        <ul class="tl-legend" id="tl-legend" aria-label="Lanes"></ul>
+        <div class="tl-jump" role="group" aria-label="Jump to">
+          <span aria-hidden="true">Jump to</span>
+          <button type="button" class="tl-btn" data-jump="first">2017</button>
+          <button type="button" class="tl-btn" data-jump="revival">The revival</button>
+          <button type="button" class="tl-btn" data-jump="last">Today</button>
+        </div>
+      </div>
+
+      <div class="tl-scroller" id="tl-scroller" role="region" aria-label="Timeline: one line per package, scrolls sideways">
+        <div class="tl-canvas" id="tl-canvas"></div>
+      </div>
+      <p class="tl-hint">Scroll sideways. Select a station for its story; with a station focused, ← and → step through time.</p>
+
+      <div class="tl-panel" id="tl-panel" aria-live="polite"></div>
+    </div>
+
+    <ol class="tl-list" id="tl-list" aria-label="Milestones, oldest first"></ol>
+
+    <noscript>
+      <p class="tl-fallback">The timeline is drawn with JavaScript. Its data is <a href="history.json">history.json</a>.</p>
+    </noscript>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-left">
+    © 2026 dmrai-lab — Code: AGPL-3.0 or commercial (dmipy-analytic, dmipy-replay: Apache-2.0) · Replay packs: CC BY-NC-SA 4.0 or commercial · Site content © dmrai-lab, all rights reserved
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/dmrai-lab" target="_blank">GitHub</a>
+    <a href="https://pypi.org/user/dmrai-lab/" target="_blank">PyPI</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                'August', 'September', 'October', 'November', 'December'];
+  var SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var DAY = 86400000;
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // Geometry of the map.
+  var X0 = 90;          // x of the first station
+  var GAP = 54;         // vertical distance between lanes
+  var Y0 = 86;          // y of lane row 0
+  var BRANCH = 56;      // horizontal run of a branch curve
+
+  function parseDate(s) {
+    var p = s.split('-').map(Number);
+    return Date.UTC(p[0], (p[1] || 1) - 1, p[2] || 1);
+  }
+
+  function fmtDate(s) {
+    var p = s.split('-');
+    var m = MONTHS[Number(p[1]) - 1];
+    return p[2] ? Number(p[2]) + ' ' + m + ' ' + p[0] : m + ' ' + p[0];
+  }
+
+  // Spacing between neighbouring stations: schematic, but a longer wait reads longer.
+  function spacing(days) {
+    if (days <= 400) return 58 + 6 * Math.log(1 + days);
+    return 94 + 30 * Math.log(days / 400);
+  }
+
+  function el(tag, attrs, text) {
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function sv(tag, attrs) {
+    var e = document.createElementNS(SVGNS, tag);
+    Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    return e;
+  }
+
+  function loadData() {
+    var inline = document.getElementById('history-data');
+    if (inline) return Promise.resolve(JSON.parse(inline.textContent));
+    return fetch('history.json', { cache: 'no-cache' }).then(function (r) {
+      if (!r.ok) throw new Error('history.json: HTTP ' + r.status);
+      return r.json();
+    });
+  }
+
+  loadData().then(build).catch(function (err) {
+    var box = el('p', { class: 'tl-fallback' });
+    box.innerHTML = 'The timeline could not load its data (<a href="history.json">history.json</a>).';
+    document.querySelector('.tl-section').appendChild(box);
+    if (window.console) console.error(err);
+  });
+
+  function build(data) {
+    var lanes = {};
+    data.lanes.forEach(function (l) { lanes[l.id] = l; });
+    var ms = data.milestones.map(function (m, i) {
+      return Object.assign({}, m, { t: parseDate(m.date), order: i });
+    });
+    ms.sort(function (a, b) {
+      return (a.t - b.t) || (lanes[a.lane].row - lanes[b.lane].row) || (a.order - b.order);
+    });
+    ms.forEach(function (m, i) { m.index = i; });
+
+    renderList(data, lanes, ms);
+    renderMap(data, lanes, ms);
+  }
+
+  /* ── The map: lanes left to right, stations on them ── */
+  function renderMap(data, lanes, ms) {
+    var canvas = document.getElementById('tl-canvas');
+    var scroller = document.getElementById('tl-scroller');
+    var panel = document.getElementById('tl-panel');
+    var legend = document.getElementById('tl-legend');
+
+    // x of each station, in order of time.
+    ms.forEach(function (m, i) {
+      m.x = i === 0 ? X0 : ms[i - 1].x + spacing((m.t - ms[i - 1].t) / DAY);
+    });
+    var last = ms[ms.length - 1];
+    var todayT = parseDate(data.updated);
+    var todayX = last.x + Math.max(48, spacing(Math.max(0, todayT - last.t) / DAY));
+    var rows = Math.max.apply(null, data.lanes.map(function (l) { return l.row; })) + 1;
+    var W = todayX + 190;
+    var H = Y0 + (rows - 1) * GAP + 48;
+
+    // Dates between stations are placed by interpolation.
+    var uniq = [];
+    ms.forEach(function (m) {
+      var u = uniq[uniq.length - 1];
+      if (u && u.t === m.t) u.x2 = m.x; else uniq.push({ t: m.t, x1: m.x, x2: m.x });
+    });
+    uniq.push({ t: Math.max(todayT, last.t + 1), x1: todayX, x2: todayX });
+    function xOf(t) {
+      if (t <= uniq[0].t) return uniq[0].x1;
+      for (var i = 0; i < uniq.length - 1; i++) {
+        var a = uniq[i], b = uniq[i + 1];
+        if (t === a.t) return a.x1;
+        if (t < b.t) return a.x2 + (t - a.t) / (b.t - a.t) * (b.x1 - a.x2);
+      }
+      return todayX;
+    }
+    function yOf(laneId) { return Y0 + lanes[laneId].row * GAP; }
+
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    var svg = sv('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, 'aria-hidden': 'true', focusable: 'false' });
+    canvas.appendChild(svg);
+
+    var revivalEra = data.eras.filter(function (e) { return e.id === 'revival'; })[0];
+    var quietEra = data.eras.filter(function (e) { return e.id === 'quiet'; })[0];
+    var xRevival = xOf(parseDate(revivalEra.from));
+    var xQuiet = xOf(parseDate(quietEra.from));
+
+    var defs = sv('defs', {});
+    var grad = sv('linearGradient', { id: 'tl-spine', gradientUnits: 'userSpaceOnUse', x1: xRevival, y1: 0, x2: todayX, y2: 0 });
+    grad.appendChild(sv('stop', { offset: '0', 'stop-color': '#e8edf5' }));
+    grad.appendChild(sv('stop', { offset: '0.35', 'stop-color': '#4af0c4' }));
+    grad.appendChild(sv('stop', { offset: '1', 'stop-color': '#7b9cff' }));
+    defs.appendChild(grad);
+    var tint = sv('linearGradient', { id: 'tl-tint', x1: 0, y1: 0, x2: 1, y2: 0 });
+    tint.appendChild(sv('stop', { offset: '0', 'stop-color': '#4af0c4', 'stop-opacity': '0.07' }));
+    tint.appendChild(sv('stop', { offset: '0.25', 'stop-color': '#4af0c4', 'stop-opacity': '0.025' }));
+    tint.appendChild(sv('stop', { offset: '1', 'stop-color': '#7b9cff', 'stop-opacity': '0.02' }));
+    defs.appendChild(tint);
+    svg.appendChild(defs);
+
+    // Eras: the revival is a different kind of time, and the map says so.
+    svg.appendChild(sv('rect', { x: xRevival - 24, y: 0, width: W - xRevival + 24, height: H, fill: 'url(#tl-tint)' }));
+    svg.appendChild(sv('line', { x1: xRevival - 24, y1: 0, x2: xRevival - 24, y2: H, stroke: 'rgba(74,240,196,0.25)', 'stroke-width': 1 }));
+    data.eras.forEach(function (era) {
+      var x1 = era.id === 'original' ? X0 - 40 : xOf(parseDate(era.from)) + (era.id === 'revival' ? -12 : 14);
+      var t = sv('text', { x: x1, y: 22, fill: era.id === 'revival' ? '#4af0c4' : '#7a8499',
+        'font-size': 10, 'letter-spacing': '0.18em', 'font-family': 'DM Mono, monospace' });
+      t.textContent = era.name.toUpperCase();
+      svg.appendChild(t);
+    });
+
+    // The empty rows before the revival carry the era's caption.
+    var original = data.eras.filter(function (e) { return e.id === 'original'; })[0];
+    if (original && original.caption) {
+      var cap = sv('text', { x: X0 - 30, y: Y0 + 1.7 * GAP, fill: '#e8edf5', 'fill-opacity': 0.13,
+        'font-size': 38, 'font-style': 'italic', 'font-weight': 200, 'font-family': 'Fraunces, Georgia, serif' });
+      cap.textContent = original.caption;
+      svg.appendChild(cap);
+      if (original.people) {
+        var ppl = sv('text', { x: X0 - 28, y: Y0 + 1.7 * GAP + 26, fill: '#7a8499', 'font-size': 11, 'font-family': 'DM Mono, monospace' });
+        ppl.textContent = original.people;
+        svg.appendChild(ppl);
+      }
+    }
+
+    // Time ticks: years before the revival, months during it.
+    var ticks = [];
+    var y0 = new Date(ms[0].t).getUTCFullYear();
+    var yN = new Date(todayT).getUTCFullYear();
+    for (var y = y0; y <= yN; y++) {
+      var tt = y === y0 ? ms[0].t : Date.UTC(y, 0, 1);
+      if (tt < parseDate(revivalEra.from)) ticks.push({ x: xOf(tt), label: String(y), major: true });
+    }
+    var rv = new Date(parseDate(revivalEra.from));
+    for (var mt = Date.UTC(rv.getUTCFullYear(), rv.getUTCMonth(), 1); mt <= todayT; ) {
+      var d = new Date(mt);
+      ticks.push({ x: xOf(mt), label: SHORT[d.getUTCMonth()] + (d.getUTCMonth() === rv.getUTCMonth() ? ' ' + d.getUTCFullYear() : ''), major: d.getUTCMonth() === rv.getUTCMonth() });
+      mt = Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1);
+    }
+    var lastTick = -1e9;
+    ticks.forEach(function (tk) {
+      if (tk.x - lastTick < 40) return;
+      lastTick = tk.x;
+      svg.appendChild(sv('line', { x1: tk.x, y1: 50, x2: tk.x, y2: H - 22, stroke: 'rgba(255,255,255,0.045)', 'stroke-width': 1 }));
+      var t = sv('text', { x: tk.x + 4, y: 46, fill: tk.major ? '#e8edf5' : '#7a8499', 'font-size': 10.5, 'font-family': 'DM Mono, monospace' });
+      t.textContent = tk.label;
+      svg.appendChild(t);
+    });
+
+    // Lanes: the spine first, then each branch from its parent.
+    var gLanes = sv('g', { fill: 'none', 'stroke-linecap': 'round' });
+    svg.appendChild(gLanes);
+    data.lanes.forEach(function (lane) {
+      var yl = yOf(lane.id);
+      var own = ms.filter(function (m) { return m.lane === lane.id; });
+      if (!lane.parent) {
+        gLanes.appendChild(sv('line', { x1: X0 - 40, y1: yl, x2: xQuiet, y2: yl, stroke: lane.color, 'stroke-opacity': 0.55, 'stroke-width': 2 }));
+        gLanes.appendChild(sv('line', { x1: xQuiet, y1: yl, x2: xRevival, y2: yl, stroke: lane.color, 'stroke-opacity': 0.4, 'stroke-width': 2, 'stroke-dasharray': '2 7' }));
+        gLanes.appendChild(sv('line', { x1: xRevival, y1: yl, x2: todayX, y2: yl, stroke: '#4af0c4', 'stroke-opacity': 0.14, 'stroke-width': 10 }));
+        gLanes.appendChild(sv('line', { x1: xRevival, y1: yl, x2: todayX, y2: yl, stroke: 'url(#tl-spine)', 'stroke-width': 3 }));
+        return;
+      }
+      var yp = yOf(lane.parent);
+      var bx = xOf(parseDate(lane.born));
+      var fx = own.length ? own[0].x : todayX;
+      if (fx - bx < 40) bx = fx - BRANCH;
+      var bx2 = Math.min(bx + BRANCH, fx);
+      var h = (bx2 - bx) / 2;
+      gLanes.appendChild(sv('path', {
+        d: 'M' + bx + ',' + yp + ' C' + (bx + h) + ',' + yp + ' ' + (bx2 - h) + ',' + yl + ' ' + bx2 + ',' + yl + ' L' + todayX + ',' + yl,
+        stroke: lane.color, 'stroke-opacity': 0.75, 'stroke-width': 2
+      }));
+    });
+
+    // Today, and the lane names where the lines end.
+    svg.appendChild(sv('line', { x1: todayX, y1: 54, x2: todayX, y2: H - 22, stroke: 'rgba(74,240,196,0.45)', 'stroke-width': 1, 'stroke-dasharray': '3 4' }));
+    var td = sv('text', { x: todayX, y: H - 8, fill: '#4af0c4', 'font-size': 10.5, 'text-anchor': 'middle', 'font-family': 'DM Mono, monospace' });
+    td.textContent = 'today · ' + fmtDate(data.updated);
+    svg.appendChild(td);
+    data.lanes.forEach(function (lane) {
+      svg.appendChild(sv('circle', { cx: todayX, cy: yOf(lane.id), r: 3, fill: lane.color }));
+      var t = sv('text', { x: todayX + 12, y: yOf(lane.id) + 4, fill: lane.color, 'font-size': 11.5, 'font-family': 'DM Mono, monospace' });
+      t.textContent = lane.name;
+      svg.appendChild(t);
+    });
+
+    // Legend above the map.
+    data.lanes.slice().sort(function (a, b) { return parseDate(a.born) - parseDate(b.born) || a.row - b.row; }).forEach(function (lane) {
+      var li = el('li');
+      var a = el('a', { href: lane.url, target: '_blank', title: lane.role });
+      var sw = el('span', { class: 'tl-swatch', 'aria-hidden': 'true' });
+      sw.style.background = lane.color;
+      a.appendChild(sw);
+      a.appendChild(document.createTextNode(lane.name));
+      li.appendChild(a);
+      legend.appendChild(li);
+    });
+
+    // Stations: drawn in the SVG, operated through buttons and labels above it.
+    var gNodes = sv('g', {});
+    svg.appendChild(gNodes);
+    var side = {};
+    var buttons = [], labels = [], rings = [];
+    ms.forEach(function (m) {
+      var lane = lanes[m.lane];
+      var y = yOf(m.lane);
+      var r = m.highlight ? 7 : 4.5;
+      if (m.highlight) {
+        var halo = sv('circle', { cx: m.x, cy: y, r: 12, fill: lane.color, 'fill-opacity': 0.14 });
+        if (m.era) halo.setAttribute('class', 'tl-pulse');
+        gNodes.appendChild(halo);
+      }
+      var ring = sv('circle', { cx: m.x, cy: y, r: r + 5, fill: 'none', stroke: lane.color, 'stroke-width': 1.5, class: 'tl-ring' });
+      gNodes.appendChild(ring);
+      rings.push(ring);
+      if (m.kind === 'paper') {
+        var s = r + 1.5;
+        gNodes.appendChild(sv('path', { d: 'M' + m.x + ',' + (y - s) + ' L' + (m.x + s) + ',' + y + ' L' + m.x + ',' + (y + s) + ' L' + (m.x - s) + ',' + y + ' Z',
+          fill: lane.color, stroke: '#07090f', 'stroke-width': 2.5 }));
+      } else if (m.kind === 'data') {
+        gNodes.appendChild(sv('rect', { x: m.x - r, y: y - r, width: 2 * r, height: 2 * r, rx: 2, fill: lane.color, stroke: '#07090f', 'stroke-width': 2.5 }));
+      } else {
+        gNodes.appendChild(sv('circle', { cx: m.x, cy: y, r: r, fill: lane.color, stroke: '#07090f', 'stroke-width': 2.5 }));
+      }
+
+      // Labels alternate above and below their lane; a branch's first label sits away from its parent.
+      if (!(m.lane in side)) {
+        var par = lanes[m.lane].parent;
+        side[m.lane] = par && lanes[par].row > lane.row ? 1 : 0;
+      }
+      var below = (side[m.lane]++ % 2) === 0;
+      var off = m.highlight ? 12 : 9;
+      var lab = el('span', { class: 'tl-label' + (m.highlight ? ' is-highlight' : ''), 'aria-hidden': 'true' }, m.title);
+      lab.style.left = m.x + 'px';
+      lab.style.top = (below ? y + off : y - off - 14) + 'px';
+      lab.style.setProperty('--lane', lane.color);
+      lab.addEventListener('click', function () { select(m.index, true); });
+      canvas.appendChild(lab);
+      labels.push(lab);
+
+      var btn = el('button', { type: 'button', class: 'tl-node', tabindex: '-1',
+        'aria-label': fmtDate(m.date) + ', ' + lane.name + ': ' + m.title });
+      btn.style.left = m.x + 'px';
+      btn.style.top = y + 'px';
+      btn.addEventListener('click', function () { select(m.index, false); });
+      btn.addEventListener('focus', function () { if (current !== m.index) select(m.index, false); });
+      btn.addEventListener('mouseenter', function () { lab.classList.add('is-hover'); });
+      btn.addEventListener('mouseleave', function () { lab.classList.remove('is-hover'); });
+      canvas.appendChild(btn);
+      buttons.push(btn);
+    });
+
+    canvas.addEventListener('keydown', function (e) {
+      var to = null;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') to = current + 1;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') to = current - 1;
+      else if (e.key === 'Home') to = 0;
+      else if (e.key === 'End') to = ms.length - 1;
+      if (to === null) return;
+      e.preventDefault();
+      to = Math.max(0, Math.min(ms.length - 1, to));
+      select(to, true);
+    });
+
+    var current = -1;
+    function scrollToX(x) {
+      var left = x - scroller.clientWidth / 2;
+      scroller.scrollTo({ left: Math.max(0, left), behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+    }
+
+    function select(i, focus, quiet) {
+      if (current >= 0) {
+        buttons[current].setAttribute('tabindex', '-1');
+        buttons[current].removeAttribute('aria-current');
+        labels[current].classList.remove('is-selected');
+        rings[current].classList.remove('is-selected');
+      }
+      current = i;
+      var m = ms[i];
+      buttons[i].setAttribute('tabindex', '0');
+      buttons[i].setAttribute('aria-current', 'true');
+      labels[i].classList.add('is-selected');
+      rings[i].classList.add('is-selected');
+      if (focus) buttons[i].focus({ preventScroll: true });
+      var vis = m.x > scroller.scrollLeft + 70 && m.x < scroller.scrollLeft + scroller.clientWidth - 70;
+      if (i === ms.length - 1) scrollToX(canvas.offsetWidth);
+      else if (!vis) scrollToX(m.x);
+      renderPanel(m);
+      if (!quiet && window.history && history.replaceState) history.replaceState(null, '', '#' + m.id);
+    }
+
+    function renderPanel(m) {
+      var lane = lanes[m.lane];
+      panel.innerHTML = '';
+      panel.style.setProperty('--lane', lane.color);
+      panel.classList.toggle('is-era', !!m.era);
+      var meta = el('p', { class: 'tl-meta' });
+      meta.appendChild(el('span', { class: 'lane-name' }, lane.name));
+      meta.appendChild(document.createTextNode(' · '));
+      meta.appendChild(el('time', { datetime: m.date }, fmtDate(m.date)));
+      if (m.kind) meta.appendChild(el('span', { class: 'tl-kind' }, m.kind));
+      panel.appendChild(meta);
+      panel.appendChild(el('h3', { class: 'tl-title' }, m.title));
+      panel.appendChild(el('p', { class: 'tl-text' }, m.text));
+      var links = el('p', { class: 'tl-links' });
+      (m.links || []).forEach(function (l) {
+        links.appendChild(el('a', { href: l.url, target: '_blank', rel: 'noopener' }, l.label + ' ↗'));
+      });
+      panel.appendChild(links);
+      var nav = el('div', { class: 'tl-nav' });
+      var prev = el('button', { type: 'button', class: 'tl-btn' }, '← Earlier');
+      var next = el('button', { type: 'button', class: 'tl-btn' }, 'Later →');
+      prev.disabled = m.index === 0;
+      next.disabled = m.index === ms.length - 1;
+      prev.addEventListener('click', function () { select(m.index - 1, false); });
+      next.addEventListener('click', function () { select(m.index + 1, false); });
+      nav.appendChild(prev);
+      nav.appendChild(el('span', {}, (m.index + 1) + ' / ' + ms.length));
+      nav.appendChild(next);
+      panel.appendChild(nav);
+    }
+
+    document.querySelectorAll('[data-jump]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var j = b.getAttribute('data-jump');
+        var i = j === 'first' ? 0 : j === 'last' ? ms.length - 1
+          : ms.findIndex(function (m) { return m.id === j; });
+        if (i >= 0) select(i, true);
+      });
+    });
+
+    var fromHash = location.hash ? ms.findIndex(function (m) { return '#' + m.id === location.hash; }) : -1;
+    select(fromHash >= 0 ? fromHash : 0, false, true);
+    if (fromHash < 0) scroller.scrollLeft = 0;
+  }
+
+  /* ── The list: the same story, top to bottom, for narrow screens ── */
+  function renderList(data, lanes, ms) {
+    var list = document.getElementById('tl-list');
+    // On one day: the parent's station first, then the branch, then the branch's own first station.
+    var events = ms.map(function (m) {
+      var l = lanes[m.lane];
+      return { t: m.t, rank: l.parent && parseDate(l.born) === m.t ? 2 : 0, m: m };
+    });
+    data.lanes.forEach(function (l) {
+      if (l.parent) events.push({ t: parseDate(l.born), rank: 1, lane: l });
+    });
+    events.sort(function (a, b) { return (a.t - b.t) || (a.rank - b.rank); });
+    var eras = data.eras.map(function (e) {
+      return { era: e, from: parseDate(e.from), shown: false };
+    });
+
+    events.forEach(function (ev) {
+      eras.forEach(function (e) {
+        if (!e.shown && ev.t >= e.from) {
+          e.shown = true;
+          var li = el('li', { class: 'tl-era-item' });
+          li.appendChild(el('h3', {}, e.era.name));
+          var to = e.era.to ? new Date(parseDate(e.era.to)).getUTCFullYear() : 'today';
+          li.appendChild(el('p', {}, new Date(e.from).getUTCFullYear() + ' – ' + to));
+          list.appendChild(li);
+        }
+      });
+      if (ev.lane) {
+        var b = el('li', { class: 'tl-branch' }, '↳ ' + ev.lane.name + ' branches off ' + lanes[ev.lane.parent].name + ': ' + ev.lane.role);
+        b.style.setProperty('--lane', ev.lane.color);
+        list.appendChild(b);
+        return;
+      }
+      var m = ev.m, lane = lanes[m.lane];
+      var li = el('li', { id: m.id, class: m.highlight ? 'is-highlight' : '' });
+      li.style.setProperty('--lane', lane.color);
+      var meta = el('p', { class: 'tl-item-meta' });
+      meta.appendChild(el('time', { datetime: m.date }, fmtDate(m.date)));
+      meta.appendChild(document.createTextNode(' · '));
+      meta.appendChild(el('span', { class: 'lane-name' }, lane.name));
+      li.appendChild(meta);
+      li.appendChild(el('h4', {}, m.title));
+      li.appendChild(el('p', {}, m.text));
+      var links = el('p', { class: 'tl-item-links' });
+      (m.links || []).forEach(function (l) {
+        links.appendChild(el('a', { href: l.url, target: '_blank', rel: 'noopener' }, l.label + ' ↗'));
+      });
+      li.appendChild(links);
+      list.appendChild(li);
+    });
+
+    if (location.hash) {
+      var target = document.getElementById(location.hash.slice(1));
+      if (target && list.offsetParent !== null) target.scrollIntoView({ block: 'start' });
+    }
+  }
+})();
+</script>
+
+</body>
+</html>
