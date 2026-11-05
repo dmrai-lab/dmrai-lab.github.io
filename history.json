@@ -171,6 +171,12 @@
       "text": "DiSCo, the Monte-Carlo tractography phantom of Rafael-Patino et al., as a specification: one walk that carries the diffusion, the wall contact and the myelin's field together.",
       "links": [{"label": "Pull request #249", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/249"}] },
 
+    { "id": "near-far-field", "date": "2026-09-14", "lane": "sim", "title": "Near and far field",
+      "text": "DiSCo's myelin field split as in particle-mesh (P3M) methods: near each strand a closed form, its sheath's hollow-cylinder field and the exact field of each nearby segment; beyond, the distant strands read from a coarse grid. About 30 strands are summed per point instead of about 290. The split serves every strand substrate, and DiSCo's far grid ships with its dataset.",
+      "links": [{"label": "Pull request #252", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/252"},
+                {"label": "P3M, pull request #264", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/264"},
+                {"label": "DiSCo's far grid", "url": "https://huggingface.co/datasets/SubstrateCommons/disco-replay/tree/main/substrate"}] },
+
     { "id": "scanner-model", "date": "2026-09-21", "lane": "sim", "title": "Scanner as a model",
       "text": "The scanner itself becomes a forward model, with its field shape, gradient nonlinearity and concomitant fields, starting with the 64 mT Hyperfine Swoop.",
       "links": [{"label": "Pull request #382", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/382"}] },
@@ -187,6 +193,10 @@
     { "id": "step-law", "date": "2026-10-16", "lane": "sim", "title": "The step law",
       "text": "The walk's step is certified, not tuned: a Gauss pair of step lengths, sized for a stated tolerance on the diffusion spectrum.",
       "links": [{"label": "Pull request #720", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/720"}] },
+
+    { "id": "trajectory-free", "date": "2026-10-20", "lane": "sim", "title": "Trajectory-free Monte Carlo", "label": "Trajectory-free", "highlight": true,
+      "text": "The walk stops storing paths on a save grid. Each walker's tiers (the sine-band projections of its path, its wall contact, its pool events and its field modes) are accumulated inside the walk, so no trajectory is kept and the memory it took is freed.",
+      "links": [{"label": "dmipy-sim 3.0.0 changelog", "url": "https://github.com/dmrai-lab/dmipy-sim/blob/main/CHANGELOG.md#300---2026-11-02"}] },
 
     { "id": "canonical-pores", "date": "2026-10-29", "lane": "commons", "title": "600 pores", "kind": "data", "highlight": true,
       "text": "Open replay packs of 600 canonical pores (planes, cylinders and spheres from 0.1 to 20 µm), each certified for any waveform of its scanner class.",
