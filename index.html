@@ -460,7 +460,8 @@
     .hist-strip {
       list-style: none;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
       position: relative;
       margin-bottom: 2.5rem;
     }
@@ -470,7 +471,7 @@
       position: absolute;
       left: 0; right: 0; top: 2.05rem;
       height: 2px;
-      background: linear-gradient(90deg, rgba(232,237,245,0.35) 0%, rgba(232,237,245,0.35) 30%, rgba(232,237,245,0.12) 38%, rgba(232,237,245,0.12) 46%, var(--accent) 56%, var(--accent2) 100%);
+      background: linear-gradient(90deg, rgba(232,237,245,0.35) 0%, rgba(232,237,245,0.35) 17%, rgba(232,237,245,0.12) 22%, rgba(232,237,245,0.12) 29%, var(--accent) 36%, var(--accent2) 100%);
     }
 
     .hist-strip a {
@@ -571,7 +572,7 @@
       footer { padding: 2rem 1.5rem; flex-direction: column; }
       .tab-panel { padding: 2rem; }
       .tab-btn { padding: 0.6rem 1rem; font-size: 0.65rem; }
-      .hist-strip { grid-template-columns: 1fr; padding-left: 1.6rem; }
+      .hist-strip { grid-auto-flow: row; grid-template-columns: 1fr; padding-left: 1.6rem; }
       .hist-strip::before { left: 5px; right: auto; top: 0.4rem; bottom: 0.4rem; width: 2px; height: auto;
         background: linear-gradient(180deg, rgba(232,237,245,0.35) 0%, rgba(232,237,245,0.35) 40%, var(--accent) 60%, var(--accent2) 100%); }
       .hist-strip li { margin-bottom: 1.1rem; }
@@ -1134,12 +1135,12 @@
 <section class="section" id="history">
   <p class="section-label reveal">History</p>
   <div class="reveal">
-    <h2 class="hist-title">From Watson &amp; Bingham <em>to replay packs</em></h2>
+    <h2 class="hist-title">From ball and stick <em>to replay packs</em></h2>
     <p class="hist-sub">
       dmipy began in 2017 as an open toolbox for diffusion MRI microstructure, and after six quiet
       years Rutger and Claude revived it in March 2026.
     </p>
-    <ol class="hist-strip" id="hist-strip" aria-label="Five milestones"></ol>
+    <ol class="hist-strip" id="hist-strip" aria-label="Headline milestones"></ol>
     <a href="history.html" class="btn btn-ghost">The whole timeline →</a>
   </div>
 </section>
@@ -1236,7 +1237,7 @@
         dot.style.setProperty('--c', lanes[m.lane].color);
         const title = document.createElement('span');
         title.className = 'hs-title';
-        title.textContent = m.title;
+        title.textContent = m.label || m.title;
         a.append(date, dot, title);
         li.append(a);
         strip.append(li);

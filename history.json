@@ -20,13 +20,18 @@
   ],
   "milestones": [
     { "id": "first-commit", "date": "2017-03-22", "lane": "dmipy", "title": "First commit",
-      "text": "Demian Wassermann starts the repository, extracting microstructure code from the Athena team's tools. Its first name is microstruktur.",
+      "text": "Demian Wassermann starts the repository with restricted-diffusion code extracted from the Athena team's tools (Callaghan, Gaussian phase, multiple correlation function). Its first name is microstruktur.",
       "links": [{ "label": "First commit", "url": "https://github.com/AthenaEPI/dmipy/commit/452994dd6971ae0aeea947ef121f1d35bc1e7328" }] },
 
-    { "id": "watson-bingham", "date": "2017-04-07", "lane": "dmipy", "title": "Watson & Bingham", "highlight": true, "teaser": true,
+    { "id": "watson-bingham", "date": "2017-04-07", "lane": "dmipy", "title": "Watson & Bingham", "highlight": true,
       "text": "Analytic Watson (4 April) and Bingham (7 April) orientation distributions let sticks and zeppelins fan out, so a model can say how dispersed the axons are.",
       "links": [{ "label": "Bingham commit", "url": "https://github.com/AthenaEPI/dmipy/commit/690d18ca4e6daff8ddb07ffa6d705c20d45f25a4" },
                 { "label": "Watson commit", "url": "https://github.com/AthenaEPI/dmipy/commit/34b16635cc0650b8e5ee481cd143905698f5820c" }] },
+
+    { "id": "ball-and-stick", "date": "2017-04-11", "lane": "dmipy", "title": "Ball & stick", "highlight": true, "teaser": true,
+      "text": "The ball-and-stick model: an isotropic ball for free water and a stick for the axons, the stick having arrived on 5 April. Its tutorial example follows in June.",
+      "links": [{ "label": "Commit", "url": "https://github.com/AthenaEPI/dmipy/commit/cd2b8065dde25a59e24b39c0dc84948ba0d57f37" },
+                { "label": "Stick commit", "url": "https://github.com/AthenaEPI/dmipy/commit/d3a5da32d7d09445c590716f02f8e1b845f42053" }] },
 
     { "id": "mix", "date": "2017-11-08", "lane": "dmipy", "title": "MIX optimisation",
       "text": "A global fitter that solves the volume fractions linearly and searches the other parameters, for models a local fit gets lost in.",
@@ -60,6 +65,10 @@
     { "id": "revival", "date": "2026-03", "lane": "dmipy", "title": "The revival", "highlight": true, "teaser": true, "era": "revival",
       "text": "dmipy is revived in private development repositories, now archived, as a collaboration between Rutger Fick and Claude, Anthropic's AI. From here on, a researcher and an AI build it together.",
       "links": [{ "label": "dmrai-lab on GitHub", "url": "https://github.com/dmrai-lab" }] },
+
+    { "id": "watson-bingham-again", "date": "2026-04-07", "lane": "dmipy", "title": "Watson & Bingham, again", "label": "W & B, again",
+      "text": "The first work of the collaboration (Claude Sonnet 4.6), in dmipy-fit: Watson- and Bingham-dispersed models on JAX on 7 April, then their exact analytical spherical harmonics on 28 April. They ship publicly in dmipy-fit 2.0.",
+      "links": [{ "label": "dmipy-fit 2.0.0", "url": "https://github.com/dmrai-lab/dmipy-fit/releases/tag/v2.0.0" }] },
 
     { "id": "website", "date": "2026-05-06", "lane": "dmipy", "title": "dmrai-lab.org",
       "text": "The lab's website goes up, with its manifesto: physics is the specification.",
@@ -163,8 +172,9 @@
       "text": "Replay packs read and replayed with NumPy alone, with no walk and no GPU. dmipy-replay's first release on PyPI.",
       "links": [{ "label": "dmipy-replay 0.1.0", "url": "https://pypi.org/project/dmipy-replay/0.1.0/" }] },
 
-    { "id": "preprint", "date": "2026-11-01", "lane": "dmipy", "title": "The preprint", "kind": "paper", "highlight": true,
-      "text": "Replayable Monte Carlo MRI: walker histories kept as replay packs up to 5000 times smaller, so any acquisition becomes a cheap query. The DiSCo Space is its demo.",
+    { "id": "preprint", "date": "2026-11-01", "lane": "dmipy", "title": "Replayable Monte Carlo MRI: the replay preprint (arXiv:2611.01758)", "label": "Replay preprint",
+      "kind": "paper", "highlight": true, "headline": true, "teaser": true,
+      "text": "Replayable Monte Carlo MRI: From Persistent Tissue Microphysics to Queryable Virtual Phantoms. Walker histories are kept as replay packs, up to 5000 times smaller, so any acquisition becomes a cheap query of the same walk. The DiSCo Space is its demo.",
       "links": [{ "label": "arXiv:2611.01758", "url": "https://arxiv.org/abs/2611.01758" }] },
 
     { "id": "other-engines", "date": "2026-11-01", "lane": "sim", "title": "Other engines",

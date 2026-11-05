@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>History · dmrai-lab</title>
-  <meta name="description" content="How dmipy grew, from the 2017 toolbox with its analytic Watson and Bingham distributions to the 2026 family of packages, replay packs and open datasets." />
+  <meta name="description" content="How dmipy grew, from the 2017 toolbox and its ball-and-stick model to the 2026 family of packages, replay packs and open datasets." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,400;0,9..144,700;1,9..144,200;1,9..144,300&display=swap" rel="stylesheet" />
@@ -255,6 +255,7 @@
     }
 
     .tl-label.is-highlight { color: var(--text); }
+    .tl-label.is-headline { color: var(--accent); font-weight: 500; font-size: 11.5px; }
     .tl-label:hover, .tl-label.is-hover { color: var(--text); }
     .tl-label.is-selected { color: var(--bg); background: var(--lane, var(--accent)); }
 
@@ -339,7 +340,7 @@
     .tl-list h4 { font-family: var(--serif); font-weight: 300; font-size: 1.25rem; line-height: 1.3; margin: 0.15rem 0 0.35rem; }
     .tl-list p { font-size: 0.82rem; color: var(--text); opacity: 0.86; line-height: 1.75; }
     .tl-list .tl-item-links { font-size: 0.74rem; margin-top: 0.35rem; display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; opacity: 1; }
-    .tl-list li:target h4 { color: var(--accent); }
+    .tl-list li:target h4, .tl-list li.is-headline h4 { color: var(--accent); }
 
     .tl-fallback { font-size: 0.85rem; color: var(--muted); border: 1px solid var(--border); padding: 1.5rem; }
     .tl-fallback a { color: var(--accent); }
@@ -426,7 +427,7 @@
   <section class="hist-hero">
     <a class="back-link" href="./">← dmrai-lab</a>
     <p class="hero-eyebrow"><span></span>History · 2017 to today</p>
-    <h1>From Watson &amp; Bingham<br/><em>to replay packs.</em></h1>
+    <h1>From ball and stick<br/><em>to replay packs.</em></h1>
     <p class="hero-sub">
       dmipy began in 2017 as an open toolbox for diffusion MRI microstructure. After six quiet years
       it was revived in March 2026 as a collaboration between Rutger and Claude. This is what got
@@ -717,7 +718,10 @@
     ms.forEach(function (m) {
       var lane = lanes[m.lane];
       var y = yOf(m.lane);
-      var r = m.highlight ? 7 : 4.5;
+      var r = m.headline ? 9 : m.highlight ? 7 : 4.5;
+      if (m.headline) {
+        gNodes.appendChild(sv('circle', { cx: m.x, cy: y, r: 17, fill: '#4af0c4', 'fill-opacity': 0.08, stroke: '#4af0c4', 'stroke-opacity': 0.5, 'stroke-width': 1 }));
+      }
       if (m.highlight) {
         var halo = sv('circle', { cx: m.x, cy: y, r: 12, fill: lane.color, 'fill-opacity': 0.14 });
         if (m.era) halo.setAttribute('class', 'tl-pulse');
@@ -742,8 +746,8 @@
         side[m.lane] = par && lanes[par].row > lane.row ? 1 : 0;
       }
       var below = (side[m.lane]++ % 2) === 0;
-      var off = m.highlight ? 12 : 9;
-      var lab = el('span', { class: 'tl-label' + (m.highlight ? ' is-highlight' : ''), 'aria-hidden': 'true' }, m.title);
+      var off = m.headline ? 13 : m.highlight ? 12 : 9;
+      var lab = el('span', { class: 'tl-label' + (m.highlight ? ' is-highlight' : '') + (m.headline ? ' is-headline' : ''), 'aria-hidden': 'true' }, m.label || m.title);
       lab.style.left = m.x + 'px';
       lab.style.top = (below ? y + off : y - off - 14) + 'px';
       lab.style.setProperty('--lane', lane.color);
@@ -881,7 +885,7 @@
         return;
       }
       var m = ev.m, lane = lanes[m.lane];
-      var li = el('li', { id: m.id, class: m.highlight ? 'is-highlight' : '' });
+      var li = el('li', { id: m.id, class: (m.highlight ? 'is-highlight' : '') + (m.headline ? ' is-headline' : '') });
       li.style.setProperty('--lane', lane.color);
       var meta = el('p', { class: 'tl-item-meta' });
       meta.appendChild(el('time', { datetime: m.date }, fmtDate(m.date)));
