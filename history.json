@@ -1,0 +1,248 @@
+{
+  "updated": "2026-11-05",
+  "lanes": [
+    {"id": "spec", "name": "replay-pack-spec", "row": 0, "parent": "sim", "born": "2026-07-27", "color": "#5fd3e8", "url": "https://github.com/dmrai-lab/replay-pack-spec", "role": "the open format of a replay pack"},
+    {"id": "spaces", "name": "Spaces", "row": 1, "parent": "sim", "born": "2026-09-29", "color": "#f08ab4", "url": "https://github.com/dmrai-lab/disco-space", "role": "public demos on the Hugging Face Hub"},
+    {"id": "commons", "name": "SubstrateCommons", "row": 2, "parent": "sim", "born": "2026-10-29", "color": "#f0c44a", "url": "https://huggingface.co/SubstrateCommons", "role": "open replay packs on the Hub"},
+    {"id": "replay", "name": "dmipy-replay", "row": 3, "parent": "sim", "born": "2026-10-30", "color": "#9be37b", "url": "https://github.com/dmrai-lab/dmipy-replay", "role": "the NumPy-only reader"},
+    {"id": "sim", "name": "dmipy-sim", "row": 4, "parent": "dmipy", "born": "2026-04-10", "color": "#4af0c4", "url": "https://github.com/dmrai-lab/dmipy-sim", "role": "the Monte-Carlo engine"},
+    {"id": "dmipy", "name": "dmipy", "row": 5, "parent": null, "born": "2017-03-22", "color": "#e8edf5", "url": "https://github.com/dmrai-lab/dmipy", "role": "the toolbox, then the family"},
+    {"id": "design", "name": "dmipy-design", "row": 6, "parent": "dmipy", "born": "2026-07-16", "color": "#a9c7ff", "url": "https://github.com/dmrai-lab/dmipy-design", "role": "acquisition design"},
+    {"id": "fit", "name": "dmipy-fit", "row": 7, "parent": "dmipy", "born": "2026-04-07", "color": "#7b9cff", "url": "https://github.com/dmrai-lab/dmipy-fit", "role": "model fitting"},
+    {"id": "analytic", "name": "dmipy-analytic", "row": 8, "parent": "fit", "born": "2026-11-02", "color": "#b9a0ff", "url": "https://github.com/dmrai-lab/dmipy-analytic", "role": "the closed forms"},
+    {"id": "tract", "name": "dmipy-tract", "row": 9, "parent": "fit", "born": "2026-09-29", "color": "#ff9f7b", "url": "https://github.com/dmrai-lab/dmipy-tract", "role": "tractography"}
+  ],
+  "eras": [
+    {"id": "original", "name": "The original toolbox", "from": "2017-03-22", "to": "2020-06-16", "caption": "One toolbox, one line.", "people": "Rutger Fick, Demian Wassermann, Rachid Deriche and contributors"},
+    {"id": "quiet", "name": "Six quiet years", "from": "2020-06-16", "to": "2026-04-07"},
+    {"id": "revival", "name": "The revival · Rutger Fick and Claude", "from": "2026-04-07", "to": null}
+  ],
+  "milestones": [
+    { "id": "first-commit", "date": "2017-03-22", "lane": "dmipy", "title": "First commit",
+      "text": "Demian Wassermann starts the repository from a Python project template, with restricted-diffusion code extracted from the Athena team's tools and a replication of Bar-Shir et al. Its first name is microstruktur.",
+      "links": [{"label": "First commit", "url": "https://github.com/AthenaEPI/dmipy/commit/452994dd6971ae0aeea947ef121f1d35bc1e7328"}] },
+
+    { "id": "watson-bingham", "date": "2017-04-07", "lane": "dmipy", "title": "Watson & Bingham", "highlight": true,
+      "text": "Analytic Watson (4 April) and Bingham (7 April) orientation distributions let sticks and zeppelins fan out, so a model can say how dispersed the axons are.",
+      "links": [{"label": "Bingham commit", "url": "https://github.com/AthenaEPI/dmipy/commit/690d18ca4e6daff8ddb07ffa6d705c20d45f25a4"},
+                {"label": "Watson commit", "url": "https://github.com/AthenaEPI/dmipy/commit/34b16635cc0650b8e5ee481cd143905698f5820c"}] },
+
+    { "id": "ball-and-stick", "date": "2017-04-11", "lane": "dmipy", "title": "Ball & stick", "highlight": true, "teaser": true,
+      "text": "The ball-and-stick model: an isotropic ball for free water and a stick for the axons, the stick having arrived on 5 April. The next day, Demian Wassermann's optimisation example fits two sticks at once; the tutorial example follows in June.",
+      "links": [{"label": "Ball & stick commit", "url": "https://github.com/AthenaEPI/dmipy/commit/cd2b8065dde25a59e24b39c0dc84948ba0d57f37"},
+                {"label": "Two-stick fit", "url": "https://github.com/AthenaEPI/dmipy/commit/7f0a60a7fc93e07b2902bb51b1adfafcec011248"},
+                {"label": "Stick commit", "url": "https://github.com/AthenaEPI/dmipy/commit/d3a5da32d7d09445c590716f02f8e1b845f42053"}] },
+
+    { "id": "mix", "date": "2017-11-08", "lane": "dmipy", "title": "MIX optimisation",
+      "text": "A global fitter that solves the volume fractions linearly and searches the other parameters, for models a local fit gets lost in.",
+      "links": [{"label": "Commit", "url": "https://github.com/AthenaEPI/dmipy/commit/493c85bd2bb08b24da7d2cdf49fdf5f32f187a15"}] },
+
+    { "id": "named-dmipy", "date": "2018-01-31", "lane": "dmipy", "title": "Named dmipy",
+      "text": "microstruktur becomes mipy on 7 January, and dmipy on 31 January.",
+      "links": [{"label": "Commit", "url": "https://github.com/AthenaEPI/dmipy/commit/b689e18be2923d81634e199a3fbc2ef305987742"}] },
+
+    { "id": "release-0-1", "date": "2018-03-03", "lane": "dmipy", "title": "Release 0.1",
+      "text": "The first release: an open-source framework for reproducible diffusion MRI microstructure research.",
+      "links": [{"label": "Release 0.1", "url": "https://github.com/AthenaEPI/dmipy/releases/tag/0.1"}] },
+
+    { "id": "csd", "date": "2018-07-01", "lane": "dmipy", "title": "CSD, any kernel",
+      "text": "Constrained spherical deconvolution with any multi-compartment model as its kernel, multi-tissue and multi-shell.",
+      "links": [{"label": "Pull request #10", "url": "https://github.com/AthenaEPI/dmipy/pull/10"}] },
+
+    { "id": "paper-2019", "date": "2019-10-15", "lane": "dmipy", "title": "1.0 + the paper", "kind": "paper", "highlight": true, "teaser": true,
+      "text": "The stable 1.0 release, and on the same day the toolbox paper in Frontiers in Neuroinformatics 13:64, by Rutger Fick, Demian Wassermann and Rachid Deriche.",
+      "links": [{"label": "The paper (doi:10.3389/fninf.2019.00064)", "url": "https://doi.org/10.3389/fninf.2019.00064"},
+                {"label": "Release 1.0", "url": "https://github.com/AthenaEPI/dmipy/releases/tag/1.0"}] },
+
+    { "id": "amico", "date": "2020-06-16", "lane": "dmipy", "title": "AMICO joins",
+      "text": "A community contribution by Sara Sedlar: AMICO, fast linear fitting over a dictionary of model signals.",
+      "links": [{"label": "Pull request #97", "url": "https://github.com/AthenaEPI/dmipy/pull/97"}] },
+
+    { "id": "kept-alive", "date": "2024-12-04", "lane": "dmipy", "title": "Kept alive",
+      "text": "Through the quiet years the users keep it working: PyPI packaging in 2021, CSD+ in 2022 and a fix for newer Python versions in 2024, all from the community.",
+      "links": [{"label": "Pull request #129", "url": "https://github.com/AthenaEPI/dmipy/pull/129"}] },
+
+    { "id": "revival", "date": "2026-04-07", "lane": "dmipy", "title": "The revival", "highlight": true, "teaser": true, "era": "revival",
+      "text": "The revival begins on a branch of the original toolbox, where Rutger Fick and Claude, Anthropic's AI, bring the 2019 package back to life on Python 3.12. The work moves on to private development repositories, now archived. From here on, a researcher and an AI build it together.",
+      "links": [{"label": "dmrai-lab on GitHub", "url": "https://github.com/dmrai-lab"}] },
+
+    { "id": "gpu-fitting", "date": "2026-04-07", "lane": "fit", "title": "GPU fitting",
+      "text": "The same day, the fitting moves to JAX: models compiled once and fitted across voxels in parallel on a GPU. This line of work becomes dmipy-fit.",
+      "links": [{"label": "dmipy-fit 2.0.0", "url": "https://github.com/dmrai-lab/dmipy-fit/releases/tag/v2.0.0"}] },
+
+    { "id": "watson-bingham-again", "date": "2026-04-07", "lane": "fit", "title": "Watson & Bingham, again", "label": "W & B, again",
+      "text": "The first work of the collaboration (Claude Sonnet 4.6), in dmipy-fit: Watson- and Bingham-dispersed models on JAX on 7 April, then their exact analytical spherical harmonics on 28 April. They ship publicly in dmipy-fit 2.0.",
+      "links": [{"label": "dmipy-fit 2.0.0", "url": "https://github.com/dmrai-lab/dmipy-fit/releases/tag/v2.0.0"}] },
+
+    { "id": "sim-begins", "date": "2026-04-10", "lane": "sim", "title": "A JAX engine",
+      "text": "dmipy-sim's first day: a Monte-Carlo walk written in JAX, following disimpy, through free space, slabs, spheres and cylinders, on CPU or GPU.",
+      "links": [{"label": "dmipy-sim 2.0.0", "url": "https://github.com/dmrai-lab/dmipy-sim/releases/tag/v2.0.0"}] },
+
+    { "id": "meshes", "date": "2026-04-10", "lane": "sim", "title": "Meshes",
+      "text": "Triangle meshes in the walk on the engine's first day, with ray-triangle tests in JAX. Loading PLY files and 3-D periodic meshes follow publicly on 15 July.",
+      "links": [{"label": "Pull request #2", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/2"}] },
+
+    { "id": "surface-relaxivity", "date": "2026-04-12", "lane": "sim", "title": "Surface relaxivity",
+      "text": "Walls that relax the water touching them (Brownstein and Tarr), as a weight at every collision: cylinders first, then spheres, ellipsoids and meshes.",
+      "links": [{"label": "dmipy-sim 2.0.0", "url": "https://github.com/dmrai-lab/dmipy-sim/releases/tag/v2.0.0"}] },
+
+    { "id": "first-cached-simulation", "date": "2026-04-15", "lane": "fit", "title": "The first cached simulation", "label": "First cached sim", "highlight": true,
+      "text": "A Monte-Carlo signal of 50 cylinders, 100,000 walkers each, simulated once on the GPU and stored as a test fixture for the fitting code. Keeping a simulation to use again is born here, before anyone calls it replay.",
+      "links": [{"label": "Where it led: replay on dmipy.org", "url": "https://dmipy.org/replay/"}] },
+
+    { "id": "permeable-walls", "date": "2026-04-16", "lane": "sim", "title": "Permeable walls",
+      "text": "Membranes water can cross, in the walk itself: at a wall a walker passes with a probability set by the permeability (Powles et al. 2004), in cylinders, spheres, ellipsoids, packings and meshes.",
+      "links": [{"label": "dmipy-sim 2.0.0", "url": "https://github.com/dmrai-lab/dmipy-sim/releases/tag/v2.0.0"}] },
+
+    { "id": "generalised-karger", "date": "2026-05-02", "lane": "fit", "title": "Generalised Kärger",
+      "text": "Water exchange between any two compartments: a generalised Kärger model, with NEXI as its first named case.",
+      "links": [{"label": "dmipy-fit 2.0.0", "url": "https://github.com/dmrai-lab/dmipy-fit/releases/tag/v2.0.0"}] },
+
+    { "id": "website", "date": "2026-05-06", "lane": "dmipy", "title": "dmrai-lab.org",
+      "text": "The lab's website goes up, with its manifesto: physics is the specification.",
+      "links": [{"label": "Commit", "url": "https://github.com/dmrai-lab/dmrai-lab.github.io/commit/c2dff0190bfdb42cf963241ade83db748ead576a"}] },
+
+    { "id": "relaxation-in-walk", "date": "2026-05-12", "lane": "sim", "title": "Relaxation in the walk", "label": "Relaxation in walk",
+      "text": "T2 and T1 accumulate per walker, step by step, where on the first day they were factors applied afterwards, so relaxation follows the water through every compartment.",
+      "links": [{"label": "dmipy-sim 2.2.0 (T1)", "url": "https://github.com/dmrai-lab/dmipy-sim/releases/tag/v2.2.0"},
+                {"label": "dmipy-sim 2.0.0", "url": "https://github.com/dmrai-lab/dmipy-sim/releases/tag/v2.0.0"}] },
+
+    { "id": "first-replay", "date": "2026-05-19", "lane": "sim", "title": "First replay",
+      "text": "A walk keeps each walker's compartment and wall record, and relaxation per compartment is applied afterwards: the first signal computed from a stored walk without walking again.",
+      "links": [{"label": "Where it led: replay packs (#15)", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/15"}] },
+
+    { "id": "myelin-field", "date": "2026-05-22", "lane": "sim", "title": "Myelin's field",
+      "text": "Susceptibility enters the walk: the magnetic field of the myelin sheaths dephases the water diffusing through it, first for packed myelinated cylinders, and on meshes from 14 August.",
+      "links": [{"label": "Susceptibility on dmipy.org", "url": "https://dmipy.org/physics/susceptibility/"}] },
+
+    { "id": "two-engines", "date": "2026-07-10", "lane": "dmipy", "title": "2.0: two engines", "highlight": true,
+      "text": "The first public release: dmipy 2.0, two engines that check each other, dmipy-sim for the walk and dmipy-fit for the fit, on PyPI, with dmipy.org as its home.",
+      "links": [{"label": "Release 2.0.0", "url": "https://github.com/dmrai-lab/dmipy/releases/tag/v2.0.0"}] },
+
+    { "id": "paper-wall", "date": "2026-07-10", "lane": "dmipy", "title": "Two observables", "kind": "paper",
+      "text": "The revival's first paper: surface relaxivity and diffusion read the same wall collisions, which can bias the intra-axonal fraction and the myelin water fraction.",
+      "links": [{"label": "arXiv:2607.09401", "url": "https://arxiv.org/abs/2607.09401"}] },
+
+    { "id": "design", "date": "2026-07-19", "lane": "design", "title": "Design joins",
+      "text": "Diffusion waveforms a real scanner can play (LTE, PTE, STE, OGSE and stimulated echoes) under its hardware limits, building on NOW (Sjölund et al. 2015), and exported to Pulseq.",
+      "links": [{"label": "Release 2.0.0", "url": "https://github.com/dmrai-lab/dmipy-design/releases/tag/v2.0.0"}] },
+
+    { "id": "mt-bloch", "date": "2026-07-20", "lane": "sim", "title": "MT + vector Bloch",
+      "text": "Magnetization transfer enters the walk: a bound proton pool exchanging with free water, and a vector-Bloch engine that follows the RF pulses themselves.",
+      "links": [{"label": "MT commit", "url": "https://github.com/dmrai-lab/dmipy-sim/commit/02b826b6bab48ce21c584c63bc82938c0e587bba"},
+                {"label": "Vector-Bloch commit", "url": "https://github.com/dmrai-lab/dmipy-sim/commit/465f961f2108ac8b90b596f8b01c7859b42c1b96"}] },
+
+    { "id": "curved-fibres", "date": "2026-07-24", "lane": "sim", "title": "Curved fibres",
+      "text": "Fibres that bend: curved tubes, single, multi-shell and packed, swept along a path. Public from 15 August.",
+      "links": [{"label": "Pull request #38", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/38"}] },
+
+    { "id": "rpk-spec", "date": "2026-07-28", "lane": "spec", "title": "The .rpk spec", "highlight": true,
+      "text": "An open, code-free format for a Monte-Carlo walk kept once and replayed for any acquisition: the Replay Pack specification, published as a draft for comment.",
+      "links": [{"label": "Release 0.1.0", "url": "https://github.com/dmrai-lab/replay-pack-spec/releases/tag/v0.1.0"}] },
+
+    { "id": "matrix-method", "date": "2026-08-07", "lane": "fit", "title": "Matrix method",
+      "text": "Exact restricted diffusion in planes, cylinders and spheres for any gradient waveform (the matrix method of Callaghan and Grebenkov), as compartments a fit can use.",
+      "links": [{"label": "Pull request #17", "url": "https://github.com/dmrai-lab/dmipy-fit/pull/17"}] },
+
+    { "id": "replay-packs", "date": "2026-08-10", "lane": "sim", "title": "Replay packs", "highlight": true, "teaser": true,
+      "text": "Walk once, keep the walk, and replay any gradient waveform from it. The same day, dmipy-fit fits through packs and dmipy-design designs waveforms through them.",
+      "links": [{"label": "dmipy-sim #15", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/15"},
+                {"label": "dmipy-fit #20", "url": "https://github.com/dmrai-lab/dmipy-fit/pull/20"},
+                {"label": "dmipy-design #3", "url": "https://github.com/dmrai-lab/dmipy-design/pull/3"}] },
+
+    { "id": "substrate-spec", "date": "2026-09-07", "lane": "sim", "title": "Substrates = specs",
+      "text": "Every substrate becomes a specification, data rather than code: pools, walls and seeds, checked before a walk starts. CATERPillar and DiSCo enter the same way.",
+      "links": [{"label": "Pull request #131", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/131"}] },
+
+    { "id": "one-acquisition", "date": "2026-09-10", "lane": "sim", "title": "One acquisition",
+      "text": "One acquisition object, ScannerSequence, for simulation, fitting and design alike: what the scanner plays, from excitation to readout.",
+      "links": [{"label": "Pull request #180", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/180"}] },
+
+    { "id": "replay-phantoms", "date": "2026-09-11", "lane": "sim", "title": "Replay phantoms",
+      "text": "Images from packs: voxels composed from replay packs and free water, so a whole phantom is replayed rather than simulated.",
+      "links": [{"label": "Pull request #187", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/187"}] },
+
+    { "id": "brain-replayed", "date": "2026-09-11", "lane": "sim", "title": "A brain, replayed",
+      "text": "A real brain, the BATMAN tutorial subject, rebuilt from its MRtrix result as a replay phantom in the bore. Its page on dmipy.org replays it in the browser.",
+      "links": [{"label": "Pull request #195", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/195"},
+                {"label": "The brain page", "url": "https://dmipy.org/phantoms/brain/"}] },
+
+    { "id": "disco-tiers", "date": "2026-09-14", "lane": "sim", "title": "DiSCo, every tier",
+      "text": "DiSCo, the Monte-Carlo tractography phantom of Rafael-Patino et al., as a specification: one walk that carries the diffusion, the wall contact and the myelin's field together.",
+      "links": [{"label": "Pull request #249", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/249"}] },
+
+    { "id": "near-far-field", "date": "2026-09-14", "lane": "sim", "title": "Near and far field",
+      "text": "DiSCo's myelin field split as in particle-mesh (P3M) methods: near each strand a closed form, its sheath's hollow-cylinder field and the exact field of each nearby segment; beyond, the distant strands read from a coarse grid. About 30 strands are summed per point instead of about 290. The split serves every strand substrate, and DiSCo's far grid ships with its dataset.",
+      "links": [{"label": "Pull request #252", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/252"},
+                {"label": "P3M, pull request #264", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/264"},
+                {"label": "DiSCo's far grid", "url": "https://huggingface.co/datasets/SubstrateCommons/disco-replay/tree/main/substrate"}] },
+
+    { "id": "scanner-model", "date": "2026-09-21", "lane": "sim", "title": "Scanner as a model",
+      "text": "The scanner itself becomes a forward model, with its field shape, gradient nonlinearity and concomitant fields, starting with the 64 mT Hyperfine Swoop.",
+      "links": [{"label": "Pull request #382", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/382"}] },
+
+    { "id": "disco-space", "date": "2026-09-29", "lane": "spaces", "title": "DiSCo Space", "kind": "space", "highlight": true,
+      "text": "The DiSCo phantom as a public Hugging Face Space: choose an acquisition, replay every voxel, reconstruct and track.",
+      "links": [{"label": "The DiSCo Space", "url": "https://huggingface.co/spaces/rfick/disco-replay"},
+                {"label": "Source", "url": "https://github.com/dmrai-lab/disco-space"}] },
+
+    { "id": "tracker", "date": "2026-09-29", "lane": "tract", "title": "FOD tracker",
+      "text": "Streamline tractography on fibre-orientation fields: one batched tracker on the GPU, following dipy's conventions.",
+      "links": [{"label": "Pull request #2", "url": "https://github.com/dmrai-lab/dmipy-tract/pull/2"}] },
+
+    { "id": "step-law", "date": "2026-10-16", "lane": "sim", "title": "The step law",
+      "text": "The walk's step is certified, not tuned: a Gauss pair of step lengths, sized for a stated tolerance on the diffusion spectrum.",
+      "links": [{"label": "Pull request #720", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/720"}] },
+
+    { "id": "trajectory-free", "date": "2026-10-20", "lane": "sim", "title": "Trajectory-free Monte Carlo", "label": "Trajectory-free", "highlight": true,
+      "text": "The walk stops storing paths on a save grid. Each walker's tiers (the sine-band projections of its path, its wall contact, its pool events and its field modes) are accumulated inside the walk, so no trajectory is kept and the memory it took is freed.",
+      "links": [{"label": "dmipy-sim 3.0.0 changelog", "url": "https://github.com/dmrai-lab/dmipy-sim/blob/main/CHANGELOG.md#300---2026-11-02"}] },
+
+    { "id": "canonical-pores", "date": "2026-10-29", "lane": "commons", "title": "600 pores", "kind": "data", "highlight": true,
+      "text": "Open replay packs of 600 canonical pores (planes, cylinders and spheres from 0.1 to 20 µm), each certified for any waveform of its scanner class.",
+      "links": [{"label": "canonical-pores", "url": "https://huggingface.co/datasets/SubstrateCommons/canonical-pores"}] },
+
+    { "id": "cactus-axons", "date": "2026-10-29", "lane": "commons", "title": "CACTUS axons", "kind": "data",
+      "text": "A CACTUS bundle of 176 myelinated axons, and the same axons walked by MC/DC and MCMRSimulator.jl, read by the same reader.",
+      "links": [{"label": "cactus-axons", "url": "https://huggingface.co/datasets/SubstrateCommons/cactus-axons"}] },
+
+    { "id": "reference-walks", "date": "2026-10-29", "lane": "commons", "title": "Reference walks", "kind": "data",
+      "text": "A slab split by a membrane, checked against the exact one-dimensional Bloch–Torrey solution, and float coefficient walks, the unrounded walks a pack's encoding is measured against.",
+      "links": [{"label": "permeable-slab", "url": "https://huggingface.co/datasets/SubstrateCommons/permeable-slab"},
+                {"label": "coefficient-walks", "url": "https://huggingface.co/datasets/SubstrateCommons/coefficient-walks"}] },
+
+    { "id": "disco-replayed", "date": "2026-10-30", "lane": "commons", "title": "DiSCo replayed", "kind": "data", "highlight": true,
+      "text": "DiSCo as one replay pack: 12,196 strands and 321 million walkers, every tier stored, certified for any acquisition of its scanner class.",
+      "links": [{"label": "disco-replay", "url": "https://huggingface.co/datasets/SubstrateCommons/disco-replay"}] },
+
+    { "id": "numpy-reader", "date": "2026-10-30", "lane": "replay", "title": "NumPy reader", "highlight": true,
+      "text": "Replay packs read and replayed with NumPy alone, with no walk and no GPU. dmipy-replay's first release on PyPI.",
+      "links": [{"label": "dmipy-replay 0.1.0", "url": "https://pypi.org/project/dmipy-replay/0.1.0/"}] },
+
+    { "id": "preprint", "date": "2026-11-01", "lane": "dmipy", "title": "Replayable Monte Carlo MRI: the replay preprint (arXiv:2611.01758)", "label": "Replay preprint", "kind": "paper", "highlight": true, "headline": true, "teaser": true,
+      "text": "Replayable Monte Carlo MRI: From Persistent Tissue Microphysics to Queryable Virtual Phantoms. Walker histories are kept as replay packs, up to 5000 times smaller, so any acquisition becomes a cheap query of the same walk. The DiSCo Space is its demo.",
+      "links": [{"label": "arXiv:2611.01758", "url": "https://arxiv.org/abs/2611.01758"}] },
+
+    { "id": "other-engines", "date": "2026-11-01", "lane": "sim", "title": "Other engines",
+      "text": "Walks from other simulators become replay packs too, so different engines are compared through one reader.",
+      "links": [{"label": "Pull request #840", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/840"}] },
+
+    { "id": "envelope", "date": "2026-11-01", "lane": "replay", "title": "The envelope",
+      "text": "Every pack states its guarantee in physical terms: a band, a gradient amplitude, field and tissue bounds. A request outside it is refused by name.",
+      "links": [{"label": "Pull request #11", "url": "https://github.com/dmrai-lab/dmipy-replay/pull/11"}] },
+
+    { "id": "release-3", "date": "2026-11-02", "lane": "dmipy", "title": "dmipy 3.0", "highlight": true, "teaser": true,
+      "text": "One pip install for the family: dmipy-sim, dmipy-replay, dmipy-fit and dmipy-design, with dmipy-analytic under them and dmipy-tract as an extra.",
+      "links": [{"label": "Release 3.0.0", "url": "https://github.com/dmrai-lab/dmipy/releases/tag/v3.0.0"}] },
+
+    { "id": "analytic", "date": "2026-11-02", "lane": "analytic", "title": "Closed forms, once",
+      "text": "The closed-form signals of special cases, each with its assumptions and its source, kept in one place and imported by every package. Watson and Bingham are among them.",
+      "links": [{"label": "dmipy-analytic 3.0.0", "url": "https://github.com/dmrai-lab/dmipy-analytic/releases/tag/v3.0.0"}] },
+
+    { "id": "lossless-codec", "date": "2026-11-05", "lane": "spec", "title": "Lossless codec", "highlight": true,
+      "text": "A lossless band codec (bitshuffle and zlib): the same integers, bit-transposed and deflated, so packs shrink and not one decoded value changes.",
+      "links": [{"label": "Spec pull request #38", "url": "https://github.com/dmrai-lab/replay-pack-spec/pull/38"},
+                {"label": "dmipy-sim #905", "url": "https://github.com/dmrai-lab/dmipy-sim/pull/905"},
+                {"label": "dmipy-replay #34", "url": "https://github.com/dmrai-lab/dmipy-replay/pull/34"}] }
+  ]
+}
