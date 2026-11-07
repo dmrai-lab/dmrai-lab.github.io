@@ -783,6 +783,15 @@
         t.textContent = r.short;
         g.appendChild(t);
       });
+
+      // Moments in how the work was done: a thin tick on the strip, its label to the left, over the quieter weeks.
+      (act.markers || []).forEach(function (m) {
+        var x = xOf(parseDate(m.date));
+        g.appendChild(sv('line', { x1: x, y1: top + 14, x2: x, y2: yB, stroke: '#e8edf5', 'stroke-opacity': 0.5, 'stroke-width': 1, 'stroke-dasharray': '2 3' }));
+        var t = sv('text', { x: x - 5, y: top + 24, fill: '#e8edf5', 'fill-opacity': 0.75, 'font-size': 10, 'text-anchor': 'end', 'font-family': 'DM Mono, monospace' });
+        t.textContent = m.label;
+        g.appendChild(t);
+      });
     }
 
     // Today, and the lane names where the lines end.
@@ -974,6 +983,7 @@
     var peak = weeks.reduce(function (p, w) { return w.n > p.n ? w : p; }, weeks[0]);
     var parts = activityRates(data, weeks).map(function (r) { return r.name.split(' · ')[0] + ': ' + r.long + '.'; });
     box.textContent = 'Activity, drawn under the map. ' + act.definition + ' ' + parts.join(' ') +
+      (act.markers || []).map(function (m) { return ' ' + m.text; }).join('') +
       ' The busiest week so far began ' + fmtDate(peak.s) + ', with ' + peak.n + '. The data is ';
     box.appendChild(el('a', { href: 'activity.json' }, 'activity.json'));
     box.appendChild(document.createTextNode('.'));
