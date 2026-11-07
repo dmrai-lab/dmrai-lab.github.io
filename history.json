@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-05",
+  "updated": "2026-11-07",
   "lanes": [
     {"id": "spec", "name": "replay-pack-spec", "row": 0, "parent": "sim", "born": "2026-07-27", "color": "#5fd3e8", "url": "https://github.com/dmrai-lab/replay-pack-spec", "role": "the open format of a replay pack"},
     {"id": "spaces", "name": "Spaces", "row": 1, "parent": "sim", "born": "2026-09-29", "color": "#f08ab4", "url": "https://github.com/dmrai-lab/disco-space", "role": "public demos on the Hugging Face Hub"},
