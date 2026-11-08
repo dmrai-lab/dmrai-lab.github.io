@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The laboratory · dmrai-lab</title>
+  <meta name="description" content="dmrai-lab runs two research programmes: replayable Monte Carlo for diffusion MRI, and the laboratory that builds it. Every verified result becomes part of the instrument we use next." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,400;0,9..144,700;1,9..144,200;1,9..144,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #07090f;
+      --bg2:       #0d1120;
+      --surface:   #111827;
+      --border:    rgba(255,255,255,0.07);
+      --accent:    #4af0c4;
+      --accent2:   #7b9cff;
+      --text:      #e8edf5;
+      --muted:     #7a8499;
+      --mono:      'DM Mono', monospace;
+      --serif:     'Fraunces', Georgia, serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .glow-bg {
+      position: fixed;
+      top: -30vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120vw;
+      height: 80vh;
+      background: radial-gradient(ellipse at 50% 0%, rgba(74,240,196,0.07) 0%, rgba(123,156,255,0.05) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    /* ── HEADER (as index.html) ── */
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem 4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo { display: flex; align-items: baseline; gap: 0.5rem; text-decoration: none; }
+
+    .logo-name {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+    }
+
+    .logo-tag { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; }
+
+    nav { display: flex; gap: 2.5rem; }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav a:hover, nav a[aria-current="page"] { color: var(--text); }
+    nav a[aria-current="page"] { border-bottom: 1px solid var(--accent); }
+
+    /* ── HERO ── */
+    .hist-hero {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5.5rem 4rem 2.5rem;
+    }
+
+    .back-link {
+      display: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      margin-bottom: 2rem;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.1s forwards;
+    }
+
+    .hero-eyebrow span {
+      display: inline-block;
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+      vertical-align: middle;
+      margin-right: 0.75rem;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 5.5vw, 4.4rem);
+      font-weight: 200;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.25s forwards;
+    }
+
+    h1 em { font-style: italic; color: var(--accent); font-weight: 200; }
+
+    .hero-sub {
+      font-size: 0.92rem;
+      color: var(--muted);
+      max-width: 640px;
+      line-height: 1.9;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.4s forwards;
+    }
+
+    /* ── SECTION ── */
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .tl-section {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 4rem 5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.55s forwards;
+    }
+
+    /* toolbar: legend and jumps */
+    .tl-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem 2rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .tl-legend { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem 1.1rem; max-width: 760px; }
+    .tl-legend li { font-size: 0.7rem; letter-spacing: 0.04em; }
+    .tl-legend a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .tl-legend a:hover { color: var(--text); }
+    .tl-swatch { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%; margin-right: 0.4rem; vertical-align: 0; }
+
+    .tl-jump { display: flex; align-items: center; gap: 0.5rem; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+    .tl-btn {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 0.35rem 0.75rem;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .tl-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .tl-btn:disabled { opacity: 0.35; cursor: default; }
+
+    /* the map */
+    .tl-scroller {
+      position: relative;
+      overflow-x: auto;
+      overflow-y: hidden;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(13,17,32,0.7), rgba(7,9,15,0.7));
+      scrollbar-color: rgba(122,132,153,0.5) transparent;
+    }
+
+    .tl-canvas { position: relative; }
+    .tl-canvas svg { position: absolute; top: 0; left: 0; display: block; }
+
+    .tl-tip {
+      position: absolute;
+      transform: translateX(-50%);
+      pointer-events: none;
+      white-space: nowrap;
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.55rem;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .tl-tip.is-on { opacity: 1; }
+
+    .tl-activity { max-width: 760px; margin-top: 1.5rem; font-size: 0.72rem; line-height: 1.8; color: var(--muted); }
+    .tl-activity a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(74,240,196,0.3); }
+
+    .tl-node {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      margin: -15px 0 0 -15px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    .tl-node:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; }
+
+    .tl-label {
+      position: absolute;
+      transform: translateX(-50%);
+      font-size: 10.5px;
+      line-height: 14px;
+      white-space: nowrap;
+      color: var(--muted);
+      background: rgba(7,9,15,0.82);
+      padding: 0 3px;
+      border-radius: 2px;
+      cursor: pointer;
+      z-index: 2;
+      transition: color 0.2s;
+    }
+
+    .tl-label.is-highlight { color: var(--text); }
+    .tl-label.is-headline { color: var(--accent); font-weight: 500; font-size: 11.5px; }
+    .tl-label:hover, .tl-label.is-hover { color: var(--text); }
+    .tl-label.is-selected { color: var(--bg); background: var(--lane, var(--accent)); }
+
+    .tl-ring { opacity: 0; transition: opacity 0.2s; }
+    .tl-ring.is-selected { opacity: 1; }
+
+    .tl-pulse { transform-box: fill-box; transform-origin: center; animation: pulse 2.4s ease-in-out infinite; }
+
+    .tl-hint { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.04em; margin-top: 0.6rem; }
+
+    /* the card under the map */
+    .tl-panel {
+      margin-top: 1.5rem;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--lane, var(--accent));
+      background: var(--bg2);
+      padding: 2rem 2.5rem;
+      min-height: 14rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tl-panel.is-era {
+      background: linear-gradient(120deg, rgba(74,240,196,0.08), rgba(123,156,255,0.06) 55%, var(--bg2));
+    }
+
+    .tl-meta { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.8rem; }
+    .tl-meta .lane-name { color: var(--lane, var(--accent)); }
+    .tl-kind { margin-left: 0.4rem; padding: 0.05rem 0.45rem; border: 1px solid var(--border); font-size: 0.62rem; }
+
+    .tl-title {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 0.9rem;
+    }
+
+    .tl-text { font-size: 0.88rem; color: var(--text); opacity: 0.86; line-height: 1.85; max-width: 720px; margin-bottom: 1.1rem; }
+
+    .tl-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; font-size: 0.78rem; margin-bottom: 1.4rem; }
+    .tl-links a, .tl-list a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(74,240,196,0.3); transition: border-color 0.2s; }
+    .tl-links a:hover, .tl-list a:hover { border-bottom-color: var(--accent); }
+
+    .tl-nav { display: flex; align-items: center; gap: 1rem; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; }
+
+    /* the vertical list (phones) */
+    .tl-list { display: none; list-style: none; position: relative; padding-left: 2rem; }
+    .tl-list::before {
+      content: '';
+      position: absolute;
+      left: 0.55rem; top: 0.5rem; bottom: 0.5rem;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(232,237,245,0.35), rgba(232,237,245,0.35) 22%, rgba(74,240,196,0.7) 30%, rgba(123,156,255,0.7));
+    }
+
+    .tl-list li { position: relative; margin-bottom: 1.6rem; }
+    .tl-list li::before {
+      content: '';
+      position: absolute;
+      left: calc(-2rem + 0.55rem + 1px - 5px);
+      top: 0.45rem;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--lane, var(--text));
+      box-shadow: 0 0 0 3px var(--bg);
+    }
+
+    .tl-list li.is-highlight::before { width: 14px; height: 14px; left: calc(-2rem + 0.55rem + 1px - 7px); top: 0.3rem; box-shadow: 0 0 0 3px var(--bg), 0 0 0 7px rgba(74,240,196,0.15); }
+
+    .tl-list .tl-era-item { margin: 2.4rem 0 1.4rem; }
+    .tl-list .tl-era-item::before { display: none; }
+    .tl-list .tl-era-item h3 { font-size: 0.7rem; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); }
+    .tl-list .tl-era-item p { font-size: 0.72rem; color: var(--muted); }
+
+    .tl-list .tl-branch { font-size: 0.74rem; color: var(--lane); letter-spacing: 0.04em; }
+    .tl-list .tl-branch::before { width: 8px; height: 8px; left: calc(-2rem + 0.55rem + 1px - 4px); top: 0.5rem; background: transparent; border: 2px solid var(--lane); }
+
+    .tl-list .tl-item-meta { font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .tl-list .tl-item-meta .lane-name { color: var(--lane); }
+    .tl-list h4 { font-family: var(--serif); font-weight: 300; font-size: 1.25rem; line-height: 1.3; margin: 0.15rem 0 0.35rem; }
+    .tl-list p { font-size: 0.82rem; color: var(--text); opacity: 0.86; line-height: 1.75; }
+    .tl-list .tl-item-links { font-size: 0.74rem; margin-top: 0.35rem; display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; opacity: 1; }
+    .tl-list li:target h4, .tl-list li.is-headline h4 { color: var(--accent); }
+
+    .tl-fallback { font-size: 0.85rem; color: var(--muted); border: 1px solid var(--border); padding: 1.5rem; }
+    .tl-fallback a { color: var(--accent); }
+
+    /* ── FOOTER (as index.html) ── */
+    footer {
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-left { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.06em; }
+    .footer-links { display: flex; gap: 1.5rem; }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.25; transform: scale(1); }
+      50%      { opacity: 0.6;  transform: scale(1.35); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .hero-eyebrow, h1, .hero-sub, .tl-section { animation: none; opacity: 1; }
+      .tl-pulse { animation: none; }
+      .tl-label, .tl-ring, .tl-btn, .tl-tip { transition: none; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 760px) {
+      header { padding: 1.5rem; }
+      nav { display: none; }
+      .back-link { display: inline-block; }
+      .hist-hero { padding: 3rem 1rem 1.5rem; }
+      .tl-section { padding: 1rem 1rem 3rem; }
+      .tl-desktop { display: none; }
+      .tl-list { display: block; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; }
+    }
+  
+    .lab-section { position: relative; z-index: 10; max-width: 880px; margin: 0 auto; padding: 1rem 4rem 3.5rem; }
+    .lab-section h2 { font-family: var(--serif); font-weight: 300; font-size: 1.7rem; line-height: 1.25; color: var(--text); margin-bottom: 1.1rem; }
+    .lab-section h2 em { color: var(--accent); font-style: italic; }
+    .lab-section p { color: var(--muted); font-size: 0.86rem; line-height: 1.85; max-width: 720px; margin-bottom: 1rem; }
+    .lab-section p strong { color: var(--text); font-weight: 400; }
+    .lab-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 0.5rem; }
+    .lab-card { border: 1px solid var(--border); background: var(--surface); padding: 1.3rem 1.4rem; }
+    .lab-card h3 { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); font-weight: 400; margin-bottom: 0.7rem; }
+    .lab-card p { margin-bottom: 0; font-size: 0.8rem; }
+    .lab-steps { list-style: none; counter-reset: s; margin-top: 0.5rem; }
+    .lab-steps li { counter-increment: s; position: relative; padding: 0 0 1.3rem 2.6rem; color: var(--muted); font-size: 0.84rem; line-height: 1.8; max-width: 740px; }
+    .lab-steps li::before { content: counter(s); position: absolute; left: 0; top: 0.05rem; width: 1.6rem; height: 1.6rem; border: 1px solid rgba(74,240,196,0.4); border-radius: 50%; color: var(--accent); font-size: 0.72rem; display: flex; align-items: center; justify-content: center; }
+    .lab-steps li strong { color: var(--text); font-weight: 400; }
+    .lab-section a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(74,240,196,0.3); }
+    @media (max-width: 760px) { .lab-section { padding: 0.5rem 1rem 2.5rem; } .lab-pair { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="glow-bg"></div>
+
+<header>
+  <a class="logo" href="./">
+    <span class="logo-name">dmrai-lab</span>
+    <span class="logo-tag">/ org</span>
+  </a>
+  <nav>
+    <a href="./#packages">Packages</a>
+    <a href="./#data">Data</a>
+    <a href="./#vision">Vision</a>
+    <a href="history.html">History</a>
+    <a href="lab.html" aria-current="page">Laboratory</a>
+    <a href="./#about">About</a>
+    <a href="./#collaborators">Collaborators</a>
+    <a href="https://github.com/dmrai-lab" target="_blank">GitHub ↗</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hist-hero">
+    <a class="back-link" href="./">← dmrai-lab</a>
+    <p class="hero-eyebrow"><span></span>The laboratory · a research object</p>
+    <h1>We study the science.<br/><em>And the laboratory.</em></h1>
+    <p class="hero-sub">
+      dmrai-lab is one human, Rutger Fick, and a team of AI agents led by Claude. We run two research
+      programmes at once: replayable Monte Carlo for diffusion MRI, and the laboratory that builds it.
+    </p>
+  </section>
+
+  <section class="lab-section" aria-labelledby="two">
+    <h2 id="two">Two programmes, <em>one inside the other.</em></h2>
+    <div class="lab-pair">
+      <div class="lab-card">
+        <h3>The science</h3>
+        <p>Simulate once, read any acquisition, with its error stated. Certified, composable Monte Carlo for
+        diffusion MRI, and open substrate data for anyone to read.</p>
+      </div>
+      <div class="lab-card">
+        <h3>The laboratory</h3>
+        <p>How a small lab of one human and AI agents compounds: how verified work becomes the instrument for the
+        next piece, how agents are briefed, checked and corrected, and how we measure whether the lab is actually
+        getting better.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lab-section" aria-labelledby="how">
+    <h2 id="how">How it <em>compounds.</em></h2>
+    <ol class="lab-steps">
+      <li><strong>Every result is checked against physics.</strong> Exact references (closed forms and exact
+        solvers) are the lab's reviewers. A result that disagrees with them does not merge.</li>
+      <li><strong>Every checked result becomes an instrument.</strong> A closed form written to validate one feature
+        becomes the test for the next. A reference built for one physical effect becomes the yardstick for another.</li>
+      <li><strong>Every failure becomes a guard.</strong> When something slips through, we fix its cause and add the
+        check that would have caught it, so the same mistake costs us once.</li>
+      <li><strong>Every week, the lab looks at itself.</strong> Agents report the friction they met in their own words;
+        their working records show where effort or context was lost; and each week we fix the most recurring
+        problem in the tooling itself.</li>
+    </ol>
+  </section>
+
+  <section class="lab-section" aria-labelledby="not">
+    <h2 id="not">What it is <em>not.</em></h2>
+    <p>This is <strong>not self-improving AI</strong>. The models do not change. The laboratory around them does: its
+    references, its tests, the harnesses the agents work in, and the habits they are briefed with.</p>
+    <p><strong>A human sets the questions</strong> and approves everything that leaves the lab. And
+    <strong>compounding only counts when it is verified</strong>: speed without checks just produces plausible
+    errors faster.</p>
+  </section>
+
+  <section class="lab-section" aria-labelledby="measured">
+    <h2 id="measured">Measured, <em>not claimed.</em></h2>
+    <p>We track the laboratory like an experiment: what lands each week, how often work needs another round before
+    it is accepted, how many defects the references catch before anything merges, and how much working context is
+    lost and recovered. The first measurement is public already: the activity strip on our
+    <a href="history.html">History</a> page. More will follow as the data accumulates, including the weeks that do
+    not flatter us.</p>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-left">
+    © 2026 dmrai-lab — Code: AGPL-3.0 or commercial (dmipy-analytic, dmipy-replay: Apache-2.0) · Replay packs: CC BY-NC-SA 4.0 or commercial · Site content © dmrai-lab, all rights reserved
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/dmrai-lab" target="_blank">GitHub</a>
+    <a href="https://pypi.org/user/dmrai-lab/" target="_blank">PyPI</a>
+  </div>
+</footer>
+</body>
+</html>
