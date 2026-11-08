@@ -450,6 +450,13 @@
     .loop .node-label { fill: var(--text); font-family: var(--mono); font-size: 12px; text-anchor: middle; }
     .loop .center { fill: var(--text); font-family: var(--serif); font-size: 17px; text-anchor: middle; }
     .loop .center-sub { fill: var(--muted); font-family: var(--mono); font-size: 11px; text-anchor: middle; }
+    .loop .top-note { fill: var(--muted); font-family: var(--mono); font-size: 11.5px; font-style: italic; text-anchor: middle; }
+    .loop .outside { fill: #1a2030; stroke: rgba(232,237,245,0.45); stroke-width: 1.3; }
+    .loop .outside-label { fill: var(--text); font-family: var(--serif); font-size: 15px; text-anchor: middle; }
+    .loop .outside-sub { fill: var(--muted); font-family: var(--mono); font-size: 10.5px; text-anchor: middle; }
+    .loop .act { fill: none; stroke: rgba(232,237,245,0.6); stroke-width: 1.6; stroke-dasharray: 4 4; }
+    .loop .head-act { fill: none; stroke: rgba(232,237,245,0.75); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .loop .act-label { fill: var(--muted); font-family: var(--mono); font-size: 10.5px; }
     .loop-ai .arc, .loop-ai .head { stroke: var(--accent2); }
     .loop-ai .node { fill: #1c253d; stroke: rgba(123,156,255,0.55); }
     .loop-lab .arc, .loop-lab .head { stroke: var(--accent); }
@@ -528,55 +535,63 @@
     <figure class="loops" aria-label="Self-improving AI compared with a self-improving laboratory">
       <div class="loop-card">
         <h3 class="loop-ai-title">Self-improving AI</h3>
-<svg class="loop loop-ai" viewBox="0 0 340 300" role="img" aria-labelledby="t-ai d-ai">
+<svg class="loop loop-ai" viewBox="0 0 340 362" role="img" aria-labelledby="t-ai d-ai">
   <title id="t-ai">Self-improving AI</title>
-  <desc id="d-ai">A loop of four model boxes, each a better version of the last: the intelligence improves itself.</desc>
-  <defs><marker id="head-ai" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" class="head"/></marker></defs>
-  <circle cx="170" cy="150" r="104" class="ring"/>
-  <path d="M229.0 64.4 A104 104 0 0 1 269.6 120.0" class="arc" marker-end="url(#head-ai)"/>
-  <path d="M269.6 180.0 A104 104 0 0 1 229.0 235.6" class="arc" marker-end="url(#head-ai)"/>
-  <path d="M111.0 235.6 A104 104 0 0 1 70.4 180.0" class="arc" marker-end="url(#head-ai)"/>
-  <path d="M70.4 120.0 A104 104 0 0 1 111.0 64.4" class="arc" marker-end="url(#head-ai)"/>
-  <rect x="118.0" y="30.0" width="104" height="32" rx="9" class="node"/>
-  <text x="170.0" y="50.5" class="node-label">model</text>
-  <rect x="231.0" y="127.0" width="86" height="46" rx="9" class="node"/>
-  <text x="274.0" y="154.5" class="node-label">model′</text>
-  <rect x="118.0" y="238.0" width="104" height="32" rx="9" class="node"/>
-  <text x="170.0" y="258.5" class="node-label">model″</text>
-  <rect x="23.0" y="127.0" width="86" height="46" rx="9" class="node"/>
-  <text x="66.0" y="154.5" class="node-label">model‴</text>
-  <text x="170" y="144.0" class="center">Better AI</text>
-  <text x="170" y="169.0" class="center-sub">improves itself</text>
+  <desc id="d-ai">A loop of four model boxes, each a better version of the last: the intelligence improves itself, and nobody stands outside the loop.</desc>
+  <defs><marker id="head-ai" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" class="head"/></marker><marker id="act-ai" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L9 5 L1 9" class="head-act"/></marker></defs>
+  <circle cx="170" cy="225" r="104" class="ring"/>
+  <path d="M229.0 139.4 A104 104 0 0 1 269.6 195.0" class="arc" marker-end="url(#head-ai)"/>
+  <path d="M269.6 255.0 A104 104 0 0 1 229.0 310.6" class="arc" marker-end="url(#head-ai)"/>
+  <path d="M111.0 310.6 A104 104 0 0 1 70.4 255.0" class="arc" marker-end="url(#head-ai)"/>
+  <path d="M70.4 195.0 A104 104 0 0 1 111.0 139.4" class="arc" marker-end="url(#head-ai)"/>
+  <rect x="118.0" y="105.0" width="104" height="32" rx="9" class="node"/>
+  <text x="170.0" y="125.5" class="node-label">model</text>
+  <rect x="231.0" y="202.0" width="86" height="46" rx="9" class="node"/>
+  <text x="274.0" y="229.5" class="node-label">model′</text>
+  <rect x="118.0" y="313.0" width="104" height="32" rx="9" class="node"/>
+  <text x="170.0" y="333.5" class="node-label">model″</text>
+  <rect x="23.0" y="202.0" width="86" height="46" rx="9" class="node"/>
+  <text x="66.0" y="229.5" class="node-label">model‴</text>
+  <text x="170" y="219.0" class="center">Better AI</text>
+  <text x="170" y="244.0" class="center-sub">improves itself</text>
+  <text x="170" y="40" class="top-note">nobody outside the loop:</text>
+  <text x="170" y="58" class="top-note">the worker is the loop</text>
 </svg>
         <p>The intelligence that does the work improves itself. <span class="loop-note">Not what we do.</span></p>
       </div>
       <div class="loop-card">
         <h3 class="loop-lab-title">A self-improving laboratory</h3>
-<svg class="loop loop-lab" viewBox="0 0 340 300" role="img" aria-labelledby="t-lab d-lab">
+<svg class="loop loop-lab" viewBox="0 0 340 362" role="img" aria-labelledby="t-lab d-lab">
   <title id="t-lab">A self-improving laboratory</title>
-  <desc id="d-lab">A loop: a result is checked against physics, becomes an instrument (a reference, a test or a guard), makes the next piece of work faster and safer, which produces the next result.</desc>
-  <defs><marker id="head-lab" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" class="head"/></marker></defs>
-  <circle cx="170" cy="150" r="104" class="ring"/>
-  <path d="M229.0 64.4 A104 104 0 0 1 269.6 120.0" class="arc" marker-end="url(#head-lab)"/>
-  <path d="M269.6 180.0 A104 104 0 0 1 229.0 235.6" class="arc" marker-end="url(#head-lab)"/>
-  <path d="M111.0 235.6 A104 104 0 0 1 70.4 180.0" class="arc" marker-end="url(#head-lab)"/>
-  <path d="M70.4 120.0 A104 104 0 0 1 111.0 64.4" class="arc" marker-end="url(#head-lab)"/>
-  <rect x="118.0" y="30.0" width="104" height="32" rx="9" class="node"/>
-  <text x="170.0" y="50.5" class="node-label">result</text>
-  <rect x="231.0" y="127.0" width="86" height="46" rx="9" class="node"/>
-  <text x="274.0" y="147.0" class="node-label">physics</text>
-  <text x="274.0" y="162.0" class="node-label">check</text>
-  <rect x="118.0" y="238.0" width="104" height="32" rx="9" class="node"/>
-  <text x="170.0" y="258.5" class="node-label">instrument</text>
-  <rect x="23.0" y="127.0" width="86" height="46" rx="9" class="node"/>
-  <text x="66.0" y="147.0" class="node-label">faster</text>
-  <text x="66.0" y="162.0" class="node-label">work</text>
-  <text x="170" y="134.0" class="center">Better</text>
-  <text x="170" y="155.0" class="center">instruments</text>
-  <text x="170" y="180.0" class="center-sub">same agents</text>
+  <desc id="d-lab">Outside the loop, unchanged: the agents and a human who sets the questions; they do the work. The loop is the lab: a result is checked against physics, becomes an instrument (a reference, a test or a guard), and makes the next piece of work faster and safer, which produces the next result.</desc>
+  <defs><marker id="head-lab" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" class="head"/></marker><marker id="act-lab" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L9 5 L1 9" class="head-act"/></marker></defs>
+  <circle cx="170" cy="225" r="104" class="ring"/>
+  <path d="M229.0 139.4 A104 104 0 0 1 269.6 195.0" class="arc" marker-end="url(#head-lab)"/>
+  <path d="M269.6 255.0 A104 104 0 0 1 229.0 310.6" class="arc" marker-end="url(#head-lab)"/>
+  <path d="M111.0 310.6 A104 104 0 0 1 70.4 255.0" class="arc" marker-end="url(#head-lab)"/>
+  <path d="M70.4 195.0 A104 104 0 0 1 111.0 139.4" class="arc" marker-end="url(#head-lab)"/>
+  <rect x="118.0" y="105.0" width="104" height="32" rx="9" class="node"/>
+  <text x="170.0" y="125.5" class="node-label">result</text>
+  <rect x="231.0" y="202.0" width="86" height="46" rx="9" class="node"/>
+  <text x="274.0" y="222.0" class="node-label">physics</text>
+  <text x="274.0" y="237.0" class="node-label">check</text>
+  <rect x="118.0" y="313.0" width="104" height="32" rx="9" class="node"/>
+  <text x="170.0" y="333.5" class="node-label">instrument</text>
+  <rect x="23.0" y="202.0" width="86" height="46" rx="9" class="node"/>
+  <text x="66.0" y="222.0" class="node-label">faster</text>
+  <text x="66.0" y="237.0" class="node-label">work</text>
+  <text x="170" y="209.0" class="center">Better</text>
+  <text x="170" y="230.0" class="center">instruments</text>
+  <text x="170" y="255.0" class="center-sub">the lab improves</text>
+  <rect x="63.0" y="16" width="214" height="50" rx="10" class="outside"/>
+  <text x="170" y="37" class="outside-label">agents + a human</text>
+  <text x="170" y="54" class="outside-sub">unchanged</text>
+  <path d="M170 69 L170 100.0" class="act" marker-end="url(#act-lab)"/>
+  <text x="179" y="88.5" class="act-label">do the work</text>
 </svg>
-        <p>The models stay the same. Every result that passes a physics check becomes an instrument for the next one:
-        an exact reference, a test, a guard. The same agents do more, and safely.</p>
+        <p>The agents, and the human who sets the questions, stand outside the loop and stay the same. What goes round
+        is the lab: every result that passes a physics check becomes an instrument for the next one (an exact
+        reference, a test, a guard), so the same agents do more, and safely.</p>
       </div>
     </figure>
     <p><strong>A human sets the questions</strong> and approves everything that leaves the lab. And
