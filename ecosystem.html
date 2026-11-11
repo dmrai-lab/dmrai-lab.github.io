@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The open ecosystem · dmrai-lab</title>
+  <meta name="description" content="The open dmipy ecosystem: the public packages and how they build on each other, the public Hub datasets and Spaces, and the documentation site." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,400;0,9..144,700;1,9..144,200;1,9..144,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #07090f;
+      --bg2:       #0d1120;
+      --surface:   #111827;
+      --border:    rgba(255,255,255,0.07);
+      --accent:    #4af0c4;
+      --accent2:   #7b9cff;
+      --text:      #e8edf5;
+      --muted:     #7a8499;
+      --mono:      'DM Mono', monospace;
+      --serif:     'Fraunces', Georgia, serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .glow-bg {
+      position: fixed;
+      top: -30vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120vw;
+      height: 80vh;
+      background: radial-gradient(ellipse at 50% 0%, rgba(74,240,196,0.07) 0%, rgba(123,156,255,0.05) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    /* ── HEADER (as index.html) ── */
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem 4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo { display: flex; align-items: baseline; gap: 0.5rem; text-decoration: none; }
+
+    .logo-name {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+    }
+
+    .logo-tag { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; }
+
+    nav { display: flex; gap: 2.5rem; }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav a:hover, nav a[aria-current="page"] { color: var(--text); }
+    nav a[aria-current="page"] { border-bottom: 1px solid var(--accent); }
+
+    /* ── HERO ── */
+    .hist-hero {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5.5rem 4rem 2.5rem;
+    }
+
+    .back-link {
+      display: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      margin-bottom: 2rem;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.1s forwards;
+    }
+
+    .hero-eyebrow span {
+      display: inline-block;
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+      vertical-align: middle;
+      margin-right: 0.75rem;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 5.5vw, 4.4rem);
+      font-weight: 200;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.25s forwards;
+    }
+
+    h1 em { font-style: italic; color: var(--accent); font-weight: 200; }
+
+    .hero-sub {
+      font-size: 0.92rem;
+      color: var(--muted);
+      max-width: 640px;
+      line-height: 1.9;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.4s forwards;
+    }
+
+    /* ── FOOTER (as index.html) ── */
+    footer {
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-left { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.06em; }
+    .footer-links { display: flex; gap: 1.5rem; }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.25; transform: scale(1); }
+      50%      { opacity: 0.6;  transform: scale(1.35); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .hero-eyebrow, h1, .hero-sub, .tl-section { animation: none; opacity: 1; }
+      .tl-pulse { animation: none; }
+      .tl-label, .tl-ring, .tl-btn, .tl-tip { transition: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .hero-eyebrow, h1, .hero-sub { animation: none; opacity: 1; }
+    }
+
+    @media (max-width: 760px) {
+      header { padding: 1.5rem; }
+      nav { display: none; }
+      .back-link { display: inline-block; }
+      .hist-hero { padding: 3rem 1rem 1.5rem; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; }
+    }
+    .lab-section { position: relative; z-index: 10; max-width: 880px; margin: 0 auto; padding: 1rem 4rem 3.5rem; }
+    .lab-section h2 { font-family: var(--serif); font-weight: 300; font-size: 1.7rem; line-height: 1.25; color: var(--text); margin-bottom: 1.1rem; }
+    .lab-section h2 em { color: var(--accent); font-style: italic; }
+    .lab-section p { color: var(--muted); font-size: 0.86rem; line-height: 1.85; max-width: 720px; margin-bottom: 1rem; }
+    .lab-section p strong { color: var(--text); font-weight: 400; }
+    .lab-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 0.5rem; }
+    .lab-card { border: 1px solid var(--border); background: var(--surface); padding: 1.3rem 1.4rem; }
+    .lab-card h3 { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); font-weight: 400; margin-bottom: 0.7rem; }
+    .lab-card p { margin-bottom: 0; font-size: 0.8rem; }
+    .lab-steps { list-style: none; counter-reset: s; margin-top: 0.5rem; }
+    .lab-steps li { counter-increment: s; position: relative; padding: 0 0 1.3rem 2.6rem; color: var(--muted); font-size: 0.84rem; line-height: 1.8; max-width: 740px; }
+    .lab-steps li::before { content: counter(s); position: absolute; left: 0; top: 0.05rem; width: 1.6rem; height: 1.6rem; border: 1px solid rgba(74,240,196,0.4); border-radius: 50%; color: var(--accent); font-size: 0.72rem; display: flex; align-items: center; justify-content: center; }
+    .lab-steps li strong { color: var(--text); font-weight: 400; }
+    .lab-section a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(74,240,196,0.3); }
+    @media (max-width: 760px) { .lab-section { padding: 0.5rem 1rem 2.5rem; } .lab-pair { grid-template-columns: 1fr; } }
+
+
+    .section-label { font-size: 0.7rem; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.5rem; }
+    code { font-family: var(--mono); color: var(--text); }
+
+    /* ── OPEN ECOSYSTEM ── */
+    .eco-wrap { position: relative; z-index: 10; max-width: 1200px; margin: 0 auto; padding: 1rem 4rem 2rem; }
+    .eco-card { border: 1px solid var(--border); background: linear-gradient(180deg, rgba(13,17,32,0.7), rgba(7,9,15,0.7)); padding: 1.5rem; overflow-x: auto; }
+    .eco { display: block; width: 100%; height: auto; min-width: 760px; }
+    .eco a { cursor: pointer; }
+    .eco .eco-col { fill: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; }
+    .eco .eco-node { stroke-width: 1.3; transition: stroke 0.2s; }
+    .eco .eco-package { fill: #1c253d; stroke: rgba(123,156,255,0.55); }
+    .eco .eco-spec { fill: #1b2230; stroke: rgba(232,237,245,0.4); stroke-dasharray: 4 3; }
+    .eco .eco-dataset { fill: #162933; stroke: rgba(74,240,196,0.55); }
+    .eco .eco-space { fill: #1d2a2c; stroke: rgba(74,240,196,0.85); }
+    .eco .eco-site { fill: #1c253d; stroke: rgba(123,156,255,0.9); }
+    .eco a:hover .eco-node, .eco a:focus-visible .eco-node { stroke: var(--text); }
+    .eco .eco-label { fill: var(--text); font-family: var(--mono); font-size: 13px; text-anchor: middle; }
+    .eco .eco-small { font-size: 12px; }
+    .eco .eco-edge { fill: none; stroke: rgba(123,156,255,0.4); stroke-width: 1.3; }
+    .eco .eco-edge-data { stroke: rgba(74,240,196,0.18); stroke-width: 1; }
+    .eco .eco-edge-spec { stroke: rgba(232,237,245,0.35); stroke-dasharray: 4 3; }
+    .eco .eco-head { fill: rgba(123,156,255,0.7); }
+    .eco-key { display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; margin: 1rem 0 0; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; }
+    .eco-key span::before { content: ''; display: inline-block; width: 0.7rem; height: 0.7rem; margin-right: 0.45rem; border: 1.3px solid; border-radius: 2px; vertical-align: -1px; }
+    .eco-key .k-pkg::before { border-color: rgba(123,156,255,0.8); background: #1c253d; }
+    .eco-key .k-spec::before { border-color: rgba(232,237,245,0.5); border-style: dashed; }
+    .eco-key .k-hub::before { border-color: rgba(74,240,196,0.8); background: #162933; }
+    .eco-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0.2rem 2rem; max-width: 880px; }
+    .eco-list li { display: flex; flex-direction: column; padding: 0.55rem 0; border-bottom: 1px solid var(--border); }
+    .eco-list a { color: var(--accent); text-decoration: none; font-size: 0.84rem; word-break: break-word; }
+    .eco-list span { color: var(--muted); font-size: 0.72rem; line-height: 1.6; }
+    .eco-note { max-width: 720px; font-size: 0.78rem; color: var(--muted); line-height: 1.8; margin-top: 1.2rem; }
+    @media (max-width: 760px) {
+      .eco-wrap { display: none; }
+      .eco-card { display: none; }
+      .eco-list { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="glow-bg"></div>
+
+<header>
+  <a class="logo" href="./">
+    <span class="logo-name">dmrai-lab</span>
+    <span class="logo-tag">/ org</span>
+  </a>
+  <nav>
+    <a href="./#packages">Packages</a>
+    <a href="./#data">Data</a>
+    <a href="./#vision">Vision</a>
+    <a href="history.html">History</a>
+    <a href="ecosystem.html" aria-current="page">Ecosystem</a>
+    <a href="lab.html">Laboratory</a>
+    <a href="./#about">About</a>
+    <a href="./#collaborators">Collaborators</a>
+    <a href="https://github.com/dmrai-lab" target="_blank">GitHub ↗</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hist-hero">
+    <a class="back-link" href="./">← dmrai-lab</a>
+    <p class="hero-eyebrow"><span></span>Open ecosystem</p>
+    <h1>What is open,<br/><em>and what builds on what.</em></h1>
+    <p class="hero-sub">
+      The packages, the format specification, the datasets and the Spaces anyone can use today, with the
+      packages each one builds on. The picture is drawn from the public repositories and the Hugging Face Hub
+      themselves, so it stays true as they change.
+    </p>
+  </section>
+
+  <section class="eco-wrap" aria-labelledby="eco-h">
+    <p class="section-label" id="eco-h">Packages, Hub datasets and Spaces</p>
+    <div class="eco-card">
+<!-- labmap:svg:begin -->
+<svg class="eco" viewBox="0 0 974 436" role="img" aria-labelledby="eco-t eco-d">
+<title id="eco-t">The open dmipy ecosystem</title>
+<desc id="eco-d">The public packages, each with an arrow to the packages it builds on, the specification, and below them the public Hub datasets, Spaces and the documentation site.</desc>
+<defs><marker id="eco-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="eco-head"/></marker></defs>
+<path class="eco-edge" d="M784 59 L754 59" marker-end="url(#eco-arr)"/>
+<path class="eco-edge" d="M784 59 L754 117" marker-end="url(#eco-arr)"/>
+<path class="eco-edge" d="M594 59 L564 59" marker-end="url(#eco-arr)"/>
+<path class="eco-edge" d="M594 117 L564 59" marker-end="url(#eco-arr)"/>
+<path class="eco-edge" d="M214 59 L184 117" marker-end="url(#eco-arr)"/>
+<path class="eco-edge" d="M404 59 L374 59" marker-end="url(#eco-arr)"/>
+<path class="eco-edge" d="M594 175 L564 59" marker-end="url(#eco-arr)"/>
+<path class="eco-edge eco-edge-spec" d="M184 175 L214 59"/>
+<a href="https://github.com/dmrai-lab/CACTUS"><rect class="eco-node eco-package" x="24" y="40" width="160" height="38" rx="3"/><text class="eco-label" x="104" y="64">CACTUS</text></a>
+<a href="https://github.com/dmrai-lab/dmipy-analytic"><rect class="eco-node eco-package" x="24" y="98" width="160" height="38" rx="3"/><text class="eco-label" x="104" y="122">dmipy-analytic</text></a>
+<a href="https://github.com/dmrai-lab/replay-pack-spec"><rect class="eco-node eco-spec" x="24" y="156" width="160" height="38" rx="3"/><text class="eco-label" x="104" y="180">replay-pack-spec</text></a>
+<a href="https://github.com/dmrai-lab/dmipy-replay"><rect class="eco-node eco-package" x="214" y="40" width="160" height="38" rx="3"/><text class="eco-label" x="294" y="64">dmipy-replay</text></a>
+<a href="https://github.com/dmrai-lab/dmipy-sim"><rect class="eco-node eco-package" x="404" y="40" width="160" height="38" rx="3"/><text class="eco-label" x="484" y="64">dmipy-sim</text></a>
+<a href="https://github.com/dmrai-lab/dmipy-design"><rect class="eco-node eco-package" x="594" y="40" width="160" height="38" rx="3"/><text class="eco-label" x="674" y="64">dmipy-design</text></a>
+<a href="https://github.com/dmrai-lab/dmipy-fit"><rect class="eco-node eco-package" x="594" y="98" width="160" height="38" rx="3"/><text class="eco-label" x="674" y="122">dmipy-fit</text></a>
+<a href="https://github.com/dmrai-lab/dmipy-tract"><rect class="eco-node eco-package" x="594" y="156" width="160" height="38" rx="3"/><text class="eco-label" x="674" y="180">dmipy-tract</text></a>
+<a href="https://github.com/dmrai-lab/dmipy"><rect class="eco-node eco-package" x="784" y="40" width="160" height="38" rx="3"/><text class="eco-label" x="864" y="64">dmipy</text></a>
+<text class="eco-col" x="24" y="232">Hub datasets</text>
+<a href="https://huggingface.co/datasets/SubstrateCommons/cactus-axons"><rect class="eco-node eco-dataset" x="24" y="240" width="172" height="28" rx="3"/><text class="eco-label eco-small" x="110" y="259">cactus-axons</text></a>
+<a href="https://huggingface.co/datasets/SubstrateCommons/canonical-pores"><rect class="eco-node eco-dataset" x="208" y="240" width="172" height="28" rx="3"/><text class="eco-label eco-small" x="294" y="259">canonical-pores</text></a>
+<a href="https://huggingface.co/datasets/SubstrateCommons/coefficient-walks"><rect class="eco-node eco-dataset" x="392" y="240" width="172" height="28" rx="3"/><text class="eco-label eco-small" x="478" y="259">coefficient-walks</text></a>
+<a href="https://huggingface.co/datasets/SubstrateCommons/disco-replay"><rect class="eco-node eco-dataset" x="24" y="276" width="172" height="28" rx="3"/><text class="eco-label eco-small" x="110" y="295">disco-replay</text></a>
+<a href="https://huggingface.co/datasets/SubstrateCommons/disco-time-segments"><rect class="eco-node eco-dataset" x="208" y="276" width="172" height="28" rx="3"/><text class="eco-label eco-small" x="294" y="295">disco-time-segments</text></a>
+<a href="https://huggingface.co/datasets/SubstrateCommons/grey-matter-spheres"><rect class="eco-node eco-dataset" x="392" y="276" width="172" height="28" rx="3"/><text class="eco-label eco-small" x="478" y="295">grey-matter-spheres</text></a>
+<a href="https://huggingface.co/datasets/SubstrateCommons/imperial-rocks"><rect class="eco-node eco-dataset" x="24" y="312" width="172" height="28" rx="3"/><text class="eco-label eco-small" x="110" y="331">imperial-rocks</text></a>
+<a href="https://huggingface.co/datasets/SubstrateCommons/ling-sand-packs"><rect class="eco-node eco-dataset" x="208" y="312" width="172" height="28" rx="3"/><text class="eco-label eco-small" x="294" y="331">ling-sand-packs</text></a>
+<a href="https://huggingface.co/datasets/SubstrateCommons/masivar-brain"><rect class="eco-node eco-dataset" x="392" y="312" width="172" height="28" rx="3"/><text class="eco-label eco-small" x="478" y="331">masivar-brain</text></a>
+<a href="https://huggingface.co/datasets/SubstrateCommons/parity-fixtures"><rect class="eco-node eco-dataset" x="24" y="348" width="172" height="28" rx="3"/><text class="eco-label eco-small" x="110" y="367">parity-fixtures</text></a>
+<a href="https://huggingface.co/datasets/SubstrateCommons/permeable-slab"><rect class="eco-node eco-dataset" x="208" y="348" width="172" height="28" rx="3"/><text class="eco-label eco-small" x="294" y="367">permeable-slab</text></a>
+<a href="https://huggingface.co/datasets/SubstrateCommons/test-fixtures"><rect class="eco-node eco-dataset" x="392" y="348" width="172" height="28" rx="3"/><text class="eco-label eco-small" x="478" y="367">test-fixtures</text></a>
+<a href="https://huggingface.co/datasets/SubstrateCommons/winther-g6-axons"><rect class="eco-node eco-dataset" x="24" y="384" width="172" height="28" rx="3"/><text class="eco-label eco-small" x="110" y="403">winther-g6-axons</text></a>
+<path class="eco-edge eco-edge-data" d="M484 78 L484 218"/>
+<text class="eco-col" x="594" y="232">Hub Spaces</text>
+<a href="https://huggingface.co/spaces/rfick/brain-zero"><rect class="eco-node eco-space" x="594" y="240" width="184" height="28" rx="3"/><text class="eco-label eco-small" x="686" y="259">brain-zero</text></a>
+<a href="https://huggingface.co/spaces/rfick/disco-replay"><rect class="eco-node eco-space" x="790" y="240" width="184" height="28" rx="3"/><text class="eco-label eco-small" x="882" y="259">disco-replay</text></a>
+<path class="eco-edge eco-edge-data" d="M864 78 L864 218"/>
+<text class="eco-col" x="594" y="298">Documentation</text>
+<a href="https://dmipy.org"><rect class="eco-node eco-site" x="594" y="306" width="184" height="28" rx="3"/><text class="eco-label eco-small" x="686" y="325">dmipy.org</text></a>
+</svg>
+<!-- labmap:svg:end -->
+      <p class="eco-key"><span class="k-pkg">package, arrow to what it builds on</span><span class="k-spec">specification</span><span class="k-hub">Hub dataset, Space or documentation; a line joins its group to the package it is made with</span></p>
+    </div>
+  </section>
+
+  <section class="lab-section" aria-labelledby="all">
+    <h2 id="all">Every <em>entry,</em> with its link.</h2>
+<!-- labmap:list:begin -->
+<ul class="eco-list">
+<li><a href="https://github.com/dmrai-lab/CACTUS">CACTUS</a><span>package</span></li>
+<li><a href="https://github.com/dmrai-lab/dmipy-analytic">dmipy-analytic</a><span>package</span></li>
+<li><a href="https://github.com/dmrai-lab/replay-pack-spec">replay-pack-spec</a><span>specification</span></li>
+<li><a href="https://github.com/dmrai-lab/dmipy-replay">dmipy-replay</a><span>package; builds on dmipy-analytic</span></li>
+<li><a href="https://github.com/dmrai-lab/dmipy-sim">dmipy-sim</a><span>package; builds on dmipy-analytic, dmipy-replay</span></li>
+<li><a href="https://github.com/dmrai-lab/dmipy-design">dmipy-design</a><span>package; builds on dmipy-analytic, dmipy-replay, dmipy-sim</span></li>
+<li><a href="https://github.com/dmrai-lab/dmipy-fit">dmipy-fit</a><span>package; builds on dmipy-analytic, dmipy-replay, dmipy-sim</span></li>
+<li><a href="https://github.com/dmrai-lab/dmipy-tract">dmipy-tract</a><span>package; builds on dmipy-analytic, dmipy-replay, dmipy-sim</span></li>
+<li><a href="https://github.com/dmrai-lab/dmipy">dmipy</a><span>package; builds on dmipy-design, dmipy-fit, dmipy-replay, dmipy-sim</span></li>
+<li><a href="https://dmipy.org">dmipy.org</a><span>documentation</span></li>
+<li><a href="https://huggingface.co/spaces/rfick/brain-zero">rfick/brain-zero</a><span>Hub Space; built on dmipy, dmipy-analytic, dmipy-fit, dmipy-replay, dmipy-sim, dmipy-tract</span></li>
+<li><a href="https://huggingface.co/spaces/rfick/disco-replay">rfick/disco-replay</a><span>Hub Space; built on dmipy, dmipy-analytic, dmipy-fit, dmipy-replay, dmipy-sim, dmipy-tract</span></li>
+<li><a href="https://huggingface.co/datasets/SubstrateCommons/cactus-axons">SubstrateCommons/cactus-axons</a><span>Hub dataset; made with dmipy-sim</span></li>
+<li><a href="https://huggingface.co/datasets/SubstrateCommons/canonical-pores">SubstrateCommons/canonical-pores</a><span>Hub dataset; made with dmipy-sim</span></li>
+<li><a href="https://huggingface.co/datasets/SubstrateCommons/coefficient-walks">SubstrateCommons/coefficient-walks</a><span>Hub dataset; made with dmipy-sim</span></li>
+<li><a href="https://huggingface.co/datasets/SubstrateCommons/disco-replay">SubstrateCommons/disco-replay</a><span>Hub dataset; made with dmipy-sim</span></li>
+<li><a href="https://huggingface.co/datasets/SubstrateCommons/disco-time-segments">SubstrateCommons/disco-time-segments</a><span>Hub dataset; made with dmipy-sim</span></li>
+<li><a href="https://huggingface.co/datasets/SubstrateCommons/grey-matter-spheres">SubstrateCommons/grey-matter-spheres</a><span>Hub dataset; made with dmipy-sim</span></li>
+<li><a href="https://huggingface.co/datasets/SubstrateCommons/imperial-rocks">SubstrateCommons/imperial-rocks</a><span>Hub dataset; made with dmipy-sim</span></li>
+<li><a href="https://huggingface.co/datasets/SubstrateCommons/ling-sand-packs">SubstrateCommons/ling-sand-packs</a><span>Hub dataset; made with dmipy-sim</span></li>
+<li><a href="https://huggingface.co/datasets/SubstrateCommons/masivar-brain">SubstrateCommons/masivar-brain</a><span>Hub dataset; made with dmipy-fit, dmipy-sim</span></li>
+<li><a href="https://huggingface.co/datasets/SubstrateCommons/parity-fixtures">SubstrateCommons/parity-fixtures</a><span>Hub dataset; made with dmipy-sim</span></li>
+<li><a href="https://huggingface.co/datasets/SubstrateCommons/permeable-slab">SubstrateCommons/permeable-slab</a><span>Hub dataset; made with dmipy-sim</span></li>
+<li><a href="https://huggingface.co/datasets/SubstrateCommons/test-fixtures">SubstrateCommons/test-fixtures</a><span>Hub dataset; made with dmipy-sim</span></li>
+<li><a href="https://huggingface.co/datasets/SubstrateCommons/winther-g6-axons">SubstrateCommons/winther-g6-axons</a><span>Hub dataset; made with dmipy-sim</span></li>
+</ul>
+<!-- labmap:list:end -->
+    <p class="eco-note">
+      Arrows show runtime dependencies as declared in each package's <code>pyproject.toml</code>. Replay packs are
+      CC BY-NC-SA 4.0 or commercial; the code is AGPL-3.0 or commercial, except dmipy-analytic and dmipy-replay
+      (Apache-2.0). Datasets are read with dmipy-replay, from a file or by range.
+    </p>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-left">
+    © 2026 dmrai-lab — Code: AGPL-3.0 or commercial (dmipy-analytic, dmipy-replay: Apache-2.0) · Replay packs: CC BY-NC-SA 4.0 or commercial · Site content © dmrai-lab, all rights reserved
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/dmrai-lab" target="_blank">GitHub</a>
+    <a href="https://pypi.org/user/dmrai-lab/" target="_blank">PyPI</a>
+  </div>
+</footer>
+</body>
+</html>
